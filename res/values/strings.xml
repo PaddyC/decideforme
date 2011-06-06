@@ -2,4 +2,12 @@
 <resources>
     <string name="hello">Hello World, DecideForMe!</string>
     <string name="app_name">Decide For Me</string>
+    <string name="edit_decision">Edit Decision</string>
+    <string name="decision_name">Decision Name</string>
+    <string name="decision_description">Description</string>
+    <string name="next">Next</string>
+    <string name="no_decisions">No Decisions</string>
+    <string name="menu_insert">Add New Decison</string>
+    <string name="menu_delete">Delete Decision</string>
+    <string name="decision_id">_decisionid</string>
 </resources>
