@@ -25,8 +25,8 @@
 		android:layout_weight="1"
 		android:scrollbars="vertical" />
 	
-	<Button android:id="@+id/next" 
-	  android:text="@string/next"
+	<Button android:id="@+id/add_competitors" 
+	  android:text="@string/add_competitors"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" />
 

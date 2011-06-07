@@ -36,7 +36,7 @@ public class DecisionEdit extends Activity {
 		decisionName = (EditText) findViewById(R.id.decision_name);
 		decisionDescription = (EditText) findViewById(R.id.decision_description);
 		
-		Button nextButton = (Button) findViewById(R.id.next);
+		Button addCompetitorsButton = (Button) findViewById(R.id.add_competitors);
 		
 		decisionRowId = (savedInstanceState == null) ? null :
             (Long) savedInstanceState.getSerializable(DecisionColumns._ID);
@@ -48,7 +48,7 @@ public class DecisionEdit extends Activity {
 		populateFields();
 		
 		
-		nextButton.setOnClickListener(new View.OnClickListener() {
+		addCompetitorsButton.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View view) {
 		    	setResult(RESULT_OK);
 		    	finish();

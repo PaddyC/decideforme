@@ -3,6 +3,7 @@ package com.decideforme;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -14,6 +15,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import com.db.decideforme.DatabaseScripts;
 import com.db.decideforme.DecisionDatabaseAdapter;
 import com.decideforme.Decision.DecisionColumns;
 import com.decideforme.utils.StringUtils;
@@ -28,7 +30,7 @@ public class DecideForMe extends ListActivity {
     private static final int ACTIVITY_EDIT=1;
     private static final int ACTIVITY_DELETE=2;
     
-    private int decisionNumber = 1;
+    private Integer nextDecisionNumber;
 	
 	private DecisionDatabaseAdapter mDbAdapter;
 	
@@ -39,9 +41,13 @@ public class DecideForMe extends ListActivity {
     			"savedInstanceState '" + StringUtils.objectAsString(savedInstanceState) + "')");
     	
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.decisions_list);
         mDbAdapter = new DecisionDatabaseAdapter(this);
         mDbAdapter.open();
+        
+        nextDecisionNumber = mDbAdapter.getNextDecisionSequenceID();
+        
         fillData();
         registerForContextMenu(getListView());
         
@@ -84,8 +90,13 @@ public class DecideForMe extends ListActivity {
 	private void createDecision() {
     	Log.d(TAG, " >> createDecision()");
     	
-		String decisionName = "Decision" + decisionNumber++;
-		mDbAdapter.createDecision(decisionName, "");
+		String decisionName = "New Decision " + nextDecisionNumber++;
+		
+		long id = mDbAdapter.createDecision(decisionName, "");
+		Intent i = new Intent(this, DecisionEdit.class);
+        i.putExtra(DecisionColumns._ID, id);
+        startActivityForResult(i, ACTIVITY_EDIT);
+		
 		fillData();
 		
 		Log.d(TAG, " << createDecision()");

@@ -16,10 +16,11 @@
     <string name="decision_name">Decision Name</string>
     <string name="decision_description">Description</string>
     
-    <string name="next">Next</string>
+    <string name="add_competitors">Add Competitors</string>
     <string name="delete">Delete</string>
     
-    <string name="no_decisions">No Decisions</string>
+    <string name="no_decisions">No Decisions yet, use the menu button to add a new one..</string>
+    
     <string name="menu_insert">Add New Decision</string>
     <string name="menu_delete">Delete Decision</string>
     <string name="menu_add">Add Decision</string>

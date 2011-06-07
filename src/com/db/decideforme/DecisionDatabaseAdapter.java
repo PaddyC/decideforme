@@ -1,5 +1,6 @@
 package com.db.decideforme;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -15,8 +16,6 @@ import com.decideforme.utils.StringUtils;
 public class DecisionDatabaseAdapter {
 	private static final String TAG = "DecisionDatabaseAdapter";
 	
-    public static final String TABLE_NAME_DECISION = "decision";
-	
     private final Context mContext;
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
@@ -27,23 +26,72 @@ public class DecisionDatabaseAdapter {
 		private static final String TAG = DatabaseHelper.class.getName();
 
         public DatabaseHelper(Context context) {
-            super(context, DatabaseScriptConstants.DB_NAME, null, DatabaseScriptConstants.DB_VERSION);
+            super(context, DatabaseScripts.DB_NAME, null, DatabaseScripts.DB_VERSION);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-        	Log.d(TAG, ">> about to run SQL: " + DatabaseScriptConstants.DATABASE_CREATE);
-            db.execSQL(DatabaseScriptConstants.DATABASE_CREATE);
+        	Log.d(TAG, ">> onCreate: " + StringUtils.objectAsString(db));
+
+        	DatabaseScripts.createAllTables(db);
+            
+            Log.d(TAG, " << onCreate()");
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            db.execSQL(DatabaseScriptConstants.DATABASE_DROP);
+            
+            DatabaseScripts.dropAllTables(db);
+            
             onCreate(db);
         }
     }
+    
+    public static class CursorHelper extends Activity {
+    	
+    	public void getFirstRow() {
+    		
+    	}
+    	
+    }
+    
+    public boolean recreateTheDatabase() {
+    	Log.d(TAG, " >> recreateTheDatabase()");
+    	boolean databaseRecreated = false;
+        // Should only be rarely needed: re-create the database from scratch.
+        SQLiteDatabase mdb = getmDbHelper().getWritableDatabase();
+        Log.d(TAG, ">> Dropping tables.");
+        DatabaseScripts.dropAllTables(mdb);
+        Log.d(TAG, ">> Creating tables.");
+        DatabaseScripts.createAllTables(mdb);
+        Log.d(TAG, ">> The database is back..");
+    	
+        databaseRecreated = true;
+        
+    	Log.d(TAG, " << recreateTheDatabase(), returned '" + StringUtils.objectAsString(databaseRecreated) + "'");
+    	return databaseRecreated;
+    }
+    
+    public Integer getNextDecisionSequenceID() {
+    	Log.d(TAG, " >> getNextDecisionSequenceID()");
+    	Integer nextRowId = 0;
+    	Cursor resultOfFetchQuery = mDb.query(Decision.TABLE_NAME, 
+        		new String[] {DecisionColumns._ID, 
+        		DecisionColumns.NAME, 
+        		DecisionColumns.DESCRIPTION}, 
+        		null, null, null, null, DecisionColumns._ID);
+    	Log.d(TAG, "Query run ok");
+    	
+    	resultOfFetchQuery.moveToLast();
+    	nextRowId = resultOfFetchQuery.getInt(0);
+    	resultOfFetchQuery.close();
+    	Log.d(TAG, " << getNextDecisionSequenceID(), returned '" + StringUtils.objectAsString(nextRowId) + "'");
+    	return nextRowId;
+    }
+    
+    
 	/**
 	 * 
 	 * @param Context ctx
