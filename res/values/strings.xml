@@ -16,6 +16,7 @@
     <string name="decision_name">Decision Name</string>
     <string name="decision_description">Description</string>
     
+    <string name="ok">Ok</string>
     <string name="add_competitors">Add Competitors</string>
     <string name="delete">Delete</string>
     

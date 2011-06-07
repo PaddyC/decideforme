@@ -25,9 +25,17 @@
 		android:layout_weight="1"
 		android:scrollbars="vertical" />
 	
-	<Button android:id="@+id/add_competitors" 
-	  android:text="@string/add_competitors"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" />
-
+	<TableLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+		<TableRow>
+			<Button android:id="@+id/ok" 
+			  android:text="@string/ok"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+		
+			<Button android:id="@+id/add_competitors" 
+			  android:text="@string/add_competitors"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+		</TableRow>
+	</TableLayout>
 </LinearLayout>
