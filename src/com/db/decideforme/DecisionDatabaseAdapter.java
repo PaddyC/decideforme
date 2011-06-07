@@ -82,10 +82,17 @@ public class DecisionDatabaseAdapter {
         		DecisionColumns.NAME, 
         		DecisionColumns.DESCRIPTION}, 
         		null, null, null, null, DecisionColumns._ID);
-    	Log.d(TAG, "Query run ok");
+
+
+
+		if (resultOfFetchQuery.getCount() > 0) {
+    		resultOfFetchQuery.moveToLast();
+    		nextRowId = resultOfFetchQuery.getInt(0);	
+    	}
+		
+    	nextRowId++;
+    	Log.d(TAG, "nextRowId: '" + nextRowId + "'");
     	
-    	resultOfFetchQuery.moveToLast();
-    	nextRowId = resultOfFetchQuery.getInt(0);
     	resultOfFetchQuery.close();
     	Log.d(TAG, " << getNextDecisionSequenceID(), returned '" + StringUtils.objectAsString(nextRowId) + "'");
     	return nextRowId;
