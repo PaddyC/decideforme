@@ -7,8 +7,7 @@ import android.database.SQLException;
 import android.util.Log;
 
 import com.db.decideforme.DecisionDatabaseAdapter;
-import com.decideforme.competitor.Competitor;
-import com.decideforme.competitor.Competitor.CompetitorColumns;
+import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.decideforme.utils.StringUtils;
 
 

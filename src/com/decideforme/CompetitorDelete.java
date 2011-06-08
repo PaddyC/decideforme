@@ -16,8 +16,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.db.decideforme.competitors.CompetitorsDatabaseAdapter;
+import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.decideforme.Decision.DecisionColumns;
-import com.decideforme.competitor.Competitor.CompetitorColumns;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 

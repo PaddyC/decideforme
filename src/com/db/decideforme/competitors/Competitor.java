@@ -1,4 +1,4 @@
-package com.decideforme.competitor;
+package com.db.decideforme.competitors;
 
 import android.provider.BaseColumns;
 
