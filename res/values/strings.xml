@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+
     <string name="app_name">Decide For Me</string>
-    <string name="hello">Hello World, DecideForMe!</string>
 
     <string name="splash_screen">SplashScreen</string>
 
     <string name="decisions_screen">My Decisions</string>
     <string name="delete_decision_screen">Delete A Decision</string>
+    <string name="no_decisions">No Decisions yet, use the menu button to add a new one..</string>
+    
+    <string name="competitors_screen">Competitors</string>
+    <string name="no_competitors">What are you trying to decide between?</string>
+   	<string name="add_competitor">Add Competitor</string>
+   	<string name="edit_competitor">Edit Competitor</string>
+    <string name="delete_competitor">Delete Competitor</string>
+    <string name="delete_competitor_screen">Delete A Competitor</string>
+    <string name="competitor_name">Competitor Name</string>
 
 	<string name="add_decision">Add Decision</string>
     <string name="edit_decision">Edit Decision</string>
@@ -17,13 +28,16 @@
     <string name="decision_description">Description</string>
     
     <string name="ok">Ok</string>
+    <string name="back">Back</string>
+    <string name="done">Done</string>
+    
     <string name="add_competitors">Add Competitors</string>
     <string name="delete">Delete</string>
     
-    <string name="no_decisions">No Decisions yet, use the menu button to add a new one..</string>
     
     <string name="menu_insert">Add New Decision</string>
-    <string name="menu_delete">Delete Decision</string>
+    <string name="menu_delete_decision">Delete Decision</string>
+    <string name="menu_delete_competitor">Delete Competitor</string>
     <string name="menu_add">Add Decision</string>
     <string name="menu_save">Save</string>
     <string name="menu_open">Open</string>

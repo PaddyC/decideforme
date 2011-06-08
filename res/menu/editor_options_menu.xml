@@ -11,7 +11,7 @@
               android:title="@string/menu_revert" />
         <item android:id="@+id/menu_delete"
               android:icon="@drawable/ic_menu_delete"
-              android:title="@string/menu_delete" />
+              android:title="@string/menu_delete_decision" />
     </group>
     
     <group android:id="@+id/menu_group_insert">

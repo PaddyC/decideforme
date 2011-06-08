@@ -1,15 +1,17 @@
 package com.decideforme;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.db.decideforme.DecisionDatabaseAdapter;
 import com.decideforme.Decision.DecisionColumns;
+import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
 
@@ -20,6 +22,8 @@ public class DecisionEdit extends Activity {
 	protected EditText decisionDescription;
 	protected Long decisionRowId;
 
+	private static final int COMPETITORS_SCREEN = Menu.FIRST;
+    private static final int DONE = Menu.FIRST + 1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,32 +40,10 @@ public class DecisionEdit extends Activity {
 		decisionName = (EditText) findViewById(R.id.decision_name);
 		decisionDescription = (EditText) findViewById(R.id.decision_description);
 		
-		Button addCompetitorsButton = (Button) findViewById(R.id.add_competitors);
-		Button okButton = (Button) findViewById(R.id.ok);
+		BundleHelper bundleHelper = new BundleHelper(this,  savedInstanceState);
+		decisionRowId = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
 		
-		decisionRowId = (savedInstanceState == null) ? null :
-            (Long) savedInstanceState.getSerializable(DecisionColumns._ID);
-		if (decisionRowId == null) {
-            Bundle extras = getIntent().getExtras();
-            decisionRowId = extras != null ? extras.getLong(DecisionColumns._ID) : null;
-        }
-
 		populateFields();
-		
-		
-		addCompetitorsButton.setOnClickListener(new View.OnClickListener() {
-		    public void onClick(View view) {
-		    	setResult(RESULT_OK);
-		    	finish();
-		    }
-		});
-		
-		okButton.setOnClickListener(new View.OnClickListener() {
-		    public void onClick(View view) {
-		    	setResult(RESULT_OK);
-		    	finish();
-		    }
-		});
 		
 		Log.d(TAG, " << onCreate()");
 	}
@@ -78,6 +60,41 @@ public class DecisionEdit extends Activity {
 	    }
 	    
 	    Log.d(TAG, " << populateFields()");
+	}
+
+	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, COMPETITORS_SCREEN, 0, R.string.competitors_screen);
+        menu.add(1, DONE, 1, R.string.done);
+        return true;
+    }
+	
+    
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        switch(item.getItemId()) {
+	        case COMPETITORS_SCREEN:
+	            addCompetitor();
+	            return true;
+	        case DONE:
+	        	finish();
+	        	return true;
+        } 
+        
+        return super.onMenuItemSelected(featureId, item);
+    }
+    
+
+	private void addCompetitor() {
+		Log.d(TAG, " >> addCompetitor()");
+		
+		Intent i = new Intent(this, CompetitorsScreen.class);
+        i.putExtra(DecisionColumns._ID, decisionRowId);
+        startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+		
+		Log.d(TAG, " << addCompetitor()");	
 	}
 
 

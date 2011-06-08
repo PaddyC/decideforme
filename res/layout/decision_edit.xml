@@ -5,37 +5,36 @@
 	android:layout_height="fill_parent">
 	
 	<LinearLayout android:orientation="horizontal"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content">
 
 		<TextView android:layout_width="wrap_content"
-			android:layout_height="wrap_content" 
-			android:text="@string/decision_name" />
+					android:layout_height="wrap_content" 
+					android:text="@string/decision_name" />
 		<EditText android:id="@+id/decision_name" 
-		  android:layout_width="wrap_content"
-			android:layout_height="wrap_content" 
-			android:layout_weight="1"/>
+		  			android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:layout_weight="1"/>
 	</LinearLayout>
 
-	<TextView android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
-		android:text="@string/decision_description" />
-	<EditText android:id="@+id/decision_description" android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_weight="1"
-		android:scrollbars="vertical" />
-	
-	<TableLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+	<TableLayout android:orientation="horizontal"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content">
 		<TableRow>
-			<Button android:id="@+id/ok" 
-			  android:text="@string/ok"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
-		
-			<Button android:id="@+id/add_competitors" 
-			  android:text="@string/add_competitors"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
+			<TextView android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:text="@string/decision_description" />
 		</TableRow>
+		
+		<TableRow>
+			<EditText android:id="@+id/decision_description" 
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:scrollbars="vertical" />
+		</TableRow>
+		
 	</TableLayout>
+		
+	
 </LinearLayout>

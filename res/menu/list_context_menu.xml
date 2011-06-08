@@ -3,5 +3,5 @@
     <item android:id="@+id/context_open"
           android:title="@string/menu_open" />
     <item android:id="@+id/context_delete"
-          android:title="@string/menu_delete" />
+          android:title="@string/menu_delete_decision" />
 </menu>

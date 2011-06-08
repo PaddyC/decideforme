@@ -1,6 +1,5 @@
 package com.db.decideforme;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,14 +11,21 @@ import android.util.Log;
 import com.decideforme.Decision;
 import com.decideforme.Decision.DecisionColumns;
 import com.decideforme.utils.StringUtils;
-
+/**
+ * 
+ * @author PaddyC
+ *
+ */
 public class DecisionDatabaseAdapter {
 	private static final String TAG = "DecisionDatabaseAdapter";
 	
     private final Context mContext;
     private DatabaseHelper mDbHelper;
-    private SQLiteDatabase mDb;
+    protected SQLiteDatabase mDb;
 	
+    public DecisionDatabaseAdapter(Context ctx) {
+    	this.mContext = ctx;
+    }
     
     public static class DatabaseHelper extends SQLiteOpenHelper {
     	
@@ -47,14 +53,6 @@ public class DecisionDatabaseAdapter {
             
             onCreate(db);
         }
-    }
-    
-    public static class CursorHelper extends Activity {
-    	
-    	public void getFirstRow() {
-    		
-    	}
-    	
     }
     
     public boolean recreateTheDatabase() {
@@ -98,22 +96,8 @@ public class DecisionDatabaseAdapter {
     	return nextRowId;
     }
     
-    
-	/**
-	 * 
-	 * @param Context ctx
-	 * @author PaddyC
-	 */
-    public DecisionDatabaseAdapter(Context ctx) {
-        this.mContext = ctx;
-    }
 	
-	/**
-	 * 
-	 * @return
-	 * @throws SQLException
-	 * @author PaddyC
-	 */
+
     public DecisionDatabaseAdapter open() throws SQLException {
         setmDbHelper(new DatabaseHelper(mContext));
         mDb = getmDbHelper().getWritableDatabase();
@@ -174,15 +158,6 @@ public class DecisionDatabaseAdapter {
         Log.d(TAG, " << fetchAllDecisionNames(), returned " + StringUtils.objectAsString(resultOfFetchQuery));
 		return resultOfFetchQuery;
     }
-    
-    
-    public void deleteDecisionByName(String decisionName) {
-    	Log.d(TAG, " >> deleteDecisionByName(" +
-    			"decisionName '" + StringUtils.objectAsString(decisionName) + "')");
-        
-        Log.d(TAG, " << deleteDecisionByName()");
-    }
-    
     
     
     public Cursor fetchDecision(long rowId) throws SQLException {
