@@ -17,13 +17,17 @@ import com.decideforme.utils.StringUtils;
 
 public class DecisionEdit extends Activity {
 	static final String TAG = DecisionEdit.class.getName();
-	protected DecisionDatabaseAdapter decisionDbAdapter;
-	protected EditText decisionName;
-	protected EditText decisionDescription;
-	protected Long decisionRowId;
+	
+	protected DecisionDatabaseAdapter mDecisionDBAdapter;
+	
+	protected EditText mDecisionName;
+	protected EditText mDecisionDescription;
+	
+	protected Long mDecisionRowId;
 
 	private static final int COMPETITORS_SCREEN = Menu.FIRST;
-    private static final int DONE = Menu.FIRST + 1;
+	private static final int CRITERIA_SCREEN = Menu.FIRST + 1;
+    private static final int DONE = Menu.FIRST + 2;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,17 +35,17 @@ public class DecisionEdit extends Activity {
 				"savedInstanceState '" + StringUtils.objectAsString(savedInstanceState) + "')");
 		
 		super.onCreate(savedInstanceState);
-		decisionDbAdapter = new DecisionDatabaseAdapter(this);
-		decisionDbAdapter.open();
+		mDecisionDBAdapter = new DecisionDatabaseAdapter(this);
+		mDecisionDBAdapter.open();
 		
 		setContentView(R.layout.decision_edit);
 		setTitle(R.string.edit_decision);
 		
-		decisionName = (EditText) findViewById(R.id.decision_name);
-		decisionDescription = (EditText) findViewById(R.id.decision_description);
+		mDecisionName = (EditText) findViewById(R.id.decision_name);
+		mDecisionDescription = (EditText) findViewById(R.id.decision_description);
 		
 		BundleHelper bundleHelper = new BundleHelper(this,  savedInstanceState);
-		decisionRowId = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
+		mDecisionRowId = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
 		
 		populateFields();
 		
@@ -52,11 +56,11 @@ public class DecisionEdit extends Activity {
 	protected void populateFields() {
 		Log.d(TAG, " >> populateFields()");
 		
-	    if (decisionRowId != null) {
-	        Cursor note = decisionDbAdapter.fetchDecision(decisionRowId);
+	    if (mDecisionRowId != null) {
+	        Cursor note = mDecisionDBAdapter.fetchDecision(mDecisionRowId);
 	        startManagingCursor(note);
-	        decisionName.setText(note.getString(note.getColumnIndexOrThrow(DecisionColumns.NAME)));
-	        decisionDescription.setText(note.getString(note.getColumnIndexOrThrow(DecisionColumns.DESCRIPTION)));
+	        mDecisionName.setText(note.getString(note.getColumnIndexOrThrow(DecisionColumns.NAME)));
+	        mDecisionDescription.setText(note.getString(note.getColumnIndexOrThrow(DecisionColumns.DESCRIPTION)));
 	    }
 	    
 	    Log.d(TAG, " << populateFields()");
@@ -67,7 +71,8 @@ public class DecisionEdit extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(0, COMPETITORS_SCREEN, 0, R.string.competitors_screen);
-        menu.add(1, DONE, 1, R.string.done);
+        menu.add(1, CRITERIA_SCREEN, 1, R.string.criteria_screen);
+        menu.add(2, DONE, 2, R.string.done);
         return true;
     }
 	
@@ -77,6 +82,9 @@ public class DecisionEdit extends Activity {
         switch(item.getItemId()) {
 	        case COMPETITORS_SCREEN:
 	            addCompetitor();
+	            return true;
+	        case CRITERIA_SCREEN:
+	            addCriterion();
 	            return true;
 	        case DONE:
 	        	finish();
@@ -91,11 +99,22 @@ public class DecisionEdit extends Activity {
 		Log.d(TAG, " >> addCompetitor()");
 		
 		Intent i = new Intent(this, CompetitorsScreen.class);
-        i.putExtra(DecisionColumns._ID, decisionRowId);
+        i.putExtra(DecisionColumns._ID, mDecisionRowId);
         startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
 		
 		Log.d(TAG, " << addCompetitor()");	
 	}
+	
+	private void addCriterion() {
+		Log.d(TAG, " >> addCriterion()");
+		
+		Intent i = new Intent(this, CriteriaScreen.class);
+        i.putExtra(DecisionColumns._ID, mDecisionRowId);
+        startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+		
+		Log.d(TAG, " << addCriterion()");	
+	}
+
 
 
 	@Override
@@ -123,16 +142,16 @@ public class DecisionEdit extends Activity {
 	protected void saveState() {
 		Log.d(TAG, " >> saveState()");
 		
-		String title = decisionName.getText().toString();
-	    String body = decisionDescription.getText().toString();
+		String title = mDecisionName.getText().toString();
+	    String body = mDecisionDescription.getText().toString();
 	
-	    if (decisionRowId == null) {
-	        long id = decisionDbAdapter.createDecision(title, body);
+	    if (mDecisionRowId == null) {
+	        long id = mDecisionDBAdapter.createDecision(title, body);
 	        if (id > 0) {
-	        	decisionRowId = id;
+	        	mDecisionRowId = id;
 	        }
 	    } else {
-	    	decisionDbAdapter.updateDecision(decisionRowId, title, body);
+	    	mDecisionDBAdapter.updateDecision(mDecisionRowId, title, body);
 	    }	
 	
 	    Log.d(TAG, " << saveState()");
@@ -146,7 +165,7 @@ public class DecisionEdit extends Activity {
 		
 		super.onSaveInstanceState(outState);
 		saveState();
-	    outState.putSerializable(DecisionColumns._ID, decisionRowId);
+	    outState.putSerializable(DecisionColumns._ID, mDecisionRowId);
 		
 		Log.d(TAG, " << onSaveInstanceState()");
 	}

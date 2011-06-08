@@ -14,25 +14,25 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.db.decideforme.competitors.CompetitorsDatabaseAdapter;
 import com.db.decideforme.competitors.Competitor.CompetitorColumns;
-import com.decideforme.R;
+import com.db.decideforme.criteria.CriteriaDatabaseAdapter;
+import com.db.decideforme.criteria.Criterion.CriterionColumns;
 import com.decideforme.Decision.DecisionColumns;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
-public class CompetitorsScreen extends ListActivity {
-	private static final String TAG = CompetitorsScreen.class.getName();
+public class CriteriaScreen extends ListActivity {
+	private static final String TAG = CriteriaScreen.class.getName();
 
 	private static final int INSERT_ID = Menu.FIRST;
     private static final int DELETE_ID = Menu.FIRST + 1;
     private static final int BACK_ID = Menu.FIRST + 2;
 	
-	private CompetitorsDatabaseAdapter mCompetitorsDBAdapter;
+	private CriteriaDatabaseAdapter mCriteriaDBAdapter;
 	
 	protected Long mDecisionRowId;
 	
-	private Integer mNextCompetitorRowId;
+	private Integer mNextCriterionRowId;
 	
 	
 	@Override
@@ -41,15 +41,16 @@ public class CompetitorsScreen extends ListActivity {
 		
 		super.onCreate(savedInstanceState);
 		
-		setContentView(R.layout.competitors_list);
-		mCompetitorsDBAdapter = new CompetitorsDatabaseAdapter(this);
-		mCompetitorsDBAdapter.open();
-		mNextCompetitorRowId = mCompetitorsDBAdapter.getNextCompetitorSequenceID();
+		setContentView(R.layout.criteria_list);
+		mCriteriaDBAdapter = new CriteriaDatabaseAdapter(this);
+		mCriteriaDBAdapter.open();
 		
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		mDecisionRowId = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
 		
-		Cursor thisDecision = mCompetitorsDBAdapter.fetchDecision(mDecisionRowId);
+		mNextCriterionRowId = mCriteriaDBAdapter.getNextCriterionSequenceID();
+		
+		Cursor thisDecision = mCriteriaDBAdapter.fetchDecision(mDecisionRowId);
 		startManagingCursor(thisDecision);
 		String decisionName = thisDecision.getString(1);
 		setTitle(decisionName);
@@ -65,7 +66,7 @@ public class CompetitorsScreen extends ListActivity {
 		Log.d(TAG, " >> fillData()");
 		
         // Get all of the rows from the database and create the item list
-        Cursor competitorsCursor = mCompetitorsDBAdapter.fetchAllCompetitorsForDecision(mDecisionRowId);
+        Cursor competitorsCursor = mCriteriaDBAdapter.fetchAllCriteriaForDecision(mDecisionRowId);
         
         startManagingCursor(competitorsCursor);
         
@@ -88,8 +89,8 @@ public class CompetitorsScreen extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, INSERT_ID, 0, R.string.add_competitor);
-        menu.add(1, DELETE_ID, 1, R.string.delete_competitor);
+        menu.add(0, INSERT_ID, 0, R.string.add_criterion);
+        menu.add(1, DELETE_ID, 1, R.string.delete_criterion);
         menu.add(2, BACK_ID, 2, R.string.done);
         return true;
     }
@@ -98,10 +99,10 @@ public class CompetitorsScreen extends ListActivity {
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         switch(item.getItemId()) {
 	        case INSERT_ID:
-	            createCompetitor();
+	            createCriterion();
 	            return true;
 	        case DELETE_ID:
-	        	deleteCompetitor();
+	        	deleteCriterion();
 	        	return true;
 	        case BACK_ID:
 	        	finish();
@@ -111,28 +112,28 @@ public class CompetitorsScreen extends ListActivity {
     }
     
 
-    private void createCompetitor() {
-		Log.d(TAG, " >> createCompetitor()");
+    private void createCriterion() {
+		Log.d(TAG, " >> createCriterion()");
 		
-		String competitorName = "New Competitor " + mNextCompetitorRowId;
-		long id = mCompetitorsDBAdapter.createCompetitor(competitorName, mDecisionRowId);
+		String competitorName = "New Criterion " + mNextCriterionRowId;
+		long id = mCriteriaDBAdapter.createCriterion(competitorName, mDecisionRowId);
 		
-		Intent i = new Intent(this, CompetitorEdit.class);
-        i.putExtra(CompetitorColumns._ID, id);
-        i.putExtra(CompetitorColumns.DECISIONID, mDecisionRowId);
+		Intent i = new Intent(this, CriterionEdit.class);
+        i.putExtra(CriterionColumns._ID, id);
+        i.putExtra(CriterionColumns.DECISIONID, mDecisionRowId);
         startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
 		
-		Log.d(TAG, " << createCompetitor()");
+		Log.d(TAG, " << createCriterion()");
 	}
 
-    private void deleteCompetitor() {
-		Log.d(TAG, " >> deleteCompetitor()");
+    private void deleteCriterion() {
+		Log.d(TAG, " >> deleteCriterion()");
 		
-		Intent i = new Intent(this, CompetitorDelete.class);
-		i.putExtra(DecisionColumns._ID, mDecisionRowId);
+		Intent i = new Intent(this, CriterionDelete.class);
+		i.putExtra(CriterionColumns._ID, mDecisionRowId);
         startActivityForResult(i, DecideForMe.ACTIVITY_DELETE);
 		
-		Log.d(TAG, " << deleteCompetitor()");
+		Log.d(TAG, " << deleteCriterion()");
 	}
     
 
@@ -141,7 +142,7 @@ public class CompetitorsScreen extends ListActivity {
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		
-		menu.add(0, DELETE_ID, 0, R.string.menu_delete_competitor);
+		menu.add(0, DELETE_ID, 0, R.string.menu_delete_criterion);
 	}
 
     @Override
@@ -149,7 +150,7 @@ public class CompetitorsScreen extends ListActivity {
         switch(item.getItemId()) {
         case DELETE_ID:
             AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-            mCompetitorsDBAdapter.deleteCompetitor(info.id);
+            mCriteriaDBAdapter.deleteCriterion(info.id);
             fillData();
             return true;
         }
@@ -166,7 +167,7 @@ public class CompetitorsScreen extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         
-        Intent i = new Intent(this, CompetitorEdit.class);
+        Intent i = new Intent(this, CriterionEdit.class);
         i.putExtra(CompetitorColumns._ID, id);
         startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
     }

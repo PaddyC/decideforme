@@ -20,14 +20,17 @@
         </activity>
         
         <activity android:name=".DecisionEdit"></activity>
-        
         <activity android:name=".DecisionDelete"></activity>
         
         <activity android:name=".CompetitorsScreen"></activity>
-        
         <activity android:name=".CompetitorEdit"></activity>
         <activity android:name=".CompetitorDelete"></activity>
 
+		<activity android:name=".CriteriaScreen"></activity>
+		<activity android:name=".CriterionEdit"></activity>
+        <activity android:name=".CriterionDelete"></activity>
+        
+        
     </application>
     <uses-sdk android:minSdkVersion="8" />
 

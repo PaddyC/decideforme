@@ -16,7 +16,7 @@ public class DatabaseScripts {
     public static final String TABLE_CRITERION = "criterion";
     public static final String TABLE_CRITERION_CREATE = 
     	"create table criterion (_id integer primary key autoincrement, " +
-    	"decisionid integer, description text not null);";
+    	"decisionid integer, description text not null, ratingsystem integer);";
     public static final String TABLE_CRITERION_DROP = 
     	"drop table if exists criterion";
     

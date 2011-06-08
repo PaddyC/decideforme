@@ -21,8 +21,10 @@
     
     <string name="criteria_screen">Criteria</string>
     <string name="no_criteria">No criteria yet, use the menu button to add a new one..</string>
-    <string name="delete_criteria_screen">Delete Criteria</string>
+    <string name="add_criterion">Add Criterion</string>
     <string name="edit_criterion_screen">Edit Criterion</string>
+    <string name="delete_criteria_screen">Delete Criteria</string>
+    <string name="delete_criterion">Delete Criterion</string>
     <string name="criterion_name">Name:</string>
     <string name="rating_system_select">Choose a rating system:</string>
 
@@ -45,6 +47,7 @@
     <string name="menu_insert">Add New Decision</string>
     <string name="menu_delete_decision">Delete Decision</string>
     <string name="menu_delete_competitor">Delete Competitor</string>
+    <string name="menu_delete_criterion">Delete Criterion</string>
     <string name="menu_add">Add Decision</string>
     <string name="menu_save">Save</string>
     <string name="menu_open">Open</string>
