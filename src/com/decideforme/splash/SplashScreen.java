@@ -1,4 +1,7 @@
-package com.decideforme;
+package com.decideforme.splash;
+
+import com.decideforme.R;
+import com.decideforme.R.layout;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.decideforme;
+package com.db.decideforme.decision;
 
 import android.provider.BaseColumns;
 

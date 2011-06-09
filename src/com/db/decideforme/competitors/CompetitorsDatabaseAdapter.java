@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.util.Log;
 
-import com.db.decideforme.DecisionDatabaseAdapter;
 import com.db.decideforme.competitors.Competitor.CompetitorColumns;
+import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.decideforme.utils.StringUtils;
 
 
@@ -33,9 +33,7 @@ public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
     		nextRowId = resultOfFetchQuery.getInt(0);	
     	}
     	nextRowId++;
-    	Log.d(TAG, "nextRowId: '" + nextRowId + "'");
-    	
-    	resultOfFetchQuery.close();
+  
     	Log.d(TAG, " << getNextCompetitorSequenceID(), returned '" + StringUtils.objectAsString(nextRowId) + "'");
     	return nextRowId;
     }
@@ -45,12 +43,14 @@ public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
     			"decisionRowId '" + StringUtils.objectAsString(decisionRowId) + "')");
     	
     	String decisionRowIdStr = decisionRowId.toString();
-    	
+
     	Cursor resultOfFetchQuery = mDb.query(Competitor.TABLE_NAME, 
         		new String[] {CompetitorColumns._ID, 
         		CompetitorColumns.DECISIONID, 
         		CompetitorColumns.DESCRIPTION}, 
         		CompetitorColumns.DECISIONID + " = " + decisionRowIdStr, null, null, null, null);
+    	
+    	Log.d(TAG, "There are " + resultOfFetchQuery.getCount() + " competitors associated with this decision.");
         
         Log.d(TAG, " << fetchAllCompetitorsForDecision(), returned " + StringUtils.objectAsString(resultOfFetchQuery));
 		return resultOfFetchQuery;

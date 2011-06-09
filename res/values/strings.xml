@@ -6,6 +6,8 @@
     <string name="app_name">Decide For Me</string>
 
     <string name="splash_screen">SplashScreen</string>
+    
+    <string name="rating_screen">Rating Screen</string>
 
     <string name="decisions_screen">My Decisions</string>
     <string name="delete_decision_screen">Delete A Decision</string>
@@ -31,6 +33,12 @@
 	<string name="add_decision">Add Decision</string>
     <string name="edit_decision">Edit Decision</string>
     <string name="delete_decision">Delete Decision</string>
+    
+    <string name="want_to_delete">Want to delete \'</string>
+    <string name="nothing_deleted">Ok, didn\'t delete anything.</string>
+    <string name="deleted_decision">Deleted decision named \'</string>
+    <string name="deleted_competitor">Deleted competitor named \'</string>
+    <string name="deleted_criterion">Deleted criterion named \'</string>
 
     <string name="decision_id">_decisionid</string>
     <string name="decision_name">Decision Name</string>
@@ -42,7 +50,6 @@
     
     <string name="add_competitors">Add Competitors</string>
     <string name="delete">Delete</string>
-    
     
     <string name="menu_insert">Add New Decision</string>
     <string name="menu_delete_decision">Delete Decision</string>

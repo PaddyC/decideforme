@@ -3,6 +3,7 @@ package com.decideforme;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -15,8 +16,9 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.db.decideforme.DecisionDatabaseAdapter;
-import com.decideforme.Decision.DecisionColumns;
+import com.db.decideforme.DatabaseScripts;
+import com.db.decideforme.decision.DecisionDatabaseAdapter;
+import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.decideforme.utils.StringUtils;
 
 public class DecideForMe extends ListActivity {
@@ -48,11 +50,25 @@ public class DecideForMe extends ListActivity {
         
         nextDecisionNumber = mDbAdapter.getNextDecisionSequenceID();
         
+//        recreateDatabaseFromScratch();
+        
         fillData();
         registerForContextMenu(getListView());
         
         Log.d(TAG, " << onCreate()");
     }
+
+	/**
+	 * For when the database needs re-creatin'
+	 * @author PaddyC
+	 */
+	private void recreateDatabaseFromScratch() {
+		Log.d(TAG, " >> recreateDatabaseFromScratch()");
+		SQLiteDatabase db = mDbAdapter.getmDbHelper().getWritableDatabase();
+        DatabaseScripts.dropAllTables(db);
+        DatabaseScripts.createAllTables(db);
+        Log.d(TAG, " << recreateDatabaseFromScratch()");
+	}
     
     
     @Override
@@ -145,18 +161,10 @@ public class DecideForMe extends ListActivity {
     
     private void fillData() {
     	Log.d(TAG, " >> fillData()");
-        // Get all of the rows from the database and create the item list
-        Cursor decisionsCursor = mDbAdapter.fetchAllDecisions();
         
-        startManagingCursor(decisionsCursor);
-        
-        // Create an array to specify the fields we want to display in the list (only DECISION.NAME)
+    	Cursor decisionsCursor = mDbAdapter.fetchAllDecisions();
         String[] from = new String[]{DecisionColumns.NAME};
-        
-        // and an array of the fields we want to bind those fields to (in this case just text1)
         int[] to = new int[]{R.id.text1};
-        
-        // Now create a simple cursor adapter and set it to display
     	SimpleCursorAdapter decisions =
     		new SimpleCursorAdapter(this, R.layout.decision_row, decisionsCursor, from, to);
 

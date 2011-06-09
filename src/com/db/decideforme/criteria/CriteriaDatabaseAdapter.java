@@ -6,10 +6,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.util.Log;
 
-import com.db.decideforme.DecisionDatabaseAdapter;
-import com.db.decideforme.competitors.Competitor;
-import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.db.decideforme.criteria.Criterion.CriterionColumns;
+import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.decideforme.utils.StringUtils;
 
 public class CriteriaDatabaseAdapter extends DecisionDatabaseAdapter {
@@ -38,9 +36,7 @@ public class CriteriaDatabaseAdapter extends DecisionDatabaseAdapter {
     		nextRowId = resultOfFetchQuery.getInt(0);	
     	}
     	nextRowId++;
-    	Log.d(TAG, "nextRowId: '" + nextRowId + "'");
     	
-    	resultOfFetchQuery.close();
     	Log.d(TAG, " << getNextCriterionSequenceID(), returned '" + StringUtils.objectAsString(nextRowId) + "'");
     	return nextRowId;
     }
@@ -65,7 +61,7 @@ public class CriteriaDatabaseAdapter extends DecisionDatabaseAdapter {
 		return resultOfFetchQuery;
     }
     
-    public long createCriterion(String criterionName, Long decisionRowid) {
+    public long createCriterion(String criterionName, Long decisionRowid, Long ratingSystemRowID) {
     	Log.d(TAG, " >> createCriterion(" +
     			"criterionName " + StringUtils.objectAsString(criterionName) + "', " +
     			"decisionRowid " + StringUtils.objectAsString(decisionRowid) + "')");
@@ -73,6 +69,7 @@ public class CriteriaDatabaseAdapter extends DecisionDatabaseAdapter {
     	ContentValues initialValues = new ContentValues();
         initialValues.put(CriterionColumns.DESCRIPTION, criterionName);
         initialValues.put(CriterionColumns.DECISIONID, decisionRowid);
+        initialValues.put(CriterionColumns.RATINGSYSTEM, ratingSystemRowID);
 
         long insertResult = mDb.insert(Criterion.TABLE_NAME, null, initialValues);
         
@@ -116,13 +113,15 @@ public class CriteriaDatabaseAdapter extends DecisionDatabaseAdapter {
         return mCursor;
     }
     
-    public boolean updateCriterion(long rowId, String criterionName) {
+    public boolean updateCriterion(long rowId, String criterionName, Long ratingSystemID) {
     	Log.d(TAG, " >> updateCriterion(" +
     			"rowId '" + StringUtils.objectAsString(rowId) + "', " +
-    			"criterionName '" + StringUtils.objectAsString(criterionName) + "')");
+    			"criterionName '" + StringUtils.objectAsString(criterionName) + ", " +
+    			"ratingSystemID '" + StringUtils.objectAsString(ratingSystemID) + "')");
     	
         ContentValues args = new ContentValues();
         args.put(CriterionColumns.DESCRIPTION, criterionName);
+        args.put(CriterionColumns.RATINGSYSTEM, ratingSystemID);
         
         boolean resultOfUpdate = mDb.update(
         		Criterion.TABLE_NAME, 

@@ -1,4 +1,4 @@
-package com.decideforme;
+package com.decideforme.competitors;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -6,10 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.db.decideforme.competitors.CompetitorsDatabaseAdapter;
+import com.decideforme.R;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
@@ -21,6 +24,7 @@ public class CompetitorEdit extends Activity {
 	private Long decisionRowID;
 	
 	private EditText competitorName;
+	private Button doneButton;
 	
 	private static final int OK = Menu.FIRST;
 	
@@ -37,6 +41,13 @@ public class CompetitorEdit extends Activity {
 		setTitle(R.string.edit_competitor);
 		
 		competitorName = (EditText) findViewById(R.id.competitor_name);
+		doneButton = (Button) findViewById(R.id.done_button);
+		doneButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				saveState();
+				finish();
+			}
+		});
 		
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		competitorRowID = bundleHelper.getBundledFieldLongValue(CompetitorColumns._ID);
@@ -44,7 +55,6 @@ public class CompetitorEdit extends Activity {
 
 		// Competitor must be associated with a decision.
 		Cursor thisCompetitorCursor = mDbAdapter.fetchCompetitor(competitorRowID);
-		startManagingCursor(thisCompetitorCursor);
 		decisionRowID = thisCompetitorCursor.getLong(thisCompetitorCursor.getColumnIndexOrThrow(CompetitorColumns.DECISIONID));
 		Log.d(TAG, "Associated Decision: " + decisionRowID);
 		
@@ -58,7 +68,6 @@ public class CompetitorEdit extends Activity {
 		
 	    if (competitorRowID != null) {
 	        Cursor competitorCursor = mDbAdapter.fetchCompetitor(competitorRowID);
-	        startManagingCursor(competitorCursor);
 	        competitorName.setText(competitorCursor.getString(competitorCursor.getColumnIndexOrThrow(CompetitorColumns.DESCRIPTION)));
 	    }
 	    

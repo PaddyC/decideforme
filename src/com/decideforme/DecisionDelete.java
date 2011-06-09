@@ -15,8 +15,8 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.db.decideforme.DecisionDatabaseAdapter;
-import com.decideforme.Decision.DecisionColumns;
+import com.db.decideforme.decision.DecisionDatabaseAdapter;
+import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.decideforme.utils.StringUtils;
 
 public class DecisionDelete extends Activity {
@@ -81,39 +81,31 @@ public class DecisionDelete extends Activity {
     	AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
     	
 		Cursor selectedItem = (Cursor) mDecisionSpinner.getSelectedItem();
-    	String decisionName = selectedItem.getString(1);
-    	// set the message to display
-    	alertbox.setMessage("Want to delete '" + decisionName +  "'?");
+    	alertbox.setMessage(R.string.want_to_delete + selectedItem.getString(1) +  "'?");
 
-    	// set a positive/yes button and create a listener
     	alertbox.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-    	
-    		Cursor selectedItem = (Cursor) mDecisionSpinner.getSelectedItem();
-
-	    	Integer rowID = selectedItem.getInt(0);
-	    	String decisionName = selectedItem.getString(1);
-    		
-	         // do something when the button is clicked
 	         public void onClick(DialogInterface dialog, int whichButton) {
-		    	// When the user selects one: are you sure you want to delete?
+	         	
+	     		Cursor selectedItemCursor = (Cursor) mDecisionSpinner.getSelectedItem();
+
+	 	    	Integer rowID = selectedItemCursor.getInt(0);
+	 	    	String decisionName = selectedItemCursor.getString(1);
 		    	mDecisionDbAdapter.deleteDecision(rowID);
 		    	
 		    	Context context = getApplicationContext();
-		    	CharSequence text = "Decision named " + decisionName + " has been deleted";
+		    	CharSequence text = R.string.deleted_decision + decisionName + "'";
 		    	int duration = Toast.LENGTH_SHORT;
 		    	Toast toast = Toast.makeText(context, text, duration);
 		    	toast.show();
 		    	
-		    	setResult(RESULT_OK);
+		    	setResult(RESULT_OK);	
 		    	finish();
 	         }
     	});
 
-     	// set a negative/no button and create a listener
 		alertbox.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-			// do something when the button is clicked
     	 	public void onClick(DialogInterface arg0, int arg1) {
-	        	Toast.makeText(getApplicationContext(), "Ok, didn't delete anything.", Toast.LENGTH_SHORT).show();
+	        	Toast.makeText(getApplicationContext(), R.string.nothing_deleted, Toast.LENGTH_SHORT).show();
     	 	}
 		});
 
@@ -126,13 +118,11 @@ public class DecisionDelete extends Activity {
 		Log.d(TAG, " >> populateSpinner()");
 		
 		Cursor allDecisionsCursor = mDecisionDbAdapter.fetchAllDecisions();
-		startManagingCursor(allDecisionsCursor);
-		// create an array to specify which fields we want to display
+
 		String[] from = new String[]{DecisionColumns.NAME};
-		// create an array of the display item we want to bind our data to
+		
 		int[] to = new int[]{android.R.id.text1};
 		
-		// create simple cursor adapter
 		SimpleCursorAdapter adapter =
 		  new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, allDecisionsCursor, from, to );
 		adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );

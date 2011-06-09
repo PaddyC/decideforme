@@ -34,7 +34,6 @@
 					android:scrollbars="vertical" />
 		</TableRow>
 		
-	</TableLayout>
-		
+	</TableLayout>		
 	
 </LinearLayout>

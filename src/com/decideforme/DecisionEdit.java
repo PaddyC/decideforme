@@ -7,10 +7,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
-import com.db.decideforme.DecisionDatabaseAdapter;
-import com.decideforme.Decision.DecisionColumns;
+import com.db.decideforme.decision.Decision.DecisionColumns;
+import com.db.decideforme.decision.DecisionDatabaseAdapter;
+import com.decideforme.competitors.CompetitorsScreen;
+import com.decideforme.criteria.CriteriaScreen;
+import com.decideforme.ratings.RatingsScreen;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
@@ -20,14 +25,15 @@ public class DecisionEdit extends Activity {
 	
 	protected DecisionDatabaseAdapter mDecisionDBAdapter;
 	
-	protected EditText mDecisionName;
-	protected EditText mDecisionDescription;
+	private EditText mDecisionName;
+	private EditText mDecisionDescription;
 	
 	protected Long mDecisionRowId;
 
 	private static final int COMPETITORS_SCREEN = Menu.FIRST;
 	private static final int CRITERIA_SCREEN = Menu.FIRST + 1;
-    private static final int DONE = Menu.FIRST + 2;
+	private static final int RATE = Menu.FIRST + 2;
+    private static final int DONE = Menu.FIRST + 3;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +63,9 @@ public class DecisionEdit extends Activity {
 		Log.d(TAG, " >> populateFields()");
 		
 	    if (mDecisionRowId != null) {
-	        Cursor note = mDecisionDBAdapter.fetchDecision(mDecisionRowId);
-	        startManagingCursor(note);
-	        mDecisionName.setText(note.getString(note.getColumnIndexOrThrow(DecisionColumns.NAME)));
-	        mDecisionDescription.setText(note.getString(note.getColumnIndexOrThrow(DecisionColumns.DESCRIPTION)));
+	        Cursor decisionCursor = mDecisionDBAdapter.fetchDecision(mDecisionRowId);
+	        mDecisionName.setText(decisionCursor.getString(decisionCursor.getColumnIndexOrThrow(DecisionColumns.NAME)));
+	        mDecisionDescription.setText(decisionCursor.getString(decisionCursor.getColumnIndexOrThrow(DecisionColumns.DESCRIPTION)));
 	    }
 	    
 	    Log.d(TAG, " << populateFields()");
@@ -72,7 +77,8 @@ public class DecisionEdit extends Activity {
         super.onCreateOptionsMenu(menu);
         menu.add(0, COMPETITORS_SCREEN, 0, R.string.competitors_screen);
         menu.add(1, CRITERIA_SCREEN, 1, R.string.criteria_screen);
-        menu.add(2, DONE, 2, R.string.done);
+        menu.add(2, RATE, 2, R.string.rating_screen);
+        menu.add(3, DONE, 3, R.string.done);
         return true;
     }
 	
@@ -86,6 +92,9 @@ public class DecisionEdit extends Activity {
 	        case CRITERIA_SCREEN:
 	            addCriterion();
 	            return true;
+	        case RATE:
+	            rating();
+	            return true;
 	        case DONE:
 	        	finish();
 	        	return true;
@@ -94,6 +103,17 @@ public class DecisionEdit extends Activity {
         return super.onMenuItemSelected(featureId, item);
     }
     
+
+	private void rating() {
+		Log.d(TAG, " >> rating()");
+		
+		Intent i = new Intent(this, RatingsScreen.class);
+		i.putExtra(DecisionColumns._ID, mDecisionRowId);
+		startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+		
+		Log.d(TAG, " << rating()");
+	}
+
 
 	private void addCompetitor() {
 		Log.d(TAG, " >> addCompetitor()");

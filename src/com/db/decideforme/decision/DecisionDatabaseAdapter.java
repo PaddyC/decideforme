@@ -1,4 +1,4 @@
-package com.db.decideforme;
+package com.db.decideforme.decision;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.decideforme.Decision;
-import com.decideforme.Decision.DecisionColumns;
+import com.db.decideforme.DatabaseScripts;
+import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.decideforme.utils.StringUtils;
 /**
  * 
@@ -81,17 +81,13 @@ public class DecisionDatabaseAdapter {
         		DecisionColumns.DESCRIPTION}, 
         		null, null, null, null, DecisionColumns._ID);
 
-
-
 		if (resultOfFetchQuery.getCount() > 0) {
     		resultOfFetchQuery.moveToLast();
     		nextRowId = resultOfFetchQuery.getInt(0);	
     	}
 		
     	nextRowId++;
-    	Log.d(TAG, "nextRowId: '" + nextRowId + "'");
     	
-    	resultOfFetchQuery.close();
     	Log.d(TAG, " << getNextDecisionSequenceID(), returned '" + StringUtils.objectAsString(nextRowId) + "'");
     	return nextRowId;
     }
@@ -145,17 +141,6 @@ public class DecisionDatabaseAdapter {
         		null, null, null, null, null);
         
         Log.d(TAG, " << fetchAllDecisions(), returned " + StringUtils.objectAsString(resultOfFetchQuery));
-		return resultOfFetchQuery;
-    }
-    
-    public Cursor fetchAllDecisionNames() {
-    	Log.d(TAG, " >> fetchAllDecisionNames()");
-        
-    	Cursor resultOfFetchQuery = mDb.query(Decision.TABLE_NAME, 
-        		new String[] {DecisionColumns.NAME}, 
-        		null, null, null, null, DecisionColumns.NAME);
-        
-        Log.d(TAG, " << fetchAllDecisionNames(), returned " + StringUtils.objectAsString(resultOfFetchQuery));
 		return resultOfFetchQuery;
     }
     

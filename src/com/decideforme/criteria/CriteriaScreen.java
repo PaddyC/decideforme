@@ -1,4 +1,4 @@
-package com.decideforme;
+package com.decideforme.criteria;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -17,7 +17,9 @@ import android.widget.SimpleCursorAdapter;
 import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.db.decideforme.criteria.CriteriaDatabaseAdapter;
 import com.db.decideforme.criteria.Criterion.CriterionColumns;
-import com.decideforme.Decision.DecisionColumns;
+import com.db.decideforme.decision.Decision.DecisionColumns;
+import com.decideforme.DecideForMe;
+import com.decideforme.R;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
@@ -51,9 +53,7 @@ public class CriteriaScreen extends ListActivity {
 		mNextCriterionRowId = mCriteriaDBAdapter.getNextCriterionSequenceID();
 		
 		Cursor thisDecision = mCriteriaDBAdapter.fetchDecision(mDecisionRowId);
-		startManagingCursor(thisDecision);
-		String decisionName = thisDecision.getString(1);
-		setTitle(decisionName);
+		setTitle(thisDecision.getString(1));
 		
 		fillData();
 		registerForContextMenu(getListView());
@@ -68,18 +68,13 @@ public class CriteriaScreen extends ListActivity {
         // Get all of the rows from the database and create the item list
         Cursor competitorsCursor = mCriteriaDBAdapter.fetchAllCriteriaForDecision(mDecisionRowId);
         
-        startManagingCursor(competitorsCursor);
-        
-        // Create an array to specify the fields we want to display in the list (only COMPETITORS.DESCRIPTION)
         String[] from = new String[]{CompetitorColumns.DESCRIPTION};
-        
-        // and an array of the fields we want to bind those fields to (in this case just text1)
         int[] to = new int[]{R.id.text1};
         
         // Now create a simple cursor adapter and set it to display
-    	SimpleCursorAdapter competitors =
-    		new SimpleCursorAdapter(this, R.layout.competitor_row, competitorsCursor, from, to);
-
+    	SimpleCursorAdapter competitors = new SimpleCursorAdapter(
+    			this, R.layout.competitor_row, competitorsCursor, from, to);
+    	
         setListAdapter(competitors);
 		
 		Log.d(TAG, " << fillData()");
@@ -116,7 +111,7 @@ public class CriteriaScreen extends ListActivity {
 		Log.d(TAG, " >> createCriterion()");
 		
 		String competitorName = "New Criterion " + mNextCriterionRowId;
-		long id = mCriteriaDBAdapter.createCriterion(competitorName, mDecisionRowId);
+		long id = mCriteriaDBAdapter.createCriterion(competitorName, mDecisionRowId, new Long(0));
 		
 		Intent i = new Intent(this, CriterionEdit.class);
         i.putExtra(CriterionColumns._ID, id);

@@ -1,4 +1,4 @@
-package com.decideforme;
+package com.decideforme.criteria;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,22 +15,23 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.db.decideforme.competitors.CompetitorsDatabaseAdapter;
-import com.db.decideforme.competitors.Competitor.CompetitorColumns;
-import com.decideforme.Decision.DecisionColumns;
+import com.db.decideforme.criteria.CriteriaDatabaseAdapter;
+import com.db.decideforme.criteria.Criterion.CriterionColumns;
+import com.db.decideforme.decision.Decision.DecisionColumns;
+import com.decideforme.R;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
-public class CompetitorDelete extends Activity {
-	private static final String TAG = CompetitorDelete.class.getName();
+public class CriterionDelete extends Activity {
+	private static final String TAG = CriterionDelete.class.getName();
 	
-	protected Spinner mCompetitorSpinner;
+	protected Spinner mCriteriaSpinner;
 	protected Button mDeleteButton;
 
-	protected CompetitorsDatabaseAdapter mCompetitorDBAdapter;
+	protected CriteriaDatabaseAdapter mCriteriaDBAdapter;
 
-	protected Long competitorRowID;
-	protected Long decisionRowID;
+	protected Long mCriterionRowID;
+	protected Long mDecisionRowID;
 	
 	private static final int DONE = Menu.FIRST;
 
@@ -60,16 +61,16 @@ public class CompetitorDelete extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		
-		mCompetitorDBAdapter = new CompetitorsDatabaseAdapter(this);
-		mCompetitorDBAdapter.open();
+		mCriteriaDBAdapter = new CriteriaDatabaseAdapter(this);
+		mCriteriaDBAdapter.open();
 		
-		setContentView(R.layout.competitor_delete);
-		setTitle(R.string.menu_delete_competitor);
+		setContentView(R.layout.criterion_delete);
+		setTitle(R.string.menu_delete_criterion);
 		
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
-		decisionRowID = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
+		mDecisionRowID = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
 		
-		mCompetitorSpinner = (Spinner) findViewById(R.id.competitor_spinner);
+		mCriteriaSpinner = (Spinner) findViewById(R.id.criteria_spinner);
 		populateSpinner();
 		
 		mDeleteButton = (Button) findViewById(R.id.delete);
@@ -87,31 +88,31 @@ public class CompetitorDelete extends Activity {
         // prepare the alert box
     	AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
     	
-    	Cursor selectedItem = (Cursor) mCompetitorSpinner.getSelectedItem();
-    	String competitorDescription = selectedItem.getString(2);
+    	Cursor selectedItem = (Cursor) mCriteriaSpinner.getSelectedItem();
+    	String criterionDescription = selectedItem.getString(2);
     	
-    	// set the message to display
-    	alertbox.setMessage("Want to delete '" + competitorDescription + "'?");
+    	alertbox.setMessage(R.string.want_to_delete + criterionDescription + "'?");
 
     	// set a positive/yes button and create a listener
     	alertbox.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 	         // do something when the button is clicked
 	         public void onClick(DialogInterface dialog, int whichButton) {
 	        	 
-		    	Cursor selectedItem = (Cursor) mCompetitorSpinner.getSelectedItem();
+		    	Cursor selectedItem = (Cursor) mCriteriaSpinner.getSelectedItem();
 
 		    	Integer rowID = selectedItem.getInt(0);
-		    	String competitorDescription = selectedItem.getString(2);
+		    	String criterionDescription = selectedItem.getString(2);
 		    	
-		    	mCompetitorDBAdapter.deleteCompetitor(rowID);
+		    	mCriteriaDBAdapter.deleteCriterion(rowID);
 		    	
 		    	Context context = getApplicationContext();
-		    	CharSequence text = "Competitor " + competitorDescription + " has been deleted";
+		    	CharSequence text = R.string.deleted_criterion + criterionDescription + "'";
 		    	int duration = Toast.LENGTH_SHORT;
 		    	Toast toast = Toast.makeText(context, text, duration);
 		    	toast.show();
 		    	
 		    	setResult(RESULT_OK);
+		    	
 		    	finish();
 	         }
     	});
@@ -120,7 +121,7 @@ public class CompetitorDelete extends Activity {
 		alertbox.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 			// do something when the button is clicked
     	 	public void onClick(DialogInterface arg0, int arg1) {
-	        	Toast.makeText(getApplicationContext(), "Ok, didn't delete anything.", Toast.LENGTH_SHORT).show();
+	        	Toast.makeText(getApplicationContext(), R.string.nothing_deleted, Toast.LENGTH_SHORT).show();
     	 	}
 		});
 
@@ -132,20 +133,20 @@ public class CompetitorDelete extends Activity {
 	private void populateSpinner() {
 		Log.d(TAG, " >> populateSpinner()");
 		
-		Cursor allCompetitorsCursor = mCompetitorDBAdapter.fetchAllCompetitorsForDecision(decisionRowID);
-		startManagingCursor(allCompetitorsCursor);
+		Cursor allCriteriaCursor = mCriteriaDBAdapter.fetchAllCriteriaForDecision(mDecisionRowID);
+		
 		// create an array to specify which fields we want to display
-		String[] from = new String[]{CompetitorColumns.DESCRIPTION};
+		String[] from = new String[]{CriterionColumns.DESCRIPTION};
 		// create an array of the display item we want to bind our data to
 		int[] to = new int[]{android.R.id.text1};
 		
 		// create simple cursor adapter
 		SimpleCursorAdapter adapter =
-		  new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, allCompetitorsCursor, from, to );
+		  new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, allCriteriaCursor, from, to );
 		adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
 		
 		// get reference to our spinner
-		Spinner s = (Spinner) findViewById(R.id.competitor_spinner);
+		Spinner s = (Spinner) findViewById(R.id.criteria_spinner);
 		s.setAdapter(adapter);
 		
 		Log.d(TAG, " << populateSpinner()");
@@ -175,9 +176,9 @@ public class CompetitorDelete extends Activity {
 	protected void saveState() {
 		Log.d(TAG, " >> saveState()");
 	
-	    if (competitorRowID != null) {
+	    if (mCriterionRowID != null) {
 	    	// Delete the decision
-	    	mCompetitorDBAdapter.deleteCompetitor(competitorRowID);
+	    	mCriteriaDBAdapter.deleteCriterion(mCriterionRowID);
 	    }	
 	
 	    Log.d(TAG, " << saveState()");
@@ -190,7 +191,7 @@ public class CompetitorDelete extends Activity {
 		
 		super.onSaveInstanceState(outState);
 		saveState();
-	    outState.putSerializable(CompetitorColumns._ID, competitorRowID);
+	    outState.putSerializable(CriterionColumns._ID, mCriterionRowID);
 		
 		Log.d(TAG, " << onSaveInstanceState()");
 	}

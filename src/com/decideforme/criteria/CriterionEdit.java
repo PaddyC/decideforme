@@ -1,4 +1,4 @@
-package com.decideforme;
+package com.decideforme.criteria;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -6,15 +6,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
 import com.db.decideforme.criteria.CriteriaDatabaseAdapter;
 import com.db.decideforme.criteria.Criterion.CriterionColumns;
+import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.db.decideforme.ratingsystems.RatingSystem.RatingSystemColumns;
 import com.db.decideforme.ratingsystems.RatingSystemDatabaseAdapter;
-import com.decideforme.Decision.DecisionColumns;
+import com.decideforme.R;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
@@ -24,8 +27,9 @@ public class CriterionEdit extends Activity {
 	protected CriteriaDatabaseAdapter mCriteriaDBAdapter;
 	protected RatingSystemDatabaseAdapter mRatingSystemDBAdapter;
 	
-	protected EditText criterionName;
-	protected Spinner ratingSystemSpinner;
+	protected EditText mCriterionName;
+	protected Spinner mRatingSystemSpinner;
+	private Button mDoneButton;
 	
 	protected Long decisionRowId;
 	protected Long criterionRowID;
@@ -47,8 +51,9 @@ public class CriterionEdit extends Activity {
 		setContentView(R.layout.criterion_edit);
 		setTitle(R.string.edit_criterion_screen);
 		
-		criterionName = (EditText) findViewById(R.id.criterion_name);
-		ratingSystemSpinner = (Spinner) findViewById(R.id.rating_system_spinner);
+		mCriterionName = (EditText) findViewById(R.id.criterion_name);
+		
+		mRatingSystemSpinner = (Spinner) findViewById(R.id.rating_system_spinner);
 		
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		criterionRowID = bundleHelper.getBundledFieldLongValue(CriterionColumns._ID);
@@ -56,11 +61,18 @@ public class CriterionEdit extends Activity {
 
 		// Competitor must be associated with a decision.
 		Cursor thisCriterionCursor = mCriteriaDBAdapter.fetchCriterion(criterionRowID);
-		startManagingCursor(thisCriterionCursor);
 		decisionRowId = thisCriterionCursor.getLong(thisCriterionCursor.getColumnIndexOrThrow(CriterionColumns.DECISIONID));
 		Log.d(TAG, "Associated Decision: " + decisionRowId);
 		
 		populateFields();
+		
+		mDoneButton = (Button) findViewById(R.id.done_editing_criterion_button);
+		mDoneButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				saveState();
+				finish();				
+			}
+		});
 		
 		Log.d(TAG, " << onCreate()");
 	}
@@ -70,9 +82,8 @@ public class CriterionEdit extends Activity {
 		Log.d(TAG, " >> populateFields()");
 		
 	    if (criterionRowID != null) {
-	        Cursor note = mCriteriaDBAdapter.fetchCriterion(criterionRowID);
-	        startManagingCursor(note);
-	        criterionName.setText(note.getString(note.getColumnIndexOrThrow(CriterionColumns.DESCRIPTION)));
+	        Cursor criteriaCursor = mCriteriaDBAdapter.fetchCriterion(criterionRowID);
+	        mCriterionName.setText(criteriaCursor.getString(criteriaCursor.getColumnIndexOrThrow(CriterionColumns.DESCRIPTION)));
 	    }
 	    
 	    populateRatingSystemSpinner();
@@ -83,20 +94,16 @@ public class CriterionEdit extends Activity {
 	private void populateRatingSystemSpinner() {
 		Log.d(TAG, " >> populateSpinner()");
 		
-		Cursor allRatingSystems = mRatingSystemDBAdapter.fetchAllRatingSystems();
-		startManagingCursor(allRatingSystems);
-		// create an array to specify which fields we want to display
+		Cursor allRatingSystemsCursor = mRatingSystemDBAdapter.fetchAllRatingSystems();
+		
 		String[] from = new String[]{RatingSystemColumns.NAME};
-		// create an array of the display item we want to bind our data to
 		int[] to = new int[]{android.R.id.text1};
 		
-		// create simple cursor adapter
 		SimpleCursorAdapter adapter =
-		  new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, allRatingSystems, from, to );
+		  new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, allRatingSystemsCursor, from, to );
 		adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
 		
-		// get reference to our spinner
-		ratingSystemSpinner.setAdapter(adapter);
+		mRatingSystemSpinner.setAdapter(adapter);
 		
 		Log.d(TAG, " << populateSpinner()");
 	}
@@ -146,17 +153,21 @@ public class CriterionEdit extends Activity {
 	protected void saveState() {
 		Log.d(TAG, " >> saveState()");
 		
-		String name = criterionName.getText().toString();
-	
+		String criterionDescription = mCriterionName.getText().toString();
+		
+		Cursor ratingSystemCursor = (Cursor) mRatingSystemSpinner.getSelectedItem();
+		Long ratingSystemID = ratingSystemCursor.getLong(0);
+		String ratingSystemName = ratingSystemCursor.getString(1);
+		Log.d(TAG, "Rating System Selected: '" + ratingSystemName + "'");
+		
 	    if (criterionRowID == null) {
-	        long id = mCriteriaDBAdapter.createCriterion(name, decisionRowId);
+	        long id = mCriteriaDBAdapter.createCriterion(criterionDescription, decisionRowId, ratingSystemID);
 	        if (id > 0) {
 	        	criterionRowID = id;
 	        }
 	    } else {
-	    	mCriteriaDBAdapter.updateCriterion(criterionRowID, name);
+	    	mCriteriaDBAdapter.updateCriterion(criterionRowID, criterionDescription, ratingSystemID);
 	    }	
-	
 	    Log.d(TAG, " << saveState()");
 	}
 

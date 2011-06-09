@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.db.decideforme.DecisionDatabaseAdapter;
+import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.db.decideforme.ratingsystems.RatingSystem.RatingSystemColumns;
 import com.decideforme.utils.StringUtils;
 
