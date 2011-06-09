@@ -1,27 +1,24 @@
 package com.db.decideforme.decisionrating;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.util.Log;
+import android.database.Cursor;
+import android.database.SQLException;
 
 import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.db.decideforme.decisionrating.DecisionRatings.DecisionRatingsColumns;
-import com.decideforme.utils.StringUtils;
+import com.db.decideforme.ratinginstance.RatingInstance;
+import com.db.decideforme.ratinginstance.RatingInstanceDatabaseAdapter;
 
 public class DecisionRatingsDatabaseAdapter extends DecisionDatabaseAdapter {
-	private static final String TAG = DecisionRatingsDatabaseAdapter.class.getName();
+	public static final String TAG = DecisionRatingsDatabaseAdapter.class.getName();
 
 	public DecisionRatingsDatabaseAdapter(Context ctx) {
 		super(ctx);
 	}
-
-    public long createDecisionRating(Long decisionID, Long competitorID, Long criterionID, Long ratingSelectionID) {
-    	Log.d(TAG, " >> createDecisionRating(" +
-    			"decisionID '"+ StringUtils.objectAsString(decisionID) + "', " +
-    			"competitorID '"+ StringUtils.objectAsString(competitorID) + "', " +
-    			"criterionID '"+ StringUtils.objectAsString(criterionID) + "', " +
-    			"ratingSelectionID '"+ StringUtils.objectAsString(ratingSelectionID) + "')");
-
+	
+	public long createDecisionRating(Long decisionID, Long competitorID, Long criterionID, Long ratingSelectionID) {
     	ContentValues initialValues = new ContentValues();
         initialValues.put(DecisionRatingsColumns.DECISIONID, decisionID);
         initialValues.put(DecisionRatingsColumns.COMPETITORID, competitorID);
@@ -30,17 +27,10 @@ public class DecisionRatingsDatabaseAdapter extends DecisionDatabaseAdapter {
 
         long insertResult = mDb.insert(DecisionRatings.TABLE_NAME, null, initialValues);
         
-        Log.d(TAG, " << createDecisionRating(), returned " + StringUtils.objectAsString(insertResult));
-		return insertResult;
+        return insertResult;
     }
     
     public boolean updateDecisionRating(Long decisionID, Long competitorID, Long criterionID, Long ratingSelectionID) {
-    	Log.d(TAG, " >> updateDecisionRating(" +
-    			"decisionID '"+ StringUtils.objectAsString(decisionID) + "', " +
-    			"competitorID '"+ StringUtils.objectAsString(competitorID) + "', " +
-    			"criterionID '"+ StringUtils.objectAsString(criterionID) + "', " +
-    			"ratingSelectionID '"+ StringUtils.objectAsString(ratingSelectionID) + "')");
-
     	ContentValues args = new ContentValues();
         args.put(DecisionRatingsColumns.DECISIONID, decisionID);
         args.put(DecisionRatingsColumns.COMPETITORID, competitorID);
@@ -53,7 +43,56 @@ public class DecisionRatingsDatabaseAdapter extends DecisionDatabaseAdapter {
         
         boolean insertResult = mDb.update(DecisionRatings.TABLE_NAME, args, whereClause.toString(), null) > 0;
         
-        Log.d(TAG, " << createDecisionRating(), returned " + StringUtils.objectAsString(insertResult));
-		return insertResult;
+        return insertResult;
+    }
+    
+    public Cursor fetchDecisionRating(Long decisionID, Long competitorID, Long criterionID) throws SQLException {
+    	StringBuilder whereClause = new StringBuilder(DecisionRatingsColumns.DECISIONID + " = " + decisionID + " AND ");
+        whereClause.append(DecisionRatingsColumns.COMPETITORID + " = " + competitorID + " AND ");
+        whereClause.append(DecisionRatingsColumns.CRITERIONID + " = " + criterionID);
+    	
+        Cursor mCursor = mDb.query(
+            		true, DecisionRatings.TABLE_NAME, 
+            		new String[] {
+            			DecisionRatingsColumns._ID, 
+            			DecisionRatingsColumns.DECISIONID, 
+            			DecisionRatingsColumns.COMPETITORID, 
+            			DecisionRatingsColumns.CRITERIONID, 
+            			DecisionRatingsColumns.RATINGSELECTIONID
+            		},
+            		whereClause.toString(), 
+            		null, null, null, null, null);
+        
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        
+        return mCursor;
+    }
+    
+    public Long fetchDecisionRatingSelectionRorder(Activity activity, Long decisionID, Long competitorID, Long criterionID) {
+    	Long ratingInstanceRorder = new Long(0);
+    	
+    	Cursor cDecisionRating = fetchDecisionRating(decisionID, competitorID, criterionID);
+    	Long ratingSelection = cDecisionRating.getLong(DecisionRatings.COLUMN_INDEX_RATINGSELECTIONID);
+		
+    	RatingInstanceDatabaseAdapter ratingInstanceDBAdapter = new RatingInstanceDatabaseAdapter(activity);
+		ratingInstanceDBAdapter.open();
+		Cursor cRatingInstance = ratingInstanceDBAdapter.fetchRatingInstance(ratingSelection);
+		ratingInstanceRorder = cRatingInstance.getLong(RatingInstance.COLUMN_INDEX_RORDER);
+    	
+		return ratingInstanceRorder;
+    }
+    
+    
+    public boolean existenceCheckDecisionRating(Long decisionID, Long competitorID, Long criterionID) {
+    	boolean decisionRatingExists = false;
+    	
+    	Cursor thisDecisionRating = fetchDecisionRating(decisionID, competitorID, criterionID);
+    	if (thisDecisionRating.getCount() > 0) {
+    		decisionRatingExists = true;
+    	}
+    	
+		return decisionRatingExists;
     }
 }

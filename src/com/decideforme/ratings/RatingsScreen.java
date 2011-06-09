@@ -6,7 +6,6 @@ import java.util.List;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Spinner;
@@ -16,11 +15,11 @@ import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
 import com.db.decideforme.decision.Decision.DecisionColumns;
+import com.db.decideforme.decisionrating.DecisionRatingsDatabaseAdapter;
 import com.decideforme.R;
 import com.decideforme.ratings.grid.RatingGridHelper;
 import com.decideforme.ratings.grid.RatingGridHelperImpl;
 import com.decideforme.utils.BundleHelper;
-import com.decideforme.utils.StringUtils;
 /**
  * This class is all about getting a Grid to display, which will present the user with the rating system..<p>
  * Competitors will be listed down Column A, Criteria will display across row 1.<p>
@@ -36,7 +35,7 @@ import com.decideforme.utils.StringUtils;
  *
  */
 public class RatingsScreen extends Activity {
-	private static final String TAG = RatingsScreen.class.getName();
+	public static final String TAG = RatingsScreen.class.getName();
 	
 	private static final int DONE = Menu.FIRST;
 	
@@ -44,6 +43,8 @@ public class RatingsScreen extends Activity {
 	private Long mThisCompetitorRowId;
 	private Long mThisCriterionRowId;
 	private Long mThisRatingSystemId;
+	
+	private TableLayout mDynamicRatingTable;
 	
 	private RatingGridHelper mGridHelper;
 	private RatingsScreenHelper mRatingsScreenHelper;
@@ -63,6 +64,7 @@ public class RatingsScreen extends Activity {
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         switch(item.getItemId()) {
 	        case DONE:
+	        	saveState();
 	        	finish();
 	        	return true;
         } 
@@ -72,8 +74,6 @@ public class RatingsScreen extends Activity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, " >> onCreate(savedInstanceState '" + StringUtils.objectAsString(savedInstanceState) + "')");
-		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.rating_screen);
 		
@@ -81,49 +81,126 @@ public class RatingsScreen extends Activity {
 		mDecisionRowId = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
 
 		// Grid Start! Create the table layout:
-		TableLayout dynamicRatingTable = (TableLayout) findViewById(R.id.ratingTableLayout);
+		mDynamicRatingTable = (TableLayout) findViewById(R.id.ratingTableLayout);
 		
+		populateFields();
+	}
+	
+
+	protected void saveState() {
+		Cursor allCompetitors = getmRatingsScreenHelper().fetchAllCompetitorsForDecision(this, mDecisionRowId);
+		allCompetitors.moveToFirst();
+		while(allCompetitors.isAfterLast() == false) {
+			
+			mThisCompetitorRowId = allCompetitors.getLong(0);
+			for (int criterionCount = 0; criterionCount < mRatingSystemIDs.size(); criterionCount++) {
+				mThisCriterionRowId = mCriteriaRowIDs.get(criterionCount);
+				
+				Integer gridReference = getmGridHelper().getGridReference(mThisCompetitorRowId, mThisCriterionRowId);
+				
+				Spinner thisCompetitorCriterion = (Spinner) findViewById(gridReference);
+				Cursor selectedRatingInstance = (Cursor) thisCompetitorCriterion.getSelectedItem();
+				Long ratingInstanceID = selectedRatingInstance.getLong(0);
+				
+				// If decisionrating existence check is true
+				DecisionRatingsDatabaseAdapter decisionRatingDBAdapter = new DecisionRatingsDatabaseAdapter(this);
+				decisionRatingDBAdapter.open();
+				if (decisionRatingDBAdapter.existenceCheckDecisionRating(mDecisionRowId, mThisCompetitorRowId, mThisCriterionRowId)) {
+					// update
+					decisionRatingDBAdapter.updateDecisionRating(mDecisionRowId, mThisCompetitorRowId, mThisCriterionRowId, ratingInstanceID);
+				} else {
+					// otherwise, add a new one
+					decisionRatingDBAdapter.createDecisionRating(mDecisionRowId, mThisCompetitorRowId, mThisCriterionRowId, ratingInstanceID);
+				} 
+			}
+			
+			allCompetitors.moveToNext();
+		}
+	}
+
+
+	private void populateFields() {
 		// Row 1: Criterion Names.
 		TableRow firstRow = populateCriteriaHeaderRow();
-		dynamicRatingTable.addView(firstRow, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
+		mDynamicRatingTable.addView(firstRow, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 		
 		Cursor allCompetitors = getmRatingsScreenHelper().fetchAllCompetitorsForDecision(this, mDecisionRowId);
 		allCompetitors.moveToFirst();
 		while(allCompetitors.isAfterLast() == false) {
 			mThisCompetitorRowId = allCompetitors.getLong(0);
-
 			// Row 2+: Competitor Names with a spinner for each criterion rating system..
-			TableRow nextRow = getmGridHelper().getNewRow(this);
-			
-			// Add the cell with the competitor name.
-			TextView competitorNameView = getmGridHelper().getCompetitorNameTextView(this, allCompetitors.getString(2));
-			nextRow.addView(competitorNameView);
-			
-			// Generate a spinner for each rating.
+			TableRow nextRow = populateCompetitorRatingRow(allCompetitors.getString(2));
+			mDynamicRatingTable.addView(nextRow, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
+
+			allCompetitors.moveToNext();
+		}
+		allCompetitors.close();
+	}
+	
+	private void repopulateRatingsOnResume() {
+		Cursor allCompetitors = getmRatingsScreenHelper().fetchAllCompetitorsForDecision(this, mDecisionRowId);
+		allCompetitors.moveToFirst();
+		while(allCompetitors.isAfterLast() == false) {
 			for (int criterionCount = 0; criterionCount < mRatingSystemIDs.size(); criterionCount++) {
 				mThisCriterionRowId = mCriteriaRowIDs.get(criterionCount);
 				mThisRatingSystemId = mRatingSystemIDs.get(criterionCount);
 				
 				Integer spinnerID = getmGridHelper().getGridReference(mThisCompetitorRowId, mThisCriterionRowId);
 				
-				Spinner aSpinner = getmRatingsScreenHelper().generateRatingsSpinner(this, mThisRatingSystemId, spinnerID);
-				nextRow.addView(aSpinner);
-				Log.d(TAG, "Spinner added ok");
+				Spinner thisSpinner = (Spinner) findViewById(spinnerID);
+				
+				// If decisionrating exists
+				DecisionRatingsDatabaseAdapter decisionRatingDBAdapter = new DecisionRatingsDatabaseAdapter(this);
+				decisionRatingDBAdapter.open();
+				if (decisionRatingDBAdapter.existenceCheckDecisionRating(
+						mDecisionRowId, mThisCompetitorRowId, mThisCriterionRowId)) {
+				 	// Retrieve and set to the spinner.
+					Long thisRating = decisionRatingDBAdapter.fetchDecisionRatingSelectionRorder(
+							this, mDecisionRowId, mThisCompetitorRowId, mThisCriterionRowId);
+					Integer spinnerPosition = thisRating.intValue() - 1;
+					thisSpinner.setSelection(spinnerPosition);
+				}
 			}
-			
-			// Add the row
-			dynamicRatingTable.addView(nextRow, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
-
 			allCompetitors.moveToNext();
 		}
+		allCompetitors.close();	
+	}
+	
+	private TableRow populateCompetitorRatingRow(String competitorName) {
+		TableRow nextRow = getmGridHelper().getNewRow(this);
 		
-		Log.d(TAG, " << onCreate()");
+		// Add the cell with the competitor name.
+		TextView competitorNameView = getmGridHelper().getCompetitorNameTextView(this, competitorName);
+		nextRow.addView(competitorNameView);
+		
+		// Generate a spinner for each rating.
+		for (int criterionCount = 0; criterionCount < mRatingSystemIDs.size(); criterionCount++) {
+			mThisCriterionRowId = mCriteriaRowIDs.get(criterionCount);
+			mThisRatingSystemId = mRatingSystemIDs.get(criterionCount);
+			
+			Integer spinnerID = getmGridHelper().getGridReference(mThisCompetitorRowId, mThisCriterionRowId);
+			
+			Spinner aSpinner = getmRatingsScreenHelper().generateRatingsSpinner(this, mThisRatingSystemId, spinnerID);
+			
+			// If decisionrating exists
+			DecisionRatingsDatabaseAdapter decisionRatingDBAdapter = new DecisionRatingsDatabaseAdapter(this);
+			decisionRatingDBAdapter.open();
+			if (decisionRatingDBAdapter.existenceCheckDecisionRating(
+					mDecisionRowId, mThisCompetitorRowId, mThisCriterionRowId)) {
+			 	// Retrieve and set to the spinner.
+				Long thisRating = decisionRatingDBAdapter.fetchDecisionRatingSelectionRorder(
+						this, mDecisionRowId, mThisCompetitorRowId, mThisCriterionRowId);
+				Integer spinnerPosition = thisRating.intValue() - 1;
+				aSpinner.setSelection(spinnerPosition);
+			}
+
+			nextRow.addView(aSpinner);
+		}
+		return nextRow;
 	}
 
 
 	private TableRow populateCriteriaHeaderRow() {
-		Log.d(TAG, " >> populateCriteriaHeaderRow()");
-		
 		TableRow firstRow = getmGridHelper().getNewRow(this);
 		
 		// Cell A1 is blank... this is intentional.
@@ -134,12 +211,9 @@ public class RatingsScreen extends Activity {
 		mRatingSystemIDs = new ArrayList<Long>();
 		
 		Cursor allCriteria = getmRatingsScreenHelper().fetchAllCriteriaForDecision(this, mDecisionRowId);
-		Log.d(TAG, "Number of Criteria: " + allCriteria.getCount());
 		
 		allCriteria.moveToFirst();
         while (allCriteria.isAfterLast() == false) {
-        	Log.d(TAG, "Working with criterion " + StringUtils.objectAsString(allCriteria.getString(2)));
-        	
         	// Add a TextView with the Criterion Name
         	TextView thisCriterion = getmGridHelper().getCriterionNameTextView(this, allCriteria.getString(2));
         	firstRow.addView(thisCriterion);
@@ -151,8 +225,30 @@ public class RatingsScreen extends Activity {
         	
             allCriteria.moveToNext();
         }
-		Log.d(TAG, " << populateCriteriaHeaderRow(), returned '" + StringUtils.objectAsString(firstRow) + "'");
+        allCriteria.close();
+		
 		return firstRow;
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		saveState();
+	}
+
+	
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		repopulateRatingsOnResume();
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		saveState();
+	    outState.putSerializable(DecisionColumns._ID, mDecisionRowId);
 	}
 
 
@@ -174,7 +270,7 @@ public class RatingsScreen extends Activity {
 	}
 
 
-	public RatingsScreenHelper getmRatingsScreenHelper() {
+	public synchronized RatingsScreenHelper getmRatingsScreenHelper() {
 		if (mRatingsScreenHelper == null) {
 			mRatingsScreenHelper = RatingsScreenHelperImpl.getInstance();
 		}

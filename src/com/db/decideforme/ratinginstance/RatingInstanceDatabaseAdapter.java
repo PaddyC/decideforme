@@ -2,11 +2,10 @@ package com.db.decideforme.ratinginstance;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
+import android.database.SQLException;
 
 import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.db.decideforme.ratinginstance.RatingInstance.RatingInstanceColumns;
-import com.decideforme.utils.StringUtils;
 
 public class RatingInstanceDatabaseAdapter extends DecisionDatabaseAdapter {
 	public static final String TAG = RatingInstanceDatabaseAdapter.class.getName();
@@ -16,10 +15,7 @@ public class RatingInstanceDatabaseAdapter extends DecisionDatabaseAdapter {
 	}
 	
     public Cursor fetchAllInstancesForRatingSystem(Long systemID) {
-    	Log.d(TAG, " >> fetchAllInstancesForRatingSystem(" +
-    			"systemID '" + StringUtils.objectAsString(systemID) + "')");
-    	
-        Cursor resultOfFetchQuery = mDb.query(
+    	Cursor cRatingInstances = mDb.query(
         		RatingInstance.TABLE_NAME, 
         		new String[] {
         			RatingInstanceColumns._ID, 
@@ -29,10 +25,27 @@ public class RatingInstanceDatabaseAdapter extends DecisionDatabaseAdapter {
         		}, 
         		RatingInstanceColumns.SYSTEM_ID + " = " + systemID, null, null, null, null);
         
-        Log.d(TAG, " << fetchAllInstancesForRatingSystem()" +
-        		", returned " + StringUtils.objectAsString(resultOfFetchQuery));
+        return cRatingInstances;
+    }
+    
+    public Cursor fetchRatingInstance(long rowId) throws SQLException {
+    	Cursor cRatingInstance = mDb.query(
+            		true, 
+            		RatingInstance.TABLE_NAME, 
+            		new String[] {
+                		RatingInstanceColumns._ID, 
+                		RatingInstanceColumns.SYSTEM_ID,
+                		RatingInstanceColumns.RORDER,
+                		RatingInstanceColumns.NAME
+                	},
+                	RatingInstanceColumns._ID + "=" + rowId, 
+            		null, null, null, null, null);
         
-		return resultOfFetchQuery;
+        if (cRatingInstance != null) {
+            cRatingInstance.moveToFirst();
+        }
+        
+        return cRatingInstance;
     }
 
 }

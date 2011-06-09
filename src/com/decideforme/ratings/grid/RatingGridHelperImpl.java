@@ -29,10 +29,6 @@ public class RatingGridHelperImpl implements RatingGridHelper {
 	}
 	
 	public Integer getGridReference(Long competitorID, Long criterionID) {
-		Log.d(TAG, " >> getGridReference(" +
-				"competitorID '" + StringUtils.objectAsString(competitorID) + "', " +
-				"criterionID '" + StringUtils.objectAsString(criterionID) + "')");
-		
 		Integer spinnerID = 0;
 		
 		BigDecimal competitor = new BigDecimal(competitorID);
@@ -48,10 +44,6 @@ public class RatingGridHelperImpl implements RatingGridHelper {
 	}
 
 	public TextView getCompetitorNameTextView(Activity activity, String competitorName) {
-		Log.d(TAG, " >> getCompetitorNameTextView(" +
-				"activity '" + StringUtils.objectAsString(activity) + "', " +
-				"competitorName '" + StringUtils.objectAsString(competitorName) + "')");
-		
 		TextView competitorNameView = new TextView(activity);
 		competitorNameView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 		competitorNameView.setBackgroundColor(Color.GRAY);
@@ -65,10 +57,6 @@ public class RatingGridHelperImpl implements RatingGridHelper {
 	}
 	
 	public TextView getCriterionNameTextView(Activity activity, String criterionName) {
-		Log.d(TAG, " >> getCriterionNameTextView(" +
-				"activity '" + StringUtils.objectAsString(activity) + "', " +
-				"criterionName '" + StringUtils.objectAsString(criterionName) + "')");
-		
 		TextView criterionNameView = new TextView(activity);
 		criterionNameView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT));
 		criterionNameView.setText(criterionName);
@@ -84,14 +72,12 @@ public class RatingGridHelperImpl implements RatingGridHelper {
 	}
 
 	public TableRow getNewRow(Activity activity) {
-		Log.d(TAG, " >> getNewRow(" +
-				"activity '" + StringUtils.objectAsString(activity) + "')");
-		
 		TableRow tableRow = new TableRow(activity);
 		tableRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 		tableRow.setPadding(0, 1, 0, 1);
 		
-		Log.d(TAG, " << getNewRow(), returned '" + StringUtils.objectAsString(tableRow) + "'");
+		Log.d(TAG, " << getNewRow()" +
+				", returned '" + StringUtils.objectAsString(tableRow) + "'");
 		return tableRow;
 	}
 	
