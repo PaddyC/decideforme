@@ -12,12 +12,6 @@
 		          	android:gravity="center"/>
 	</TableRow>
     
-    <TableRow>
-		<TextView 	style="@style/CodeFont" 
-					android:layout_column="1" 
-		          	android:text=""
-		          	android:gravity="center"/>
-	</TableRow>
     
 	<TableRow>
 		<ImageView 	android:id="@+id/splashscreen" 

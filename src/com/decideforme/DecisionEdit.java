@@ -1,8 +1,10 @@
 package com.decideforme;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -105,11 +107,39 @@ public class DecisionEdit extends Activity {
 	private void rating() {
 		Log.d(TAG, " >> rating()");
 		
-		Intent i = new Intent(this, RatingsScreen.class);
-		i.putExtra(DecisionColumns._ID, mDecisionRowId);
-		startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+		new PresentRatingScreen().execute();
 		
 		Log.d(TAG, " << rating()");
+	}
+	
+	private class PresentRatingScreen extends AsyncTask<Void, Void, Void> {
+		private ProgressDialog mProgressDialog;
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			
+			mProgressDialog.dismiss();
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			
+			mProgressDialog = ProgressDialog.show(DecisionEdit.this,    
+		              "Just a sec...", "Crunching some numbers here...", true);
+			
+		}
+		
+
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			Intent i = new Intent(DecisionEdit.this, RatingsScreen.class);
+			i.putExtra(DecisionColumns._ID, mDecisionRowId);
+			startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+			return null;
+		}
+		
 	}
 
 
