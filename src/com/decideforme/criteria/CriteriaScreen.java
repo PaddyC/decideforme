@@ -1,6 +1,5 @@
 package com.decideforme.criteria;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -18,12 +17,13 @@ import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.db.decideforme.criteria.CriteriaDatabaseAdapter;
 import com.db.decideforme.criteria.Criterion.CriterionColumns;
 import com.db.decideforme.decision.Decision.DecisionColumns;
-import com.decideforme.DecideForMe;
+import com.decideforme.MyDecisions;
 import com.decideforme.R;
+import com.decideforme.dashboard.DashboardListActivity;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
-public class CriteriaScreen extends ListActivity {
+public class CriteriaScreen extends DashboardListActivity {
 	private static final String TAG = CriteriaScreen.class.getName();
 
 	private static final int INSERT_ID = Menu.FIRST;
@@ -52,8 +52,7 @@ public class CriteriaScreen extends ListActivity {
 		
 		mNextCriterionRowId = mCriteriaDBAdapter.getNextCriterionSequenceID();
 		
-		Cursor thisDecision = mCriteriaDBAdapter.fetchDecision(mDecisionRowId);
-		setTitle(thisDecision.getString(1));
+		setTitleFromActivityLabel (R.id.title_text);
 		
 		fillData();
 		registerForContextMenu(getListView());
@@ -84,9 +83,9 @@ public class CriteriaScreen extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, INSERT_ID, 0, R.string.add_criterion);
-        menu.add(1, DELETE_ID, 1, R.string.delete_criterion);
-        menu.add(2, BACK_ID, 2, R.string.done);
+        menu.add(0, INSERT_ID, 0, R.string.add_criterion).setIcon(R.drawable.ic_menu_compose);
+        menu.add(1, DELETE_ID, 1, R.string.delete_criterion).setIcon(R.drawable.ic_menu_delete);
+        menu.add(2, BACK_ID, 2, R.string.done).setIcon(R.drawable.ic_menu_revert);
         return true;
     }
     
@@ -116,7 +115,7 @@ public class CriteriaScreen extends ListActivity {
 		Intent i = new Intent(this, CriterionEdit.class);
         i.putExtra(CriterionColumns._ID, id);
         i.putExtra(CriterionColumns.DECISIONID, mDecisionRowId);
-        startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+        startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
 		
 		Log.d(TAG, " << createCriterion()");
 	}
@@ -126,7 +125,7 @@ public class CriteriaScreen extends ListActivity {
 		
 		Intent i = new Intent(this, CriterionDelete.class);
 		i.putExtra(CriterionColumns._ID, mDecisionRowId);
-        startActivityForResult(i, DecideForMe.ACTIVITY_DELETE);
+        startActivityForResult(i, MyDecisions.ACTIVITY_DELETE);
 		
 		Log.d(TAG, " << deleteCriterion()");
 	}
@@ -164,7 +163,7 @@ public class CriteriaScreen extends ListActivity {
         
         Intent i = new Intent(this, CriterionEdit.class);
         i.putExtra(CompetitorColumns._ID, id);
-        startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+        startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
     }
 
 }

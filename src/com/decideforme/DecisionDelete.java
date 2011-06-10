@@ -1,6 +1,5 @@
 package com.decideforme;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,11 +14,12 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.db.decideforme.decision.Decision.DecisionColumns;
+import com.db.decideforme.decision.DecisionDatabaseAdapter;
+import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.utils.StringUtils;
 
-public class DecisionDelete extends Activity {
+public class DecisionDelete extends DashboardActivity {
 	private static final String TAG = DecisionDelete.class.getName();
 	
 	protected Spinner mDecisionSpinner;
@@ -60,7 +60,7 @@ public class DecisionDelete extends Activity {
 		mDecisionDbAdapter.open();
 		
 		setContentView(R.layout.decision_delete);
-		setTitle(R.string.menu_delete_decision);
+		setTitleFromActivityLabel (R.id.title_text);
 		
 		mDecisionSpinner = (Spinner) findViewById(R.id.decision_spinner);
 		populateSpinner();

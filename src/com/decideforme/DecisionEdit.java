@@ -1,6 +1,5 @@
 package com.decideforme;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,12 +14,13 @@ import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.decideforme.competitors.CompetitorsScreen;
 import com.decideforme.criteria.CriteriaScreen;
+import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.ratings.RatingsScreen;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
 
-public class DecisionEdit extends Activity {
+public class DecisionEdit extends DashboardActivity {
 	static final String TAG = DecisionEdit.class.getName();
 	
 	protected DecisionDatabaseAdapter mDecisionDBAdapter;
@@ -45,7 +45,7 @@ public class DecisionEdit extends Activity {
 		mDecisionDBAdapter.open();
 		
 		setContentView(R.layout.decision_edit);
-		setTitle(R.string.edit_decision);
+		setTitleFromActivityLabel (R.id.title_text);
 		
 		mDecisionName = (EditText) findViewById(R.id.decision_name);
 		mDecisionDescription = (EditText) findViewById(R.id.decision_description);
@@ -75,8 +75,8 @@ public class DecisionEdit extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, COMPETITORS_SCREEN, 0, R.string.competitors_screen);
-        menu.add(1, CRITERIA_SCREEN, 1, R.string.criteria_screen);
+        menu.add(0, COMPETITORS_SCREEN, 0, R.string.competitors);
+        menu.add(1, CRITERIA_SCREEN, 1, R.string.criteria);
         menu.add(2, RATE, 2, R.string.rating_screen);
         menu.add(3, DONE, 3, R.string.done);
         return true;
@@ -136,7 +136,7 @@ public class DecisionEdit extends Activity {
 		protected Void doInBackground(Void... arg0) {
 			Intent i = new Intent(DecisionEdit.this, RatingsScreen.class);
 			i.putExtra(DecisionColumns._ID, mDecisionRowId);
-			startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+			startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
 			return null;
 		}
 		
@@ -148,7 +148,7 @@ public class DecisionEdit extends Activity {
 		
 		Intent i = new Intent(this, CompetitorsScreen.class);
         i.putExtra(DecisionColumns._ID, mDecisionRowId);
-        startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+        startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
 		
 		Log.d(TAG, " << addCompetitor()");	
 	}
@@ -158,7 +158,7 @@ public class DecisionEdit extends Activity {
 		
 		Intent i = new Intent(this, CriteriaScreen.class);
         i.putExtra(DecisionColumns._ID, mDecisionRowId);
-        startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+        startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
 		
 		Log.d(TAG, " << addCriterion()");	
 	}

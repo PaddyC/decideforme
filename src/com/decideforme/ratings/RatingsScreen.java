@@ -3,7 +3,6 @@ package com.decideforme.ratings;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.db.decideforme.decisionrating.DecisionRatingsDatabaseAdapter;
 import com.decideforme.R;
+import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.ratings.grid.RatingGridHelper;
 import com.decideforme.ratings.grid.RatingGridHelperImpl;
 import com.decideforme.utils.BundleHelper;
@@ -34,7 +34,7 @@ import com.decideforme.utils.BundleHelper;
  * @author PaddyC
  *
  */
-public class RatingsScreen extends Activity {
+public class RatingsScreen extends DashboardActivity {
 	public static final String TAG = RatingsScreen.class.getName();
 	
 	private static final int DONE = Menu.FIRST;
@@ -76,6 +76,7 @@ public class RatingsScreen extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.rating_screen);
+		setTitleFromActivityLabel (R.id.title_text);
 		
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		mDecisionRowId = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);

@@ -1,6 +1,5 @@
 package com.decideforme.competitors;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -17,12 +16,13 @@ import android.widget.SimpleCursorAdapter;
 import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.db.decideforme.competitors.CompetitorsDatabaseAdapter;
 import com.db.decideforme.decision.Decision.DecisionColumns;
-import com.decideforme.DecideForMe;
+import com.decideforme.MyDecisions;
 import com.decideforme.R;
+import com.decideforme.dashboard.DashboardListActivity;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
-public class CompetitorsScreen extends ListActivity {
+public class CompetitorsScreen extends DashboardListActivity {
 	private static final String TAG = CompetitorsScreen.class.getName();
 
 	private static final int INSERT_ID = Menu.FIRST;
@@ -50,9 +50,7 @@ public class CompetitorsScreen extends ListActivity {
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		mDecisionRowId = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
 		
-		Cursor thisDecision = mCompetitorsDBAdapter.fetchDecision(mDecisionRowId);
-		String decisionName = thisDecision.getString(1);
-		setTitle(decisionName);
+		setTitleFromActivityLabel (R.id.title_text);
 		
 		fillData();
 		registerForContextMenu(getListView());
@@ -82,9 +80,9 @@ public class CompetitorsScreen extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, INSERT_ID, 0, R.string.add_competitor);
-        menu.add(1, DELETE_ID, 1, R.string.delete_competitor);
-        menu.add(2, BACK_ID, 2, R.string.done);
+        menu.add(0, INSERT_ID, 0, R.string.add_competitor).setIcon(R.drawable.ic_menu_compose);
+        menu.add(1, DELETE_ID, 1, R.string.delete_competitor).setIcon(R.drawable.ic_menu_delete);
+        menu.add(2, BACK_ID, 2, R.string.done).setIcon(R.drawable.ic_menu_revert);
         return true;
     }
     
@@ -114,7 +112,7 @@ public class CompetitorsScreen extends ListActivity {
 		Intent i = new Intent(this, CompetitorEdit.class);
         i.putExtra(CompetitorColumns._ID, id);
         i.putExtra(CompetitorColumns.DECISIONID, mDecisionRowId);
-        startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+        startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
 		
 		Log.d(TAG, " << createCompetitor()");
 	}
@@ -124,7 +122,7 @@ public class CompetitorsScreen extends ListActivity {
 		
 		Intent i = new Intent(this, CompetitorDelete.class);
 		i.putExtra(DecisionColumns._ID, mDecisionRowId);
-        startActivityForResult(i, DecideForMe.ACTIVITY_DELETE);
+        startActivityForResult(i, MyDecisions.ACTIVITY_DELETE);
 		
 		Log.d(TAG, " << deleteCompetitor()");
 	}
@@ -162,7 +160,7 @@ public class CompetitorsScreen extends ListActivity {
         
         Intent i = new Intent(this, CompetitorEdit.class);
         i.putExtra(CompetitorColumns._ID, id);
-        startActivityForResult(i, DecideForMe.ACTIVITY_EDIT);
+        startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
     }
 
 }

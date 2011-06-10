@@ -1,6 +1,5 @@
 package com.decideforme.competitors;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,10 +18,11 @@ import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.db.decideforme.competitors.CompetitorsDatabaseAdapter;
 import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.decideforme.R;
+import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
-public class CompetitorDelete extends Activity {
+public class CompetitorDelete extends DashboardActivity {
 	private static final String TAG = CompetitorDelete.class.getName();
 	
 	protected Spinner mCompetitorSpinner;
@@ -65,7 +65,7 @@ public class CompetitorDelete extends Activity {
 		mCompetitorDBAdapter.open();
 		
 		setContentView(R.layout.competitor_delete);
-		setTitle(R.string.menu_delete_competitor);
+		setTitleFromActivityLabel (R.id.title_text);
 		
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		decisionRowID = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);

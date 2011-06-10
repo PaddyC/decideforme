@@ -1,6 +1,5 @@
 package com.decideforme.criteria;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,10 +18,11 @@ import com.db.decideforme.criteria.CriteriaDatabaseAdapter;
 import com.db.decideforme.criteria.Criterion.CriterionColumns;
 import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.decideforme.R;
+import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
-public class CriterionDelete extends Activity {
+public class CriterionDelete extends DashboardActivity {
 	private static final String TAG = CriterionDelete.class.getName();
 	
 	protected Spinner mCriteriaSpinner;
@@ -65,7 +65,7 @@ public class CriterionDelete extends Activity {
 		mCriteriaDBAdapter.open();
 		
 		setContentView(R.layout.criterion_delete);
-		setTitle(R.string.menu_delete_criterion);
+		setTitleFromActivityLabel (R.id.title_text);
 		
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		mDecisionRowID = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);

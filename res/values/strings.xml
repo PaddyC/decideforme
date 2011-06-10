@@ -4,35 +4,40 @@
 	<string name="no">No</string>
 
     <string name="app_name">Decide For Me</string>
-
     <string name="splash_screen">SplashScreen</string>
+    <string name="about_app">About DecideForMe</string>
+    <string name="search_screen">Search</string>
     
-    <string name="rating_screen">Rating Screen</string>
-
-    <string name="decisions_screen">My Decisions</string>
-    <string name="delete_decision_screen">Delete A Decision</string>
     <string name="no_decisions">No Decisions yet, use the menu button to add a new one..</string>
+    <string name="decision_id">_decisionid</string>
+    <string name="decision_name">Decision Name: </string>
+    <string name="decision_description">Description: </string>
+
+    <string name="my_decisions">My Decisions</string>
+    <string name="add_decision">Add Decision</string>
+    <string name="edit_decision">Edit Decision</string>
+    <string name="delete_decision">Delete Decision</string>
     
-    <string name="competitors_screen">Competitors</string>
     <string name="no_competitors">What are you trying to decide between?</string>
+    <string name="competitors">Competitors</string>
    	<string name="add_competitor">Add Competitor</string>
    	<string name="edit_competitor">Edit Competitor</string>
     <string name="delete_competitor">Delete Competitor</string>
-    <string name="delete_competitor_screen">Delete A Competitor</string>
-    <string name="competitor_name">Competitor Name</string>
+    <string name="competitor_name">Competitor Name: </string>
     
-    <string name="criteria_screen">Criteria</string>
     <string name="no_criteria">No criteria yet, use the menu button to add a new one..</string>
-    <string name="add_criterion">Add Criterion</string>
-    <string name="edit_criterion_screen">Edit Criterion</string>
-    <string name="delete_criteria_screen">Delete Criteria</string>
-    <string name="delete_criterion">Delete Criterion</string>
-    <string name="criterion_name">Name:</string>
+
+    <string name="criterion_name">Criterion Name: </string>
     <string name="rating_system_select">Choose a rating system:</string>
 
-	<string name="add_decision">Add Decision</string>
-    <string name="edit_decision">Edit Decision</string>
-    <string name="delete_decision">Delete Decision</string>
+    <string name="criteria">Criteria</string>
+    <string name="add_criterion">Add Criterion</string>
+    <string name="edit_criterion">Edit Criterion</string>
+    <string name="delete_criteria">Delete Criteria</string>
+    <string name="delete_criterion">Delete Criterion</string>
+    
+    <string name="rating_screen">Rating Screen</string>
+    
     
     <string name="want_to_delete">Want to delete \'</string>
     <string name="nothing_deleted">Ok, didn\'t delete anything.</string>
@@ -40,9 +45,6 @@
     <string name="deleted_competitor">Deleted competitor named \'</string>
     <string name="deleted_criterion">Deleted criterion named \'</string>
 
-    <string name="decision_id">_decisionid</string>
-    <string name="decision_name">Decision Name</string>
-    <string name="decision_description">Description</string>
     
     <string name="ok">Ok</string>
     <string name="back">Back</string>
@@ -62,4 +64,24 @@
     <string name="menu_discard">Discard</string>
     <string name="decision_spinner">DecisionSpinner</string>
     <string name="nothing_to_save">There is nothing to save</string>
+    
+    <string name="description_logo">Description</string>
+    <string name="dashboard_action">Action</string>
+    
+    <string name="description_about">About</string>
+    <string name="description_home">Home</string>
+    <string name="description_search">Search</string>
+    
+    <string name="title_about">About</string>
+    <string name="title_home">Home</string>
+    <string name="title_search">Search</string>
+    <string name="title_feature1">My Decisions</string>
+    <string name="title_feature2">Add Decision</string>
+    <string name="title_feature3">Feature 3</string>
+    <string name="title_feature4">Feature 4</string>
+    <string name="title_feature5">Feature 5</string>
+    <string name="title_feature6">Feature 6</string>
+    
+    <string name="about_intro">DecideForMe is a decision support tool. Create a decision from the home page, add competitors and criteria, and then rate! Once you have rated your decision, you can email your report to any email address.</string>
+    <string name="search_intro">Content for the Search page goes here.</string>
 </resources>

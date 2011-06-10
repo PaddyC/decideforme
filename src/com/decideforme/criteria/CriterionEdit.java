@@ -1,6 +1,5 @@
 package com.decideforme.criteria;
 
-import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,11 +17,12 @@ import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.db.decideforme.ratingsystems.RatingSystem.RatingSystemColumns;
 import com.db.decideforme.ratingsystems.RatingSystemDatabaseAdapter;
 import com.decideforme.R;
+import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
 
-public class CriterionEdit extends Activity {
+public class CriterionEdit extends DashboardActivity {
 	static final String TAG = CriterionEdit.class.getName();
 	protected CriteriaDatabaseAdapter mCriteriaDBAdapter;
 	protected RatingSystemDatabaseAdapter mRatingSystemDBAdapter;
@@ -49,7 +49,7 @@ public class CriterionEdit extends Activity {
 		mRatingSystemDBAdapter.open();
 		
 		setContentView(R.layout.criterion_edit);
-		setTitle(R.string.edit_criterion_screen);
+		setTitleFromActivityLabel (R.id.title_text);
 		
 		mCriterionName = (EditText) findViewById(R.id.criterion_name);
 		

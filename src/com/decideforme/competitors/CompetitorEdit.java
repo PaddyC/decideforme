@@ -1,6 +1,5 @@
 package com.decideforme.competitors;
 
-import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,10 +12,11 @@ import android.widget.EditText;
 import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.db.decideforme.competitors.CompetitorsDatabaseAdapter;
 import com.decideforme.R;
+import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
-public class CompetitorEdit extends Activity {
+public class CompetitorEdit extends DashboardActivity {
 	private static final String TAG = CompetitorEdit.class.getName();
 	
 	private CompetitorsDatabaseAdapter mDbAdapter;
@@ -38,7 +38,7 @@ public class CompetitorEdit extends Activity {
 		mDbAdapter.open();
 		
 		setContentView(R.layout.competitor_edit);
-		setTitle(R.string.edit_competitor);
+		setTitleFromActivityLabel (R.id.title_text);
 		
 		competitorName = (EditText) findViewById(R.id.competitor_name);
 		doneButton = (Button) findViewById(R.id.done_button);

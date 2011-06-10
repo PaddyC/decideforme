@@ -1,12 +1,11 @@
 package com.decideforme.splash;
 
-import com.decideforme.R;
-import com.decideforme.R.layout;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
+
+import com.decideforme.R;
 
 public class SplashScreen extends Activity {
     protected boolean isActive = true;
@@ -34,7 +33,7 @@ public class SplashScreen extends Activity {
                     // do nothing
                 } finally {
                     finish();
-                    startActivity(new Intent("com.decideforme.DecideForMe"));
+                    startActivity(new Intent("com.decideforme.MyDecisions"));
                     stop();
                 }
             }
