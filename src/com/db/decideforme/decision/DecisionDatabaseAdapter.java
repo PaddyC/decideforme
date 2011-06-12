@@ -37,11 +37,7 @@ public class DecisionDatabaseAdapter {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-        	Log.d(TAG, ">> onCreate: " + StringUtils.objectAsString(db));
-
         	DatabaseScripts.createAllTables(db);
-            
-            Log.d(TAG, " << onCreate()");
         }
 
         @Override
@@ -60,12 +56,9 @@ public class DecisionDatabaseAdapter {
     	boolean databaseRecreated = false;
         // Should only be rarely needed: re-create the database from scratch.
         SQLiteDatabase mdb = getmDbHelper().getWritableDatabase();
-        Log.d(TAG, ">> Dropping tables.");
         DatabaseScripts.dropAllTables(mdb);
-        Log.d(TAG, ">> Creating tables.");
         DatabaseScripts.createAllTables(mdb);
-        Log.d(TAG, ">> The database is back..");
-    	
+        
         databaseRecreated = true;
         
     	Log.d(TAG, " << recreateTheDatabase(), returned '" + StringUtils.objectAsString(databaseRecreated) + "'");
@@ -73,7 +66,6 @@ public class DecisionDatabaseAdapter {
     }
     
     public Integer getNextDecisionSequenceID() {
-    	Log.d(TAG, " >> getNextDecisionSequenceID()");
     	Integer nextRowId = 0;
     	Cursor resultOfFetchQuery = mDb.query(Decision.TABLE_NAME, 
         		new String[] {DecisionColumns._ID, 
@@ -88,7 +80,6 @@ public class DecisionDatabaseAdapter {
 		
     	nextRowId++;
     	
-    	Log.d(TAG, " << getNextDecisionSequenceID(), returned '" + StringUtils.objectAsString(nextRowId) + "'");
     	return nextRowId;
     }
     
@@ -106,13 +97,9 @@ public class DecisionDatabaseAdapter {
     
     
     public long createDecision(String decisionName, String decisionDescription) {
-    	Log.d(TAG, " >> createDecision(" +
-    			"decisionName " + StringUtils.objectAsString(decisionName) + "', " +
-    			"decisionDescription " + StringUtils.objectAsString(decisionDescription) + "')");
-
     	ContentValues initialValues = new ContentValues();
-        initialValues.put(DecisionColumns.NAME, decisionName);
-        initialValues.put(DecisionColumns.DESCRIPTION, decisionDescription);
+        initialValues.put(DecisionColumns.NAME, escapeString(decisionName));
+        initialValues.put(DecisionColumns.DESCRIPTION, escapeString(decisionDescription));
 
         long insertResult = mDb.insert(Decision.TABLE_NAME, null, initialValues);
         
@@ -121,10 +108,7 @@ public class DecisionDatabaseAdapter {
     }
     
     public boolean deleteDecision(long rowId) {
-    	Log.d(TAG, " >> deleteDecision(" +
-    			"rowId '" + StringUtils.objectAsString(rowId) + "')");
-    	
-        boolean deleteResult = mDb.delete(
+    	boolean deleteResult = mDb.delete(
         		Decision.TABLE_NAME, 
         		DecisionColumns._ID + "=" + rowId, null) > 0;
         
@@ -133,23 +117,18 @@ public class DecisionDatabaseAdapter {
     }
     
     public Cursor fetchAllDecisions() {
-    	Log.d(TAG, " >> fetchAllDecisions()");
-        Cursor resultOfFetchQuery = mDb.query(Decision.TABLE_NAME, 
+    	Cursor resultOfFetchQuery = mDb.query(Decision.TABLE_NAME, 
         		new String[] {DecisionColumns._ID, 
         		DecisionColumns.NAME, 
         		DecisionColumns.DESCRIPTION}, 
         		null, null, null, null, null);
         
-        Log.d(TAG, " << fetchAllDecisions(), returned " + StringUtils.objectAsString(resultOfFetchQuery));
-		return resultOfFetchQuery;
+    	return resultOfFetchQuery;
     }
     
     
     public Cursor fetchDecision(long rowId) throws SQLException {
-    	Log.d(TAG, " >> fetchDecision(" +
-    			"rowId '" + StringUtils.objectAsString(rowId) + "')");
-    	
-        Cursor mCursor = mDb.query(
+    	Cursor mCursor = mDb.query(
             		true, 
             		Decision.TABLE_NAME, 
             		new String[] {DecisionColumns._ID, 
@@ -166,15 +145,33 @@ public class DecisionDatabaseAdapter {
         return mCursor;
     }
     
+    public String escapeString(String inputString) {
+    	String returnString = inputString.replace("'", "''");
+    	return returnString;
+    }
+    
+    public Cursor fetchDecision(String name) throws SQLException {
+    	Cursor mCursor = mDb.query(
+            		true, 
+            		Decision.TABLE_NAME, 
+            		new String[] {DecisionColumns._ID, 
+                    		DecisionColumns.NAME, 
+                    		DecisionColumns.DESCRIPTION},
+                    DecisionColumns.NAME + "='" + escapeString(name) + "'", 
+            		null, null, null, null, null);
+        
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        
+        Log.d(TAG, "<< fetchDecision(), returned '" + StringUtils.objectAsString(mCursor) + "'");
+        return mCursor;
+    }
+    
     public boolean updateDecision(long rowId, String decisionName, String decisionDescrption) {
-    	Log.d(TAG, " >> updateDecision(" +
-    			"rowId '" + StringUtils.objectAsString(rowId) + "', " +
-    			"decisionName '" + StringUtils.objectAsString(decisionName) + "', " +
-    			"decisionBody '" + StringUtils.objectAsString(decisionDescrption) + "')");
-    	
-        ContentValues args = new ContentValues();
-        args.put(DecisionColumns.NAME, decisionName);
-        args.put(DecisionColumns.DESCRIPTION, decisionDescrption);
+    	ContentValues args = new ContentValues();
+        args.put(DecisionColumns.NAME, escapeString(decisionName));
+        args.put(DecisionColumns.DESCRIPTION, escapeString(decisionDescrption));
 
         boolean resultOfUpdate = mDb.update(
         		Decision.TABLE_NAME, 

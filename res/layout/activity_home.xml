@@ -36,12 +36,12 @@
             style="@style/HomeButton"
             android:onClick="onClickFeature"
             android:text="@string/title_feature1"
-            android:drawableTop="@drawable/home_button1"/>
+            android:drawableTop="@drawable/home_my_decisions"/>
         <Button android:id="@+id/home_btn_feature2"
             style="@style/HomeButton"
             android:onClick="onClickFeature"
             android:text="@string/title_feature2"
-            android:drawableTop="@drawable/home_button2"/>
+            android:drawableTop="@drawable/home_new_decision"/>
     </LinearLayout>
 
 

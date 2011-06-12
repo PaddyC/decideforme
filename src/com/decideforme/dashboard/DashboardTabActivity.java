@@ -1,6 +1,6 @@
 package com.decideforme.dashboard;
 
-import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,14 +9,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.db.decideforme.decision.DecisionDatabaseAdapter;
-import com.db.decideforme.decision.Decision.DecisionColumns;
-import com.decideforme.DecisionHome;
+import com.decideforme.DecisionEdit;
 import com.decideforme.MyDecisions;
 import com.decideforme.R;
 
-public abstract class DashboardActivity extends Activity {
-
+public class DashboardTabActivity extends TabActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	}
@@ -61,28 +58,14 @@ public abstract class DashboardActivity extends Activity {
 	    int id = v.getId ();
 	    switch (id) {
 	      case R.id.home_btn_feature1 :
-	          startActivity (new Intent(getApplicationContext(), MyDecisions.class));
-	          break;
+	           startActivity (new Intent(getApplicationContext(), MyDecisions.class));
+	           break;
 	      case R.id.home_btn_feature2 :
-	    	  long decisionID = createNewDecision();
-	    	 
-	    	  Intent i = new Intent(getApplicationContext(), DecisionHome.class);
-	    	  i.putExtra(DecisionColumns._ID, decisionID);
-	    	  startActivity (i);
-	    	  break;
+	           startActivity (new Intent(getApplicationContext(), DecisionEdit.class));
+	           break;
 	      default: 
-	    	  break;
+	    	   break;
 	    }
-	}
-
-	private long createNewDecision() {
-		DecisionDatabaseAdapter decisionDBAdapter = new DecisionDatabaseAdapter(this);
-		decisionDBAdapter.open();
-		Integer nextDecisionNumber = decisionDBAdapter.getNextDecisionSequenceID();
-		String decisionName = "New Decision " + nextDecisionNumber;
-  
-		long decisionID = decisionDBAdapter.createDecision(decisionName, "");
-		return decisionID;
 	}
 
 	public void goHome(Context context)	{

@@ -17,8 +17,8 @@ import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.db.decideforme.decisionrating.DecisionRatingsDatabaseAdapter;
 import com.decideforme.R;
 import com.decideforme.dashboard.DashboardActivity;
-import com.decideforme.ratings.grid.RatingGridHelper;
-import com.decideforme.ratings.grid.RatingGridHelperImpl;
+import com.decideforme.ratings.grid.RatingTableLayoutHelper;
+import com.decideforme.ratings.grid.RatingTableLayoutHelperImpl;
 import com.decideforme.utils.BundleHelper;
 /**
  * This class is all about getting a Grid to display, which will present the user with the rating system..<p>
@@ -46,7 +46,7 @@ public class RatingsScreen extends DashboardActivity {
 	
 	private TableLayout mDynamicRatingTable;
 	
-	private RatingGridHelper mGridHelper;
+	private RatingTableLayoutHelper mRatingTableLayoutHelper;
 	private RatingsScreenHelper mRatingsScreenHelper;
 	
 	private List<Long> mRatingSystemIDs;
@@ -97,7 +97,7 @@ public class RatingsScreen extends DashboardActivity {
 			for (int criterionCount = 0; criterionCount < mRatingSystemIDs.size(); criterionCount++) {
 				mThisCriterionRowId = mCriteriaRowIDs.get(criterionCount);
 				
-				Integer gridReference = getmGridHelper().getGridReference(mThisCompetitorRowId, mThisCriterionRowId);
+				Integer gridReference = getmRatingTableLayoutHelper().getGridReference(mThisCompetitorRowId, mThisCriterionRowId);
 				
 				Spinner thisCompetitorCriterion = (Spinner) findViewById(gridReference);
 				Cursor selectedRatingInstance = (Cursor) thisCompetitorCriterion.getSelectedItem();
@@ -146,7 +146,7 @@ public class RatingsScreen extends DashboardActivity {
 				mThisCriterionRowId = mCriteriaRowIDs.get(criterionCount);
 				mThisRatingSystemId = mRatingSystemIDs.get(criterionCount);
 				
-				Integer spinnerID = getmGridHelper().getGridReference(mThisCompetitorRowId, mThisCriterionRowId);
+				Integer spinnerID = getmRatingTableLayoutHelper().getGridReference(mThisCompetitorRowId, mThisCriterionRowId);
 				
 				Spinner thisSpinner = (Spinner) findViewById(spinnerID);
 				
@@ -168,10 +168,10 @@ public class RatingsScreen extends DashboardActivity {
 	}
 	
 	private TableRow populateCompetitorRatingRow(String competitorName) {
-		TableRow nextRow = getmGridHelper().getNewRow(this);
+		TableRow nextRow = getmRatingTableLayoutHelper().getNewRow(this);
 		
 		// Add the cell with the competitor name.
-		TextView competitorNameView = getmGridHelper().getCompetitorNameTextView(this, competitorName);
+		TextView competitorNameView = getmRatingTableLayoutHelper().getCompetitorNameTextView(this, competitorName);
 		nextRow.addView(competitorNameView);
 		
 		// Generate a spinner for each rating.
@@ -179,7 +179,7 @@ public class RatingsScreen extends DashboardActivity {
 			mThisCriterionRowId = mCriteriaRowIDs.get(criterionCount);
 			mThisRatingSystemId = mRatingSystemIDs.get(criterionCount);
 			
-			Integer spinnerID = getmGridHelper().getGridReference(mThisCompetitorRowId, mThisCriterionRowId);
+			Integer spinnerID = getmRatingTableLayoutHelper().getGridReference(mThisCompetitorRowId, mThisCriterionRowId);
 			
 			Spinner aSpinner = getmRatingsScreenHelper().generateRatingsSpinner(this, mThisRatingSystemId, spinnerID);
 			
@@ -202,10 +202,10 @@ public class RatingsScreen extends DashboardActivity {
 
 
 	private TableRow populateCriteriaHeaderRow() {
-		TableRow firstRow = getmGridHelper().getNewRow(this);
+		TableRow firstRow = getmRatingTableLayoutHelper().getNewRow(this);
 		
 		// Cell A1 is blank... this is intentional.
-		TextView blankText = getmGridHelper().getCriterionNameTextView(this, "");
+		TextView blankText = getmRatingTableLayoutHelper().getCriterionNameTextView(this, "");
 		firstRow.addView(blankText);
 		
 		mCriteriaRowIDs = new ArrayList<Long>();
@@ -216,7 +216,7 @@ public class RatingsScreen extends DashboardActivity {
 		allCriteria.moveToFirst();
         while (allCriteria.isAfterLast() == false) {
         	// Add a TextView with the Criterion Name
-        	TextView thisCriterion = getmGridHelper().getCriterionNameTextView(this, allCriteria.getString(2));
+        	TextView thisCriterion = getmRatingTableLayoutHelper().getCriterionNameTextView(this, allCriteria.getString(2));
         	firstRow.addView(thisCriterion);
 
         	// Store the Criterion ID for later
@@ -253,16 +253,16 @@ public class RatingsScreen extends DashboardActivity {
 	}
 
 
-	public void setmGridHelper(RatingGridHelper mGridHelper) {
-		this.mGridHelper = mGridHelper;
+	public void setmGridHelper(RatingTableLayoutHelper ratingTableLayoutHelper) {
+		this.mRatingTableLayoutHelper = ratingTableLayoutHelper;
 	}
 
 
-	public synchronized RatingGridHelper getmGridHelper() {
-		if (mGridHelper == null) {
-			mGridHelper = RatingGridHelperImpl.getInstance();
+	public synchronized RatingTableLayoutHelperImpl getmRatingTableLayoutHelper() {
+		if (mRatingTableLayoutHelper == null) {
+			mRatingTableLayoutHelper = RatingTableLayoutHelperImpl.getInstance();
 		}
-		return mGridHelper;
+		return (RatingTableLayoutHelperImpl) mRatingTableLayoutHelper;
 	}
 
 

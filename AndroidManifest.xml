@@ -38,6 +38,10 @@
         </activity>     
 
         <activity 	android:theme="@style/Theme.D1" 
+        		  	android:name="com.decideforme.DecisionHome"
+        		  	android:label="@string/decision_home"></activity>  
+
+        <activity 	android:theme="@style/Theme.D1" 
         		  	android:name="com.decideforme.dashboard.SearchActivity"
         		  	android:label="@string/search_screen"></activity>         		  	   		  	       
         
