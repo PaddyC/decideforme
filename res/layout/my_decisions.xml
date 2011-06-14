@@ -23,6 +23,14 @@
     </LinearLayout>
     
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/addDecision"
+      	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:stretchColumns="0">
+    
+	</TableLayout>
+    
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/myDecisionsLayout"
       	android:layout_width="fill_parent"
     	android:layout_height="fill_parent"

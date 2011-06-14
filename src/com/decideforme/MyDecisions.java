@@ -7,12 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,10 +60,47 @@ public class MyDecisions extends DashboardActivity {
         mDbAdapter = new DecisionDatabaseAdapter(this);
         mDbAdapter.open();
         
+        TableLayout addDecisionTable = (TableLayout) findViewById(R.id.addDecision);
+        TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
+    	TableRow thisRow = tableLayoutHelper.getNewRow(this);
+   	
+    	TextView addDecision = new TextView(this);
+    	addDecision.setText("Add New Decision: ");
+    	addDecision.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
+    	addDecision.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield));
+		thisRow.addView(addDecision);
+		
+		Button newDecisionButton = new Button(this);
+		newDecisionButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.edit_button));
+		newDecisionButton.setGravity(Gravity.CLIP_VERTICAL);
+		newDecisionButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View thisView) {
+		    	  long decisionID = createNewDecision();
+			    	 
+		    	  Intent i = new Intent(getApplicationContext(), DecisionHome.class);
+		    	  i.putExtra(DecisionColumns._ID, decisionID);
+		    	  startActivity (i);
+			}
+		});
+		
+		thisRow.addView(newDecisionButton);
+		
+		addDecisionTable.addView(thisRow);
+        
         fillData();
         
         Log.d(TAG, " << onCreate()");
     }
+    
+	private long createNewDecision() {
+		DecisionDatabaseAdapter decisionDBAdapter = new DecisionDatabaseAdapter(this);
+		decisionDBAdapter.open();
+		Integer nextDecisionNumber = decisionDBAdapter.getNextDecisionSequenceID();
+		String decisionName = "D" + nextDecisionNumber;
+  
+		long decisionID = decisionDBAdapter.createDecision(decisionName, "");
+		return decisionID;
+	}
     
     
     @Override
@@ -165,10 +202,10 @@ public class MyDecisions extends DashboardActivity {
         	
         	TextView decisionName = new TextView(this);
         	decisionName.setText(cDecisions.getString(1));
-//        	decisionName.setSelectAllOnFocus(true);
     		decisionName.setId(viewId++);
     		decisionName.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
-    		decisionName.setHighlightColor(Color.MAGENTA);
+    		
+    		decisionName.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield));
     		decisionName.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View thisView) {
 					Intent intent = new Intent().setClass(MyDecisions.this, DecisionHome.class);
@@ -182,9 +219,9 @@ public class MyDecisions extends DashboardActivity {
     		thisRow.addView(decisionName);
     		
     		Button openButton = new Button(this);
-    		openButton.setBackgroundResource(R.drawable.ic_menu_edit);
-    		
+    		openButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.edit_button));
     		openButton.setId(viewId++);
+    		openButton.setGravity(Gravity.CLIP_VERTICAL);
     		openButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View thisView) {
 					Intent intent = new Intent().setClass(MyDecisions.this, DecisionHome.class);
@@ -196,8 +233,9 @@ public class MyDecisions extends DashboardActivity {
     		thisRow.addView(openButton);
     		
     		Button deleteButton = new Button(this);
-    		deleteButton.setBackgroundResource(R.drawable.ic_menu_delete);
+    		deleteButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.delete_button));
     		deleteButton.setId(viewId++);
+    		deleteButton.setGravity(Gravity.CLIP_VERTICAL);
     		deleteButton.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View thisView) {
 					Cursor decision = getDecision(thisView, ACTIVITY_DELETE);
@@ -207,7 +245,7 @@ public class MyDecisions extends DashboardActivity {
     		thisRow.addView(deleteButton);
     		
         	mDynamicDecisionTable.addView(thisRow);
-    		
+        	   		
         	cDecisions.moveToNext();
     	}
     }

@@ -79,7 +79,7 @@ public abstract class DashboardActivity extends Activity {
 		DecisionDatabaseAdapter decisionDBAdapter = new DecisionDatabaseAdapter(this);
 		decisionDBAdapter.open();
 		Integer nextDecisionNumber = decisionDBAdapter.getNextDecisionSequenceID();
-		String decisionName = "New Decision " + nextDecisionNumber;
+		String decisionName = "D" + nextDecisionNumber;
   
 		long decisionID = decisionDBAdapter.createDecision(decisionName, "");
 		return decisionID;
