@@ -60,34 +60,9 @@ public class MyDecisions extends DashboardActivity {
         mDbAdapter = new DecisionDatabaseAdapter(this);
         mDbAdapter.open();
         
-        TableLayout addDecisionTable = (TableLayout) findViewById(R.id.addDecision);
-        TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
-    	TableRow thisRow = tableLayoutHelper.getNewRow(this);
-   	
-    	TextView addDecision = new TextView(this);
-    	addDecision.setText("Add New Decision: ");
-    	addDecision.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
-    	addDecision.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield));
-		thisRow.addView(addDecision);
-		
-		Button newDecisionButton = new Button(this);
-		newDecisionButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.edit_button));
-		newDecisionButton.setGravity(Gravity.CLIP_VERTICAL);
-		newDecisionButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View thisView) {
-		    	  long decisionID = createNewDecision();
-			    	 
-		    	  Intent i = new Intent(getApplicationContext(), DecisionHome.class);
-		    	  i.putExtra(DecisionColumns._ID, decisionID);
-		    	  startActivity (i);
-			}
-		});
-		
-		thisRow.addView(newDecisionButton);
-		
-		addDecisionTable.addView(thisRow);
-        
         fillData();
+        
+        Log.d(TAG, "Number of rows in decision table after fillData: " + mDynamicDecisionTable.getChildCount());
         
         Log.d(TAG, " << onCreate()");
     }
@@ -101,9 +76,25 @@ public class MyDecisions extends DashboardActivity {
 		long decisionID = decisionDBAdapter.createDecision(decisionName, "");
 		return decisionID;
 	}
+	
+	
     
     
     @Override
+	protected void onPause() {
+		super.onPause();
+		Log.d(TAG, " << onPause()");
+	}
+	
+    @Override
+	protected void onResume() {
+		super.onResume();
+		fillData();
+		Log.d(TAG, "Number of rows in decision table: " + mDynamicDecisionTable.getChildCount());
+		Log.d(TAG, " << onResume()");
+	}
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(0, INSERT_ID, 0, R.string.add_decision).setIcon(R.drawable.ic_menu_compose);
@@ -143,7 +134,7 @@ public class MyDecisions extends DashboardActivity {
     	Log.d(TAG, " >> createDecision()");
     	
     	nextDecisionNumber = mDbAdapter.getNextDecisionSequenceID();
-		String decisionName = "New Decision " + nextDecisionNumber;
+		String decisionName = "D" + nextDecisionNumber;
 		
 		long id = mDbAdapter.createDecision(decisionName, "");
 		Intent i = new Intent(this, DecisionHome.class);
@@ -184,23 +175,28 @@ public class MyDecisions extends DashboardActivity {
     
     private void fillData() {
     	Log.d(TAG, " >> fillData()");
-        
-    	// Table Start! Initialise the table layout:
 		mDynamicDecisionTable = (TableLayout) findViewById(R.id.myDecisionsLayout);
-		mDynamicDecisionTable.removeAllViews();
+    	// Table Start! Initialise the table layout:
+		if(mDynamicDecisionTable.getChildCount() > 0) {
+			mDynamicDecisionTable.removeAllViews();
+		}
+		
 		Log.d(TAG, "Number of rows in the table: " + mDynamicDecisionTable.getChildCount());
 		
     	Cursor cDecisions = mDbAdapter.fetchAllDecisions();
+    	Log.d(TAG, "Number of Decisions in DB: " + StringUtils.objectAsString(cDecisions.getCount()));
     	cDecisions.moveToFirst();
     	
     	while(cDecisions.isAfterLast() == false) {
     		TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
         	TableRow thisRow = tableLayoutHelper.getNewRow(this);
+        	thisRow.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield_default));
         	
         	BigDecimal id = new BigDecimal(cDecisions.getPosition()).multiply(new BigDecimal(100));
         	Integer viewId = id.intValue();
         	
         	TextView decisionName = new TextView(this);
+        	Log.d(TAG, "Decision Name: " + StringUtils.objectAsString(cDecisions.getString(2)));
         	decisionName.setText(cDecisions.getString(1));
     		decisionName.setId(viewId++);
     		decisionName.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
@@ -248,9 +244,40 @@ public class MyDecisions extends DashboardActivity {
         	   		
         	cDecisions.moveToNext();
     	}
+    	
+    	fillAddButtonRow();
     }
     
-    public void displayAreYouSure(final Cursor decision) {
+    private void fillAddButtonRow() {
+    	
+        TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
+    	TableRow thisRow = tableLayoutHelper.getNewRow(this);
+   	
+    	TextView addDecision = new TextView(this);
+    	
+    	addDecision.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
+		thisRow.addView(addDecision);
+		
+		Button newDecisionButton = new Button(this);
+		newDecisionButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.add_button));
+		newDecisionButton.setGravity(Gravity.CLIP_VERTICAL);
+		newDecisionButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View thisView) {
+		    	  long decisionID = createNewDecision();
+			    	 
+		    	  Intent i = new Intent(getApplicationContext(), DecisionHome.class);
+		    	  i.putExtra(DecisionColumns._ID, decisionID);
+		    	  startActivity (i);
+			}
+		});
+		
+		thisRow.addView(newDecisionButton);
+		
+		mDynamicDecisionTable.addView(thisRow);
+
+	}
+
+	public void displayAreYouSure(final Cursor decision) {
         // prepare the alert box
     	AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
     	

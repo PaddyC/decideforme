@@ -50,25 +50,13 @@ public class DecideForMe extends ListActivity {
         
         nextDecisionNumber = mDbAdapter.getNextDecisionSequenceID();
         
-//        recreateDatabaseFromScratch();
-        
         fillData();
         registerForContextMenu(getListView());
         
         Log.d(TAG, " << onCreate()");
     }
 
-	/**
-	 * For when the database needs re-creatin'
-	 * @author PaddyC
-	 */
-	private void recreateDatabaseFromScratch() {
-		Log.d(TAG, " >> recreateDatabaseFromScratch()");
-		SQLiteDatabase db = mDbAdapter.getmDbHelper().getWritableDatabase();
-        DatabaseScripts.dropAllTables(db);
-        DatabaseScripts.createAllTables(db);
-        Log.d(TAG, " << recreateDatabaseFromScratch()");
-	}
+
     
     
     @Override
