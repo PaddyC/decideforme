@@ -1,37 +1,46 @@
 package com.decideforme.competitors;
 
+import java.math.BigDecimal;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+import android.widget.Button;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.db.decideforme.competitors.CompetitorsDatabaseAdapter;
 import com.db.decideforme.decision.Decision.DecisionColumns;
-import com.decideforme.MyDecisions;
 import com.decideforme.R;
-import com.decideforme.dashboard.DashboardListActivity;
+import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
+import com.decideforme.utils.TableLayoutHelperImpl;
 
-public class CompetitorsScreen extends DashboardListActivity {
+public class CompetitorsScreen extends DashboardActivity {
 	private static final String TAG = CompetitorsScreen.class.getName();
 
-	private static final int INSERT_ID = Menu.FIRST;
-    private static final int DELETE_ID = Menu.FIRST + 1;
-    private static final int BACK_ID = Menu.FIRST + 2;
+    private static final int BACK_ID = Menu.FIRST;
+    
+    public static final int ACTIVITY_EDIT = 1;
+    public static final int ACTIVITY_DELETE = 2;
 	
 	private CompetitorsDatabaseAdapter mCompetitorsDBAdapter;
 	
 	protected Long mDecisionRowId;
+	private TableLayout mDynamicCompetitorsTable;
 	
 	private Integer mNextCompetitorRowId;
 	
@@ -53,48 +62,185 @@ public class CompetitorsScreen extends DashboardListActivity {
 		setTitleFromActivityLabel (R.id.title_text);
 		
 		fillData();
-		registerForContextMenu(getListView());
 		
 		Log.d(TAG, " << onCreate()");
 	}
 
 
 	private void fillData() {
-		Log.d(TAG, " >> fillData()");
+    	Log.d(TAG, " >> fillData()");
+    	mDynamicCompetitorsTable = (TableLayout) findViewById(R.id.competitorsList);
+    	// Table Start! Initialise the table layout:
+		if(mDynamicCompetitorsTable.getChildCount() > 0) {
+			mDynamicCompetitorsTable.removeAllViews();
+		}
 		
-        // Get all of the rows from the database and create the item list
-        Cursor competitorsCursor = mCompetitorsDBAdapter.fetchAllCompetitorsForDecision(mDecisionRowId);
-        
-        String[] from = new String[]{CompetitorColumns.DESCRIPTION};
-        int[] to = new int[]{R.id.text1};
-        
-        SimpleCursorAdapter competitors = new SimpleCursorAdapter(
-        		this, R.layout.competitor_row, competitorsCursor, from, to);
+		Log.d(TAG, "Number of rows in the table: " + mDynamicCompetitorsTable.getChildCount());
+		
+    	Cursor cCompetitors = mCompetitorsDBAdapter.fetchAllCompetitorsForDecision(mDecisionRowId);
     	
-        setListAdapter(competitors);
-		
-		Log.d(TAG, " << fillData()");
+    	Log.d(TAG, "Number of Competitors For Decision: " + StringUtils.objectAsString(cCompetitors.getCount()));
+    	cCompetitors.moveToFirst();
+    	
+    	while(cCompetitors.isAfterLast() == false) {
+    		TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
+        	TableRow thisRow = tableLayoutHelper.getNewRow(this);
+        	thisRow.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield_default));
+        	
+        	BigDecimal id = new BigDecimal(cCompetitors.getPosition()).multiply(new BigDecimal(100));
+        	Integer viewId = id.intValue();
+        	
+        	TextView competitorName = new TextView(this);
+        	Log.d(TAG, "Competitor Name: " + StringUtils.objectAsString(cCompetitors.getString(2)));
+        	competitorName.setText(cCompetitors.getString(2));
+    		competitorName.setId(viewId++);
+    		competitorName.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
+    		
+    		competitorName.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield));
+    		competitorName.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View thisView) {
+					Intent intent = new Intent().setClass(CompetitorsScreen.this, CompetitorEdit.class);
+					Cursor decision = getCompetitor(thisView, 0);
+					intent.putExtra(DecisionColumns._ID, decision.getLong(0));
+					intent.putExtra(CompetitorColumns.DECISIONID, mDecisionRowId);
+					startActivity(intent);
+				}
+			});
+    		
+    		
+    		thisRow.addView(competitorName);
+    		
+    		Button openButton = new Button(this);
+    		openButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.edit_button));
+    		openButton.setId(viewId++);
+    		openButton.setGravity(Gravity.CLIP_VERTICAL);
+    		openButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View thisView) {
+					Intent intent = new Intent().setClass(CompetitorsScreen.this, CompetitorEdit.class);
+					Cursor decision = getCompetitor(thisView, ACTIVITY_EDIT);
+					intent.putExtra(CompetitorColumns._ID, decision.getLong(0));
+					intent.putExtra(CompetitorColumns.DECISIONID, mDecisionRowId);
+					startActivity(intent);
+				}
+			});
+    		thisRow.addView(openButton);
+    		
+    		Button deleteButton = new Button(this);
+    		deleteButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.delete_button));
+    		deleteButton.setId(viewId++);
+    		deleteButton.setGravity(Gravity.CLIP_VERTICAL);
+    		deleteButton.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View thisView) {
+					Cursor competitor = getCompetitor(thisView, ACTIVITY_DELETE);
+					displayAreYouSure(competitor);
+				}
+			});
+    		thisRow.addView(deleteButton);
+    		
+        	mDynamicCompetitorsTable.addView(thisRow);
+        	   		
+        	cCompetitors.moveToNext();
+    	}
+    	
+    	fillAddButtonRow();
 		
 	}
+	
+    private void fillAddButtonRow() {
+    	
+        TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
+    	TableRow thisRow = tableLayoutHelper.getNewRow(this);
+   	
+    	TextView addCompetitor = new TextView(this);
+    	
+    	addCompetitor.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
+		thisRow.addView(addCompetitor);
+		
+		Button newCompetitorButton = new Button(this);
+		newCompetitorButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.add_button));
+		newCompetitorButton.setGravity(Gravity.CLIP_VERTICAL);
+		newCompetitorButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View thisView) {
+		    	long competitorRowID = createCompetitor();
+			    	 
+			  	Intent i = new Intent(CompetitorsScreen.this, CompetitorEdit.class);
+			    i.putExtra(CompetitorColumns._ID, competitorRowID);
+			    i.putExtra(CompetitorColumns.DECISIONID, mDecisionRowId);
+			    startActivityForResult(i, ACTIVITY_EDIT);
+			}
+		});
+		
+		thisRow.addView(newCompetitorButton);
+		
+		mDynamicCompetitorsTable.addView(thisRow);
+
+	}
+
+	public void displayAreYouSure(final Cursor competitor) {
+        // prepare the alert box
+    	AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
+    	
+    	String competitorName = competitor.getString(2);
+    	String wantToDelete = getString(R.string.want_to_delete) + competitorName + "'?";
+		alertbox.setMessage(wantToDelete);
+
+    	alertbox.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+	         public void onClick(DialogInterface dialog, int whichButton) {
+
+	 	    	Integer rowID = competitor.getInt(0);
+	 	    	
+	 	    	mCompetitorsDBAdapter.deleteCompetitor(rowID);
+		    	
+		    	Context context = getApplicationContext();
+		    	String competitorName = competitor.getString(2);
+		    	String deleted = getString(R.string.deleted_competitor) + competitorName + "'";
+		    	int duration = Toast.LENGTH_SHORT;
+		    	Toast toast = Toast.makeText(context, deleted, duration);
+		    	toast.show();
+		    	
+		    	setResult(RESULT_OK);
+		    	fillData();
+	         }
+    	});
+
+		alertbox.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+    	 	public void onClick(DialogInterface arg0, int arg1) {
+	        	Toast.makeText(getApplicationContext(), getString(R.string.nothing_deleted), Toast.LENGTH_SHORT).show();
+    	 	}
+		});
+
+	     // display box
+	     alertbox.show();
+	 }
+
+	public Cursor getCompetitor(View thisView, Integer offset) {
+		
+		TextView thisCompetitor = (TextView) findViewById(thisView.getId() - offset);
+		String thisCompetitorName = (String) thisCompetitor.getText();
+		Cursor cDecisions = mCompetitorsDBAdapter.fetchCompetitor(mDecisionRowId, thisCompetitorName);
+		
+		return cDecisions;
+	}
+	
+    @Override
+	protected void onResume() {
+		super.onResume();
+		fillData();
+		Log.d(TAG, "Number of rows in dynamic table: " + mDynamicCompetitorsTable.getChildCount());
+		Log.d(TAG, " << onResume()");
+	}
+	
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, INSERT_ID, 0, R.string.add_competitor).setIcon(R.drawable.ic_menu_compose);
-        menu.add(1, DELETE_ID, 1, R.string.delete_competitor).setIcon(R.drawable.ic_menu_delete);
-        menu.add(2, BACK_ID, 2, R.string.done).setIcon(R.drawable.ic_menu_revert);
+        menu.add(1, BACK_ID, 1, R.string.done).setIcon(R.drawable.ic_menu_revert);
         return true;
     }
     
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         switch(item.getItemId()) {
-	        case INSERT_ID:
-	            createCompetitor();
-	            return true;
-	        case DELETE_ID:
-	        	deleteCompetitor();
-	        	return true;
 	        case BACK_ID:
 	        	finish();
 	        	return true;
@@ -103,64 +249,22 @@ public class CompetitorsScreen extends DashboardListActivity {
     }
     
 
-    private void createCompetitor() {
+    private long createCompetitor() {
 		Log.d(TAG, " >> createCompetitor()");
 		
-		String competitorName = "New Competitor " + mNextCompetitorRowId;
+		String competitorName = "C " + mNextCompetitorRowId;
 		long id = mCompetitorsDBAdapter.createCompetitor(competitorName, mDecisionRowId);
 		
-		Intent i = new Intent(this, CompetitorEdit.class);
-        i.putExtra(CompetitorColumns._ID, id);
-        i.putExtra(CompetitorColumns.DECISIONID, mDecisionRowId);
-        startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
-		
 		Log.d(TAG, " << createCompetitor()");
-	}
-
-    private void deleteCompetitor() {
-		Log.d(TAG, " >> deleteCompetitor()");
-		
-		Intent i = new Intent(this, CompetitorDelete.class);
-		i.putExtra(DecisionColumns._ID, mDecisionRowId);
-        startActivityForResult(i, MyDecisions.ACTIVITY_DELETE);
-		
-		Log.d(TAG, " << deleteCompetitor()");
+		return id;
 	}
     
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		
-		menu.add(0, DELETE_ID, 0, R.string.menu_delete_competitor);
-	}
-
-    @Override
-	public boolean onContextItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-        case DELETE_ID:
-            AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-            mCompetitorsDBAdapter.deleteCompetitor(info.id);
-            fillData();
-            return true;
-        }
-    	return super.onContextItemSelected(item);
-	}
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         fillData();
     }
-    
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        
-        Intent i = new Intent(this, CompetitorEdit.class);
-        i.putExtra(CompetitorColumns._ID, id);
-        startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
-    }
+
 
 }

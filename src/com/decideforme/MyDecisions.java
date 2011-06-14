@@ -62,8 +62,6 @@ public class MyDecisions extends DashboardActivity {
         
         fillData();
         
-        Log.d(TAG, "Number of rows in decision table after fillData: " + mDynamicDecisionTable.getChildCount());
-        
         Log.d(TAG, " << onCreate()");
     }
     
@@ -77,9 +75,7 @@ public class MyDecisions extends DashboardActivity {
 		return decisionID;
 	}
 	
-	
-    
-    
+
     @Override
 	protected void onPause() {
 		super.onPause();

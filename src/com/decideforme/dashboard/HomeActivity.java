@@ -1,11 +1,11 @@
 package com.decideforme.dashboard;
-import com.db.decideforme.DatabaseScripts;
-import com.db.decideforme.decision.DecisionDatabaseAdapter;
-import com.decideforme.R;
-
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.db.decideforme.DatabaseScripts;
+import com.db.decideforme.decision.DecisionDatabaseAdapter;
+import com.decideforme.R;
 
 public class HomeActivity extends DashboardActivity	{
 	public static final String TAG = HomeActivity.class.getName();

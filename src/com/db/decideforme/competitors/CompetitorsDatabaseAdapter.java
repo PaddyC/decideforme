@@ -105,6 +105,33 @@ public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
         return mCursor;
     }
     
+    public Cursor fetchCompetitor(long decisionRowId, String competitorName) throws SQLException {
+    	
+    	StringBuilder whereClause = new StringBuilder(CompetitorColumns.DECISIONID + "=" + decisionRowId);
+    	whereClause.append(" AND ");
+    	if (competitorName == null || "".equalsIgnoreCase(competitorName)) {
+    		whereClause.append(CompetitorColumns.DESCRIPTION + " IS NULL");
+    	} else {
+    		whereClause.append(CompetitorColumns.DESCRIPTION + "= '" + competitorName + "'");	
+    	}
+    	
+    	Cursor mCursor = mDb.query(
+            		true, 
+            		Competitor.TABLE_NAME, 
+            		new String[] {CompetitorColumns._ID, 
+            				CompetitorColumns.DECISIONID, 
+            				CompetitorColumns.DESCRIPTION},
+            				whereClause.toString(), 
+            		null, null, null, null, null);
+        
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        
+        Log.d(TAG, "<< fetchCompetitor(), returned '" + StringUtils.objectAsString(mCursor) + "'");
+        return mCursor;
+    }
+    
     public boolean updateCompetitor(long rowId, String competitorName) {
     	Log.d(TAG, " >> updateCompetitor(" +
     			"rowId '" + StringUtils.objectAsString(rowId) + "', " +

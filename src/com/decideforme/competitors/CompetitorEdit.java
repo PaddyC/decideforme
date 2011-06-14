@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.db.decideforme.competitors.Competitor.CompetitorColumns;
@@ -24,7 +22,6 @@ public class CompetitorEdit extends DashboardActivity {
 	private Long decisionRowID;
 	
 	private EditText competitorName;
-	private Button doneButton;
 	
 	private static final int OK = Menu.FIRST;
 	
@@ -41,13 +38,6 @@ public class CompetitorEdit extends DashboardActivity {
 		setTitleFromActivityLabel (R.id.title_text);
 		
 		competitorName = (EditText) findViewById(R.id.competitor_name);
-		doneButton = (Button) findViewById(R.id.done_button);
-		doneButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				saveState();
-				finish();
-			}
-		});
 		
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		competitorRowID = bundleHelper.getBundledFieldLongValue(CompetitorColumns._ID);
