@@ -113,6 +113,32 @@ public class CriteriaDatabaseAdapter extends DecisionDatabaseAdapter {
         return mCursor;
     }
     
+    public Cursor fetchCriterion(long decisionId, String criterionName) throws SQLException {
+    	
+    	StringBuilder whereClause = new StringBuilder(CriterionColumns.DECISIONID + "=" + decisionId);
+    	whereClause.append(" AND ");
+    	whereClause.append(CriterionColumns.DESCRIPTION + "='" + escapeString(criterionName) + "'");
+    	
+    	Cursor mCursor = mDb.query(
+            		false, 
+            		Criterion.TABLE_NAME, 
+            		new String[] {
+        	    			CriterionColumns._ID, 
+        	    			CriterionColumns.DECISIONID, 
+        	    			CriterionColumns.DESCRIPTION,
+        	    			CriterionColumns.RATINGSYSTEM
+            			},
+            		whereClause.toString(), 
+            		null, null, null, null, null);
+        
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        
+        Log.d(TAG, "<< fetchCriterion(), returned '" + StringUtils.objectAsString(mCursor) + "'");
+        return mCursor;
+    }
+    
     public boolean updateCriterion(long rowId, String criterionName, Long ratingSystemID) {
     	Log.d(TAG, " >> updateCriterion(" +
     			"rowId '" + StringUtils.objectAsString(rowId) + "', " +

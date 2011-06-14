@@ -2,17 +2,21 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
       	android:layout_width="fill_parent"
     	android:layout_height="fill_parent">
-    
-    
-    <TableRow>
-	    <ListView   android:id="@+id/android:list"
-	                android:layout_width="wrap_content"
-	        	    android:layout_height="wrap_content"/>
-	  	
-	  	<TextView   android:id="@+id/android:empty"
-	                android:layout_width="wrap_content"
-	        	    android:layout_height="wrap_content"
-	        	    android:text="@string/no_criteria"/>
-	    
-    </TableRow>
+
+	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent">
+
+		<HorizontalScrollView 	xmlns:android="http://schemas.android.com/apk/res/android"
+						      	android:layout_width="fill_parent" 
+						      	android:layout_height="fill_parent">
+						      	
+		    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:id="@+id/criteriaList"
+		      	android:layout_width="fill_parent"
+		    	android:layout_height="fill_parent">
+			</TableLayout> 
+			
+	  	</HorizontalScrollView>
+	</ScrollView>
 </TableLayout>

@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -29,7 +27,6 @@ public class CriterionEdit extends DashboardActivity {
 	
 	protected EditText mCriterionName;
 	protected Spinner mRatingSystemSpinner;
-	private Button mDoneButton;
 	
 	protected Long decisionRowId;
 	protected Long criterionRowID;
@@ -65,14 +62,6 @@ public class CriterionEdit extends DashboardActivity {
 		Log.d(TAG, "Associated Decision: " + decisionRowId);
 		
 		populateFields();
-		
-		mDoneButton = (Button) findViewById(R.id.done_editing_criterion_button);
-		mDoneButton.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				saveState();
-				finish();				
-			}
-		});
 		
 		Log.d(TAG, " << onCreate()");
 	}
