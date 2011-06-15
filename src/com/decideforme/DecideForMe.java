@@ -3,7 +3,6 @@ package com.decideforme;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -16,9 +15,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.db.decideforme.DatabaseScripts;
-import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.db.decideforme.decision.Decision.DecisionColumns;
+import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.decideforme.utils.StringUtils;
 
 public class DecideForMe extends ListActivity {

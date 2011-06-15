@@ -3,6 +3,7 @@
       package="com.decideforme"
       android:versionCode="1"
       android:versionName="1.0">
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <application
     	android:theme="@style/Theme.D1"	 
     	android:icon="@drawable/icon" 
