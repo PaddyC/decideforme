@@ -56,7 +56,7 @@ public class RatingsScreen extends DashboardActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, DONE, 0, R.string.done);
+        menu.add(0, DONE, 0, R.string.done).setIcon(R.drawable.ic_menu_revert);
         return true;
     }
 	

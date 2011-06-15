@@ -9,6 +9,7 @@ import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.decideforme.competitors.CompetitorsScreen;
 import com.decideforme.criteria.CriteriaScreen;
 import com.decideforme.dashboard.DashboardTabActivity;
+import com.decideforme.ratings.RatingsScreen;
 import com.decideforme.utils.BundleHelper;
 
 public class DecisionHome extends DashboardTabActivity {
@@ -52,6 +53,13 @@ public class DecisionHome extends DashboardTabActivity {
         intent.putExtra(DecisionColumns._ID, mDecisionRowId);
         spec = tabHost.newTabSpec("criteria").setIndicator("Criteria",
                           res.getDrawable(R.drawable.ic_tab_criteria))
+                      .setContent(intent);
+        tabHost.addTab(spec);
+        
+        intent = new Intent().setClass(this, RatingsScreen.class);
+        intent.putExtra(DecisionColumns._ID, mDecisionRowId);
+        spec = tabHost.newTabSpec("rate").setIndicator("Rate",
+                          res.getDrawable(R.drawable.ic_tab_rate))
                       .setContent(intent);
         tabHost.addTab(spec);
         

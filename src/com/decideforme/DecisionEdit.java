@@ -1,9 +1,6 @@
 package com.decideforme;
 
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,16 +9,15 @@ import android.widget.EditText;
 
 import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.db.decideforme.decision.DecisionDatabaseAdapter;
-import com.decideforme.competitors.CompetitorsScreen;
-import com.decideforme.criteria.CriteriaScreen;
 import com.decideforme.dashboard.DashboardActivity;
-import com.decideforme.ratings.RatingsScreen;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 
 
 public class DecisionEdit extends DashboardActivity {
 	static final String TAG = DecisionEdit.class.getName();
+	
+	private static final int DONE = Menu.FIRST;
 	
 	protected DecisionDatabaseAdapter mDecisionDBAdapter;
 	
@@ -30,10 +26,25 @@ public class DecisionEdit extends DashboardActivity {
 	
 	protected Long mDecisionRowId;
 
-	private static final int COMPETITORS_SCREEN = Menu.FIRST;
-	private static final int CRITERIA_SCREEN = Menu.FIRST + 1;
-	private static final int RATE = Menu.FIRST + 2;
-    private static final int DONE = Menu.FIRST + 3;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, DONE, 0, R.string.done).setIcon(R.drawable.ic_menu_revert);
+        return true;
+    }
+	
+    
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        switch(item.getItemId()) {
+	        case DONE:
+	        	saveState();
+	        	finish();
+	        	return true;
+        } 
+        
+        return super.onMenuItemSelected(featureId, item);
+    }
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,98 +80,6 @@ public class DecisionEdit extends DashboardActivity {
 	    }
 	    
 	    Log.d(TAG, " << populateFields()");
-	}
-
-	
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        menu.add(0, COMPETITORS_SCREEN, 0, R.string.competitors);
-        menu.add(1, CRITERIA_SCREEN, 1, R.string.criteria);
-        menu.add(2, RATE, 2, R.string.rating_screen);
-        menu.add(3, DONE, 3, R.string.done);
-        return true;
-    }
-	
-    
-    @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        switch(item.getItemId()) {
-	        case COMPETITORS_SCREEN:
-	            addCompetitor();
-	            return true;
-	        case CRITERIA_SCREEN:
-	            addCriterion();
-	            return true;
-	        case RATE:
-	            rating();
-	            return true;
-	        case DONE:
-	        	finish();
-	        	return true;
-        } 
-        
-        return super.onMenuItemSelected(featureId, item);
-    }
-    
-
-	private void rating() {
-		Log.d(TAG, " >> rating()");
-		
-		new PresentRatingScreen().execute();
-		
-		Log.d(TAG, " << rating()");
-	}
-	
-	private class PresentRatingScreen extends AsyncTask<Void, Void, Void> {
-		private ProgressDialog mProgressDialog;
-		
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			
-			mProgressDialog.dismiss();
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			
-			mProgressDialog = ProgressDialog.show(DecisionEdit.this,    
-		              "Just a sec...", "Crunching some numbers here...", true);
-			
-		}
-		
-
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			Intent i = new Intent(DecisionEdit.this, RatingsScreen.class);
-			i.putExtra(DecisionColumns._ID, mDecisionRowId);
-			startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
-			return null;
-		}
-		
-	}
-
-
-	private void addCompetitor() {
-		Log.d(TAG, " >> addCompetitor()");
-		
-		Intent i = new Intent(this, CompetitorsScreen.class);
-        i.putExtra(DecisionColumns._ID, mDecisionRowId);
-        startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
-		
-		Log.d(TAG, " << addCompetitor()");	
-	}
-	
-	private void addCriterion() {
-		Log.d(TAG, " >> addCriterion()");
-		
-		Intent i = new Intent(this, CriteriaScreen.class);
-        i.putExtra(DecisionColumns._ID, mDecisionRowId);
-        startActivityForResult(i, MyDecisions.ACTIVITY_EDIT);
-		
-		Log.d(TAG, " << addCriterion()");	
 	}
 
 

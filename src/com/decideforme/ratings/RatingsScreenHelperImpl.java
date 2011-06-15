@@ -72,7 +72,6 @@ public class RatingsScreenHelperImpl implements RatingsScreenHelper {
 		// get reference to our spinner
 		Spinner gridSpinner = new Spinner(activity);
 		gridSpinner.setAdapter(adapter);
-		
 		gridSpinner.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 		gridSpinner.setId(spinnerID);
 		

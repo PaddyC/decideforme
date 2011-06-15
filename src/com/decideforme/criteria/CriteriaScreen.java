@@ -10,13 +10,10 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -36,9 +33,7 @@ import com.decideforme.utils.TableLayoutHelperImpl;
 public class CriteriaScreen extends DashboardActivity {
 	private static final String TAG = CriteriaScreen.class.getName();
 
-	private static final int INSERT_ID = Menu.FIRST;
-    private static final int DELETE_ID = Menu.FIRST + 1;
-    private static final int BACK_ID = Menu.FIRST + 2;
+    private static final int BACK_ID = Menu.FIRST;
     
     public static final int ACTIVITY_EDIT=1;
     public static final int ACTIVITY_DELETE=2;
@@ -237,29 +232,20 @@ public class CriteriaScreen extends DashboardActivity {
 	        	Toast.makeText(getApplicationContext(), getString(R.string.nothing_deleted), Toast.LENGTH_SHORT).show();
     	 	}
 		});
-
-	     // display box
-	     alertbox.show();
+	    
+		alertbox.show();
 	 }
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, INSERT_ID, 0, R.string.add_criterion).setIcon(R.drawable.ic_menu_compose);
-        menu.add(1, DELETE_ID, 1, R.string.delete_criterion).setIcon(R.drawable.ic_menu_delete);
-        menu.add(2, BACK_ID, 2, R.string.done).setIcon(R.drawable.ic_menu_revert);
+        menu.add(1, BACK_ID, 1, R.string.done).setIcon(R.drawable.ic_menu_revert);
         return true;
     }
     
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         switch(item.getItemId()) {
-	        case INSERT_ID:
-	            createCriterion();
-	            return true;
-	        case DELETE_ID:
-	        	deleteCriterion();
-	        	return true;
 	        case BACK_ID:
 	        	finish();
 	        	return true;
@@ -281,37 +267,6 @@ public class CriteriaScreen extends DashboardActivity {
 		
 		Log.d(TAG, " << createCriterion()");
 		return id;
-	}
-
-    private void deleteCriterion() {
-		Log.d(TAG, " >> deleteCriterion()");
-		
-		Intent i = new Intent(this, CriterionDelete.class);
-		i.putExtra(CriterionColumns._ID, mDecisionRowId);
-        startActivityForResult(i, MyDecisions.ACTIVITY_DELETE);
-		
-		Log.d(TAG, " << deleteCriterion()");
-	}
-    
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		
-		menu.add(0, DELETE_ID, 0, R.string.menu_delete_criterion);
-	}
-
-    @Override
-	public boolean onContextItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-        case DELETE_ID:
-            AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-            mCriteriaDBAdapter.deleteCriterion(info.id);
-            fillData();
-            return true;
-        }
-    	return super.onContextItemSelected(item);
 	}
 
     @Override
