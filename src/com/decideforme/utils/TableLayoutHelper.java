@@ -5,6 +5,6 @@ import android.widget.TableRow;
 
 public interface TableLayoutHelper {
 	
-	public TableRow getNewRow(Activity activity);
+	public TableRow getNewRow(Activity activity, boolean setBackground);
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,7 +83,7 @@ public class RatingsScreen extends DashboardActivity {
 		mDecisionRowId = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
 
 		// Grid Start! Create the table layout:
-		mDynamicRatingTable = (TableLayout) findViewById(R.id.ratingTableLayout);
+		mDynamicRatingTable = (TableLayout) findViewById(R.id.ratingsTable);
 		
 		populateFields();
 	}
@@ -168,10 +169,12 @@ public class RatingsScreen extends DashboardActivity {
 	}
 	
 	private TableRow populateCompetitorRatingRow(String competitorName) {
-		TableRow nextRow = getmRatingTableLayoutHelper().getNewRow(this);
+		TableRow nextRow = getmRatingTableLayoutHelper().getNewRow(this, true);
 		
 		// Add the cell with the competitor name.
-		TextView competitorNameView = getmRatingTableLayoutHelper().getCompetitorNameTextView(this, competitorName);
+		TextView competitorNameView = new TextView(this);
+		competitorNameView.setTypeface(Typeface.SANS_SERIF, R.style.ColumnHeader);
+		competitorNameView.setText(competitorName);
 		nextRow.addView(competitorNameView);
 		
 		// Generate a spinner for each rating.
@@ -202,10 +205,12 @@ public class RatingsScreen extends DashboardActivity {
 
 
 	private TableRow populateCriteriaHeaderRow() {
-		TableRow firstRow = getmRatingTableLayoutHelper().getNewRow(this);
+		TableRow firstRow = getmRatingTableLayoutHelper().getNewRow(this, false);
 		
 		// Cell A1 is blank... this is intentional.
-		TextView blankText = getmRatingTableLayoutHelper().getCriterionNameTextView(this, "");
+		TextView blankText = new TextView(this);
+		blankText.setTypeface(Typeface.SANS_SERIF, R.style.ColumnHeader);
+		
 		firstRow.addView(blankText);
 		
 		mCriteriaRowIDs = new ArrayList<Long>();
@@ -216,7 +221,11 @@ public class RatingsScreen extends DashboardActivity {
 		allCriteria.moveToFirst();
         while (allCriteria.isAfterLast() == false) {
         	// Add a TextView with the Criterion Name
-        	TextView thisCriterion = getmRatingTableLayoutHelper().getCriterionNameTextView(this, allCriteria.getString(2));
+        	TextView thisCriterion = new TextView(this);
+    		thisCriterion.setTypeface(Typeface.SANS_SERIF, R.style.ColumnHeader);
+    		thisCriterion.setText(allCriteria.getString(2));
+    		thisCriterion.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield_default));
+    		
         	firstRow.addView(thisCriterion);
 
         	// Store the Criterion ID for later

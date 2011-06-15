@@ -84,7 +84,7 @@ public class CompetitorsScreen extends DashboardActivity {
     	
     	while(cCompetitors.isAfterLast() == false) {
     		TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
-        	TableRow thisRow = tableLayoutHelper.getNewRow(this);
+        	TableRow thisRow = tableLayoutHelper.getNewRow(this, true);
         	thisRow.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield_default));
         	
         	BigDecimal id = new BigDecimal(cCompetitors.getPosition()).multiply(new BigDecimal(100));
@@ -149,7 +149,7 @@ public class CompetitorsScreen extends DashboardActivity {
     private void fillAddButtonRow() {
     	
         TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
-    	TableRow thisRow = tableLayoutHelper.getNewRow(this);
+    	TableRow thisRow = tableLayoutHelper.getNewRow(this, false);
    	
     	TextView addCompetitor = new TextView(this);
     	

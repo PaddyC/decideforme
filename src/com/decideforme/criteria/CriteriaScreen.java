@@ -102,7 +102,7 @@ public class CriteriaScreen extends DashboardActivity {
     	
     	while(competitorsCursor.isAfterLast() == false) {
     		TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
-        	TableRow thisRow = tableLayoutHelper.getNewRow(this);
+        	TableRow thisRow = tableLayoutHelper.getNewRow(this, true);
         	thisRow.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield_default));
         	
         	BigDecimal id = new BigDecimal(competitorsCursor.getPosition()).multiply(new BigDecimal(100));
@@ -179,7 +179,7 @@ public class CriteriaScreen extends DashboardActivity {
     private void fillAddButtonRow() {
     	
         TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
-    	TableRow thisRow = tableLayoutHelper.getNewRow(this);
+    	TableRow thisRow = tableLayoutHelper.getNewRow(this, false);
    	
     	TextView addDecision = new TextView(this);
     	
