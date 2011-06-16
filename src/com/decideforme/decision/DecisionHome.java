@@ -1,4 +1,4 @@
-package com.decideforme;
+package com.decideforme.decision;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.TabHost;
 
 import com.db.decideforme.decision.Decision.DecisionColumns;
+import com.decideforme.R;
 import com.decideforme.competitors.CompetitorsScreen;
 import com.decideforme.criteria.CriteriaScreen;
 import com.decideforme.dashboard.DashboardTabActivity;
@@ -36,8 +37,8 @@ public class DecisionHome extends DashboardTabActivity {
         intent.putExtra(DecisionColumns._ID, mDecisionRowId);
 
         // Initialize a TabSpec for each tab and add it to the TabHost
-        spec = tabHost.newTabSpec("basics").setIndicator("Basics",
-                          res.getDrawable(R.drawable.ic_tab_decision))
+        spec = tabHost.newTabSpec("info").setIndicator("Info",
+                          res.getDrawable(R.drawable.ic_tab_info))
                       .setContent(intent);
         tabHost.addTab(spec);
 

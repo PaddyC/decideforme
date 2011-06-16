@@ -2,13 +2,14 @@ package com.db.decideforme.decisionrating;
 
 import android.provider.BaseColumns;
 
-public class DecisionRatings {
+import com.db.decideforme.DatabaseObject;
+
+public class DecisionRatings extends DatabaseObject {
 	
 	private DecisionRatings() {
 	}
 	public static final String TABLE_NAME = "decisionratings";
 	
-	public static final Integer COLUMN_INDEX_ROWID = 0;
 	public static final Integer COLUMN_INDEX_DECISIONID = 1;
 	public static final Integer COLUMN_INDEX_CRITERIONID = 2;
 	public static final Integer COLUMN_INDEX_COMPETITORID = 3;

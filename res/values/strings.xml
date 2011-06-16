@@ -43,11 +43,8 @@
     
     <string name="want_to_delete">Want to delete \'"</string>
     <string name="nothing_deleted">Ok, didn\'t delete anything.</string>
-    <string name="deleted_decision">Deleted decision named \'</string>
-    <string name="deleted_competitor">Deleted competitor named \'</string>
-    <string name="deleted_criterion">Deleted criterion named \'</string>
-
-    
+    <string name="deleted">Deleted \'</string>
+        
     <string name="ok">Ok</string>
     <string name="back">Back</string>
     <string name="done">Done</string>

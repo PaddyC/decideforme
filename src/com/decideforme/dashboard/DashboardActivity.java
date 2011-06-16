@@ -5,17 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.db.decideforme.decision.Decision.DecisionColumns;
-import com.decideforme.DecisionHome;
-import com.decideforme.MyDecisions;
 import com.decideforme.R;
+import com.decideforme.decision.DecisionHelper;
+import com.decideforme.decision.DecisionHome;
+import com.decideforme.decision.MyDecisions;
 
 public abstract class DashboardActivity extends Activity {
+
+	private static final int OK = Menu.FIRST;
 
 	protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
@@ -64,7 +68,7 @@ public abstract class DashboardActivity extends Activity {
 	          startActivity (new Intent(getApplicationContext(), MyDecisions.class));
 	          break;
 	      case R.id.home_btn_feature2 :
-	    	  long decisionID = createNewDecision();
+	    	  long decisionID = DecisionHelper.createNewDecision(this);
 	    	 
 	    	  Intent i = new Intent(getApplicationContext(), DecisionHome.class);
 	    	  i.putExtra(DecisionColumns._ID, decisionID);
@@ -75,15 +79,6 @@ public abstract class DashboardActivity extends Activity {
 	    }
 	}
 
-	private long createNewDecision() {
-		DecisionDatabaseAdapter decisionDBAdapter = new DecisionDatabaseAdapter(this);
-		decisionDBAdapter.open();
-		Integer nextDecisionNumber = decisionDBAdapter.getNextDecisionSequenceID();
-		String decisionName = "D" + nextDecisionNumber;
-  
-		long decisionID = decisionDBAdapter.createDecision(decisionName, "");
-		return decisionID;
-	}
 
 	public void goHome(Context context)	{
 	    final Intent intent = new Intent(context, HomeActivity.class);
@@ -124,5 +119,25 @@ public abstract class DashboardActivity extends Activity {
 	public void trace (String msg) {
 	    Log.d("Demo", msg);
 	    toast (msg);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    menu.add(0, OK, 0, R.string.done).setIcon(R.drawable.ic_menu_revert);
+	    return true;
+	}
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+	    
+		boolean result = false;
+		
+		switch(item.getItemId()) {
+	        case OK:
+	        	finish();
+	        	result = true;
+	    } 
+		
+		return result;
 	}
 }

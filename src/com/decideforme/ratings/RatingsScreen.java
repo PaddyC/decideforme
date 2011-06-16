@@ -6,8 +6,6 @@ import java.util.List;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -38,8 +36,6 @@ import com.decideforme.utils.BundleHelper;
 public class RatingsScreen extends DashboardActivity {
 	public static final String TAG = RatingsScreen.class.getName();
 	
-	private static final int DONE = Menu.FIRST;
-	
 	private Long mDecisionRowId;
 	private Long mThisCompetitorRowId;
 	private Long mThisCriterionRowId;
@@ -53,25 +49,6 @@ public class RatingsScreen extends DashboardActivity {
 	private List<Long> mRatingSystemIDs;
 	private List<Long> mCriteriaRowIDs;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        menu.add(0, DONE, 0, R.string.done).setIcon(R.drawable.ic_menu_revert);
-        return true;
-    }
-	
-    
-    @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        switch(item.getItemId()) {
-	        case DONE:
-	        	saveState();
-	        	finish();
-	        	return true;
-        } 
-        
-        return super.onMenuItemSelected(featureId, item);
-    }
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -173,7 +150,7 @@ public class RatingsScreen extends DashboardActivity {
 		
 		// Add the cell with the competitor name.
 		TextView competitorNameView = new TextView(this);
-		competitorNameView.setTypeface(Typeface.SANS_SERIF, R.style.ColumnHeader);
+		competitorNameView.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
 		competitorNameView.setText(competitorName);
 		nextRow.addView(competitorNameView);
 		
@@ -209,7 +186,7 @@ public class RatingsScreen extends DashboardActivity {
 		
 		// Cell A1 is blank... this is intentional.
 		TextView blankText = new TextView(this);
-		blankText.setTypeface(Typeface.SANS_SERIF, R.style.ColumnHeader);
+		blankText.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
 		
 		firstRow.addView(blankText);
 		
@@ -222,7 +199,7 @@ public class RatingsScreen extends DashboardActivity {
         while (allCriteria.isAfterLast() == false) {
         	// Add a TextView with the Criterion Name
         	TextView thisCriterion = new TextView(this);
-    		thisCriterion.setTypeface(Typeface.SANS_SERIF, R.style.ColumnHeader);
+    		thisCriterion.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
     		thisCriterion.setText(allCriteria.getString(2));
     		thisCriterion.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield_default));
     		

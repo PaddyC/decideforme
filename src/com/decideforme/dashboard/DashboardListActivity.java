@@ -1,8 +1,8 @@
 package com.decideforme.dashboard;
 
-import com.decideforme.DecisionEdit;
-import com.decideforme.MyDecisions;
 import com.decideforme.R;
+import com.decideforme.decision.DecisionEdit;
+import com.decideforme.decision.MyDecisions;
 
 import android.app.ListActivity;
 import android.content.Context;

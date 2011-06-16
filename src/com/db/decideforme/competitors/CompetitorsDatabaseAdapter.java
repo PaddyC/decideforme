@@ -9,6 +9,7 @@ import android.util.Log;
 import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.decideforme.utils.StringUtils;
+import com.decideforme.utils.SubjectConstants;
 
 
 public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
@@ -16,6 +17,7 @@ public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
 
 	public CompetitorsDatabaseAdapter(Context ctx) {
 		super(ctx);
+		setSubject(SubjectConstants.COMPETITOR);
 	}
 	
     public Integer getNextCompetitorSequenceID() {
@@ -114,6 +116,7 @@ public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
     	} else {
     		whereClause.append(CompetitorColumns.DESCRIPTION + "= '" + competitorName + "'");	
     	}
+    	Log.d(TAG, "Where Clause: " + whereClause);
     	
     	Cursor mCursor = mDb.query(
             		true, 

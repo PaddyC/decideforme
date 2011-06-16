@@ -11,6 +11,7 @@ import android.util.Log;
 import com.db.decideforme.DatabaseScripts;
 import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.decideforme.utils.StringUtils;
+import com.decideforme.utils.SubjectConstants;
 /**
  * 
  * @author PaddyC
@@ -19,12 +20,15 @@ import com.decideforme.utils.StringUtils;
 public class DecisionDatabaseAdapter {
 	private static final String TAG = "DecisionDatabaseAdapter";
 	
+	private Integer subject;
+	
     private final Context mContext;
     private DatabaseHelper mDbHelper;
     protected SQLiteDatabase mDb;
 	
     public DecisionDatabaseAdapter(Context ctx) {
     	this.mContext = ctx;
+    	this.subject = SubjectConstants.DECISION;
     }
     
     public static class DatabaseHelper extends SQLiteOpenHelper {
@@ -188,6 +192,14 @@ public class DecisionDatabaseAdapter {
 
 	public DatabaseHelper getmDbHelper() {
 		return mDbHelper;
+	}
+
+	public void setSubject(Integer subject) {
+		this.subject = subject;
+	}
+
+	public Integer getSubject() {
+		return subject;
 	}
 }
 

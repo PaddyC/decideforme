@@ -2,7 +2,9 @@ package com.db.decideforme.ratingsystems;
 
 import android.provider.BaseColumns;
 
-public class RatingSystem {
+import com.db.decideforme.DatabaseObject;
+
+public class RatingSystem extends DatabaseObject {
 	
 	public static final String TABLE_NAME = "ratingsystem";
 	

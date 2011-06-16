@@ -19,13 +19,13 @@
         <activity 	android:theme="@style/Theme.D1" 
         		  	android:name="com.decideforme.dashboard.HomeActivity">
         	<intent-filter>
-                <action android:name="com.decideforme.MyDecisions" />
+                <action android:name="com.decideforme.decision.MyDecisions" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>         
         
         <activity 	android:theme="@style/Theme.D1"
-        			android:name="MyDecisions"
+        			android:name="com.decideforme.decision.MyDecisions"
         			android:label="@string/my_decisions">
        	</activity>
 
@@ -39,7 +39,7 @@
         </activity>     
 
         <activity 	android:theme="@style/Theme.D1" 
-        		  	android:name="com.decideforme.DecisionHome"
+        		  	android:name="com.decideforme.decision.DecisionHome"
         		  	android:label="@string/decision_home"></activity>  
 
         <activity 	android:theme="@style/Theme.D1" 
@@ -47,12 +47,9 @@
         		  	android:label="@string/search_screen"></activity>         		  	   		  	       
         
         <activity 	android:theme="@style/Theme.D1" 
-        		  	android:name="com.decideforme.DecisionEdit"
+        		  	android:name="com.decideforme.decision.DecisionEdit"
         		  	android:label="@string/edit_decision"></activity>
-        
-        <activity 	android:theme="@style/Theme.D1"
-        			android:name="com.decideforme.DecisionDelete"
-        			android:label="@string/delete_decision"></activity>
+
         
         <activity 	android:theme="@style/Theme.D1"
         			android:name="com.decideforme.competitors.CompetitorsScreen"
@@ -61,10 +58,7 @@
         <activity 	android:theme="@style/Theme.D1"
         			android:name="com.decideforme.competitors.CompetitorEdit"
         			android:label="@string/edit_competitor"></activity>
-        			
-        <activity 	android:theme="@style/Theme.D1"
-        			android:name="com.decideforme.competitors.CompetitorDelete"
-        			android:label="@string/delete_competitor"></activity>
+
 
 		<activity 	android:theme="@style/Theme.D1"
 					android:name="com.decideforme.criteria.CriteriaScreen"
@@ -73,10 +67,7 @@
 		<activity 	android:theme="@style/Theme.D1"
 					android:name="com.decideforme.criteria.CriterionEdit"
 					android:label="@string/edit_criterion"></activity>
-					
-        <activity 	android:theme="@style/Theme.D1"
-        			android:name="com.decideforme.criteria.CriterionDelete"
-        			android:label="@string/delete_criteria"></activity>
+
         
         <activity 	android:theme="@style/Theme.D1"
         			android:name="com.decideforme.ratings.RatingsScreen"

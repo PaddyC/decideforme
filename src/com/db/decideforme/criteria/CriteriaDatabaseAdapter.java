@@ -9,12 +9,14 @@ import android.util.Log;
 import com.db.decideforme.criteria.Criterion.CriterionColumns;
 import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.decideforme.utils.StringUtils;
+import com.decideforme.utils.SubjectConstants;
 
 public class CriteriaDatabaseAdapter extends DecisionDatabaseAdapter {
 	private static final String TAG = CriteriaDatabaseAdapter.class.getName();
 
 	public CriteriaDatabaseAdapter(Context ctx) {
 		super(ctx);
+		setSubject(SubjectConstants.CRITERION);
 	}
 
     public Integer getNextCriterionSequenceID() {

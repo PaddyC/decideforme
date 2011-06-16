@@ -33,7 +33,7 @@ public class SplashScreen extends Activity {
                     // do nothing
                 } finally {
                     finish();
-                    startActivity(new Intent("com.decideforme.MyDecisions"));
+                    startActivity(new Intent("com.decideforme.decision.MyDecisions"));
                     stop();
                 }
             }

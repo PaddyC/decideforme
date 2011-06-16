@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.decideforme.DecisionEdit;
-import com.decideforme.MyDecisions;
 import com.decideforme.R;
+import com.decideforme.decision.DecisionEdit;
+import com.decideforme.decision.MyDecisions;
 
 public class DashboardTabActivity extends TabActivity {
 	protected void onCreate(Bundle savedInstanceState) {
