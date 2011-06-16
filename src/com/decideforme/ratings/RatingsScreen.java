@@ -12,6 +12,7 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
+import com.db.decideforme.criteria.Criterion;
 import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.db.decideforme.decisionrating.DecisionRatingsDatabaseAdapter;
 import com.decideforme.R;
@@ -29,7 +30,6 @@ import com.decideforme.utils.BundleHelper;
  * After populating the first row, we then have a new row for each competitor associated with this decision.
  *  The first cell in the row holds the competitor name, and subsequent cells hold the rating system corresponding
  *  with the Criterion in the column header.
- * Next we will 
  * @author PaddyC
  *
  */
@@ -200,15 +200,15 @@ public class RatingsScreen extends DashboardActivity {
         	// Add a TextView with the Criterion Name
         	TextView thisCriterion = new TextView(this);
     		thisCriterion.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
-    		thisCriterion.setText(allCriteria.getString(2));
+    		thisCriterion.setText(allCriteria.getString(Criterion.COLUMN_INDEX_DECRIPTION));
     		thisCriterion.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield_default));
     		
         	firstRow.addView(thisCriterion);
 
         	// Store the Criterion ID for later
-        	mCriteriaRowIDs.add(allCriteria.getLong(0));
+        	mCriteriaRowIDs.add(allCriteria.getLong(Criterion.COLUMN_INDEX_ROW_ID));
         	// Store the Rating System ID for later
-        	mRatingSystemIDs.add(allCriteria.getLong(3));
+        	mRatingSystemIDs.add(allCriteria.getLong(Criterion.COLUMN_INDEX_RATING_SYSTEM));
         	
             allCriteria.moveToNext();
         }

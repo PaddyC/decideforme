@@ -8,7 +8,7 @@
     <string name="about_app">About DecideForMe</string>
     <string name="search_screen">Search</string>
     
-    <string name="no_decisions">No Decisions yet, use the menu button to add a new one..</string>
+    <string name="no_decisions">No Decisions right now :  </string>
     <string name="decision_id">_decisionid</string>
     <string name="decision_name">Decision Name: </string>
     <string name="decision_description">Description: </string>
@@ -20,14 +20,14 @@
     <string name="edit_decision">Edit Decision</string>
     <string name="delete_decision">Delete Decision</string>
     
-    <string name="no_competitors">What are you trying to decide between?</string>
+    <string name="no_competitors">No choices right now :  </string>
     <string name="competitors">Competitors</string>
    	<string name="add_competitor">Add Competitor</string>
    	<string name="edit_competitor">Edit Competitor</string>
     <string name="delete_competitor">Delete Competitor</string>
     <string name="competitor_name">Competitor Name: </string>
     
-    <string name="no_criteria">No criteria yet, use the menu button to add a new one..</string>
+    <string name="no_criteria">No criteria right now :</string>
 
     <string name="criterion_name">Criterion Name: </string>
     <string name="rating_system_select">Choose a rating system:</string>

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -23,12 +24,13 @@ import com.decideforme.competitors.CompetitorEdit;
 import com.decideforme.competitors.CompetitorHelper;
 import com.decideforme.competitors.CompetitorsScreen;
 import com.decideforme.criteria.CriteriaHelper;
+import com.decideforme.criteria.CriteriaScreen;
 import com.decideforme.criteria.CriterionEdit;
 import com.decideforme.decision.DecisionHelper;
 import com.decideforme.decision.DecisionHome;
 import com.decideforme.decision.MyDecisions;
 
-public class ButtonHelperImpl implements ButtonHelper {
+public class ViewHelperImpl implements ViewHelper {
 	
 	private long mDecisionRowId;
 	private Activity mThisActivity;
@@ -36,10 +38,34 @@ public class ButtonHelperImpl implements ButtonHelper {
 	private Integer nameColumnIndex;
 	private String subjectName;
 	
-	public ButtonHelperImpl(long decisionRowId, Activity activity, Integer subject) {
+	public ViewHelperImpl(long decisionRowId, Activity activity, Integer subject) {
 		setmDecisionRowId(decisionRowId);
 		setmThisActivity(activity);
 		setSubject(subject);
+	}
+	
+	public TextView getTextView(int viewId, String text, int style, boolean setBackground, boolean clickable) {
+    	
+		TextView thisTextView = new TextView(getmThisActivity());
+		thisTextView.setText(text);
+		thisTextView.setId(viewId++);
+		thisTextView.setTypeface(Typeface.SANS_SERIF, style);
+		
+		if (setBackground) {
+			thisTextView.setBackgroundDrawable(getmThisActivity().getResources().getDrawable(R.drawable.textfield));
+		}
+		
+		if (clickable) {
+			thisTextView.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View thisView) {
+					Intent intent = getDestinationIntentForEdit(thisView);
+					getmThisActivity().startActivity(intent);
+				}
+			});
+		}
+
+		return thisTextView;
+		
 	}
 	
 
@@ -213,9 +239,9 @@ public class ButtonHelperImpl implements ButtonHelper {
 		    	} else if (getmThisActivity() instanceof CompetitorsScreen) {
 		    		CompetitorsScreen competitors = (CompetitorsScreen) getmThisActivity();
 		    		competitors.fillData();
-		    	} else if (getmThisActivity() instanceof CompetitorsScreen) {
-		    		CompetitorsScreen competitors = (CompetitorsScreen) getmThisActivity();
-		    		competitors.fillData();
+		    	} else if (getmThisActivity() instanceof CriteriaScreen) {
+		    		CriteriaScreen criteria = (CriteriaScreen) getmThisActivity();
+		    		criteria.fillData();
 		    	}
 			}
     	});
