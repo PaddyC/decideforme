@@ -44,6 +44,16 @@
               			<TextView   android:id="@+id/spacer1" android:layout_width="wrap_content" 
               						android:layout_height="wrap_content" android:padding="3dip" android:visibility="invisible"/>
               			
+              			<TextView 	android:id="@+id/choicesHeader" 
+              						android:text="Choices" 
+              						android:textStyle="bold"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="13sp"/>
+              			<TextView 	android:id="@+id/decisionSummaryCompetitors"
+              						android:text="Your decision was between [Competitors]." 
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="12sp"/>
+              			
               			<TextView 	android:id="@+id/decisionSummaryWinner"
               						android:text="Based on your ratings, [Competitor] is the preferred option overall."
               						android:layout_width="wrap_content" android:layout_height="wrap_content" 
@@ -60,18 +70,6 @@
 						<TextView   android:id="@+id/spacer2" android:layout_width="wrap_content" android:layout_height="wrap_content" 
 									android:padding="1dip" android:visibility="invisible"/>
               			
-              			<TextView   android:id="@+id/spacer3" android:layout_width="wrap_content" android:layout_height="wrap_content" 
-              						android:padding="2dip" android:visibility="invisible"/>
-              			
-              			<TextView 	android:id="@+id/choicesHeader" 
-              						android:text="Choices" 
-              						android:textStyle="bold"
-              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
-              						android:layout_gravity="left" android:textSize="13sp"/>
-              			<TextView 	android:id="@+id/decisionSummaryCompetitors"
-              						android:text="Your decision was between [Competitors]." 
-              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
-              						android:layout_gravity="left" android:textSize="12sp"/>
               			<TextView 	android:id="@+id/competitorReport"
               						android:text="[EachCompetitor] scored well on [TopCriteria], but badly when rated for [BottomCriteria]." 
               						android:layout_width="wrap_content" android:layout_height="wrap_content" 

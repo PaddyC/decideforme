@@ -3,7 +3,6 @@ package com.decideforme.competitors;
 import java.math.BigDecimal;
 import java.util.List;
 
-import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;

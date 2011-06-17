@@ -5,16 +5,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
+import android.widget.Toast;
 
 import com.db.decideforme.competitors.Competitor;
 import com.db.decideforme.criteria.Criterion;
@@ -36,6 +40,9 @@ public class ReportActivity extends DashboardActivity {
 	private LinearLayout mReportLayout;
 	private long mDecisionRowId;
 	
+	private String emailSubject;
+	private String emailBody;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,6 +51,22 @@ public class ReportActivity extends DashboardActivity {
 		
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		mDecisionRowId = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
+		
+		Button emailButton = (Button) findViewById(R.id.emailButton);
+		emailButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View thisView) {
+				Intent i = new Intent(Intent.ACTION_SEND);
+				i.setType("text/plain");
+				i.putExtra(Intent.EXTRA_EMAIL  , new String[]{});
+				i.putExtra(Intent.EXTRA_SUBJECT, getEmailSubject());
+				i.putExtra(Intent.EXTRA_TEXT   , getEmailBody());
+				try {
+				    startActivity(Intent.createChooser(i, "Send mail..."));
+				} catch (android.content.ActivityNotFoundException ex) {
+				    Toast.makeText(ReportActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
 
 		fillReport();
 	}
@@ -55,6 +78,8 @@ public class ReportActivity extends DashboardActivity {
 				getResources().getDrawable(R.drawable.textfield_default));
 		
 		Typeface envyCode = Typeface.createFromAsset(getAssets(), "fonts/Envy Code R.ttf");
+		
+		
 		
 		// get decision name : header row
 		Cursor thisDecision = DecisionHelper.getDecision(this, mDecisionRowId);
@@ -69,6 +94,8 @@ public class ReportActivity extends DashboardActivity {
 		TextView reportSubHeader = (TextView) findViewById(R.id.reportSubHeader);
 		reportSubHeader.setTypeface(envyCode);
 		reportSubHeader.setText(decisionDesc);
+		
+		setTheEmailSubject(decisionName, decisionDesc);
 		
 		// criteria
 		List<Criterion> allCriteriaForDecision = CriteriaHelper.getAllCriteriaForDecision(this, mDecisionRowId);
@@ -142,6 +169,7 @@ public class ReportActivity extends DashboardActivity {
 		rankingTable.addView(header);
 		
 		Integer i = 1;
+		StringBuilder emailRanking = new StringBuilder(getResources().getString(R.string.ranking_table));
 		for (CompetitorOverallRating rating : overallRatings) {
 			TableRow rankingRow = new TableRow(this);
 			rankingRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
@@ -149,6 +177,7 @@ public class ReportActivity extends DashboardActivity {
 			TextView rank = new TextView(this);
 			rank.setGravity(Gravity.CENTER);
 			rank.setText(i.toString());
+			
 			rankingRow.addView(rank);
 			
 			TextView competitor = new TextView(this);
@@ -156,7 +185,35 @@ public class ReportActivity extends DashboardActivity {
 			rankingRow.addView(competitor);
 			
 			rankingTable.addView(rankingRow);
+			
+			emailRanking.append("\n" + i.toString() + ". ");
+			emailRanking.append(rating.getCompetitorName());
 			i++;
+		}
+		
+		StringBuilder emailBodyBuilder = new StringBuilder(getResources().getString(R.string.report_ident));
+		emailBodyBuilder.append("\n\n" + getResources().getString(R.string.decision_name) + " " + decisionName);
+		emailBodyBuilder.append("\n" + getResources().getString(R.string.decision_description) + " " + decisionDesc);
+		emailBodyBuilder.append("\n\n" + getResources().getString(R.string.competitors));
+		emailBodyBuilder.append("\n" + allCompetitors);
+		emailBodyBuilder.append(preferredOption);
+		emailBodyBuilder.append("\n\n" + emailRanking);
+		emailBodyBuilder.append("\n\n" + competitorEvaluation);
+		emailBodyBuilder.append("\n\n" + getResources().getString(R.string.criteria));
+		emailBodyBuilder.append("\n" + allCriteria);
+		emailBodyBuilder.append(criteriaEvaluation);
+		setEmailBody(emailBodyBuilder.toString());
+	}
+
+	private void setTheEmailSubject(String decisionName, String decisionDesc) {
+		if (decisionName == null || "".equalsIgnoreCase(decisionName)) {
+			if (decisionDesc == null || "".equalsIgnoreCase(decisionDesc)) {
+				setEmailSubject(getResources().getString(R.string.app_name));
+			} else {
+				setEmailSubject(getResources().getString(R.string.email_subject) + " : " + decisionDesc);
+			}
+		} else {
+			setEmailSubject(getResources().getString(R.string.email_subject) + " : " + decisionName);
 		}
 	}
 	
@@ -165,6 +222,22 @@ public class ReportActivity extends DashboardActivity {
 		super.onResume();
 		fillReport();
 		Log.d(TAG, " << onResume()");
+	}
+
+	public void setEmailSubject(String emailSubject) {
+		this.emailSubject = emailSubject;
+	}
+
+	public String getEmailSubject() {
+		return emailSubject;
+	}
+
+	public void setEmailBody(String emailBody) {
+		this.emailBody = emailBody;
+	}
+
+	public String getEmailBody() {
+		return emailBody;
 	}
 
 }

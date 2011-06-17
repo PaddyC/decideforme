@@ -118,7 +118,7 @@ public class RatingsScreen extends DashboardActivity {
 	private void repopulateRatingsOnResume() {
 		
 		List<Competitor> competitorList = CompetitorHelper.getAllCompetitorsForDecision(this, mDecisionRowId);
-		for (Competitor thisCompetitor : competitorList) {
+		for (int i = 0; i < competitorList.size(); i++) {
 		
 			for (int criterionCount = 0; criterionCount < mRatingSystemIDs.size(); criterionCount++) {
 				mThisCriterionRowId = mCriteriaRowIDs.get(criterionCount);
