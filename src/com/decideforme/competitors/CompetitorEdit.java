@@ -1,6 +1,5 @@
 package com.decideforme.competitors;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.EditText;
 
@@ -30,8 +29,8 @@ public class CompetitorEdit extends DashboardActivity {
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		competitorRowID = bundleHelper.getBundledFieldLongValue(CompetitorColumns._ID);
 		
-		Cursor thisCompetitorCursor = CompetitorHelper.getCompetitor(this, competitorRowID);
-		decisionRowID = thisCompetitorCursor.getLong(Competitor.COLUMN_INDEX_DECISION_ID);
+		Competitor thisCompetitor = CompetitorHelper.getCompetitor(this, competitorRowID).get(0);
+		decisionRowID = thisCompetitor.getDecisionId();
 		
 		populateFields();
 		
@@ -40,8 +39,8 @@ public class CompetitorEdit extends DashboardActivity {
 	protected void populateFields() {
 		
 	    if (competitorRowID != null) {
-	        Cursor competitorCursor = CompetitorHelper.getCompetitor(this, competitorRowID);
-	        competitorName.setText(competitorCursor.getString(competitorCursor.getColumnIndexOrThrow(CompetitorColumns.DESCRIPTION)));
+	    	Competitor thisCompetitor = CompetitorHelper.getCompetitor(this, competitorRowID).get(0);
+	        competitorName.setText(thisCompetitor.getDescription());
 	    }
 
 	}

@@ -1,8 +1,9 @@
 package com.decideforme.criteria;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TableLayout;
@@ -15,7 +16,6 @@ import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.utils.BundleHelper;
 import com.decideforme.utils.StringUtils;
 import com.decideforme.utils.SubjectConstants;
-import com.decideforme.utils.TableLayoutHelperImpl;
 import com.decideforme.utils.ViewHelper;
 import com.decideforme.utils.ViewHelperImpl;
 
@@ -62,36 +62,33 @@ public class CriteriaScreen extends DashboardActivity {
 		if(mDynamicCriteriaTable.getChildCount() > 0) {
 			mDynamicCriteriaTable.removeAllViews();
 		}
-		TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
-		
-    	ViewHelper viewHelper = new ViewHelperImpl(mDecisionRowId, this, SubjectConstants.CRITERION);
+		ViewHelper viewHelper = new ViewHelperImpl(mDecisionRowId, this, SubjectConstants.CRITERION);
     	
-        Cursor competitorsCursor = CriteriaHelper.getAllCriteriaForDecision(this, mDecisionRowId);
-        if (competitorsCursor.getCount() == 0) {
-        	TableRow thisRow = tableLayoutHelper.getNewRow(this, true);
-        	thisRow.addView(viewHelper.getTextView(0, getResources().getString(R.string.no_criteria), R.style.HomeButton, true, false));
+        List<Criterion> criteriaList = CriteriaHelper.getAllCriteriaForDecision(this, mDecisionRowId);
+        if (criteriaList.size() == 0) {
+        	TableRow thisRow = viewHelper.getNewRow(this, true);
+        	thisRow.addView(viewHelper.getTextView(
+        			0, getResources().getString(R.string.no_criteria), R.style.HomeButton, Typeface.SANS_SERIF, true, false));
         	thisRow.addView(viewHelper.getNewButton(1));
         	
         	mDynamicCriteriaTable.addView(thisRow);
         } else {
-            competitorsCursor.moveToFirst();
-        	
-        	while(competitorsCursor.isAfterLast() == false) {
-        		TableRow thisRow = tableLayoutHelper.getNewRow(this, true);
-            	
-            	BigDecimal id = new BigDecimal(competitorsCursor.getPosition()).multiply(new BigDecimal(100));
+            for (int criterionIndex = 0; criterionIndex < criteriaList.size(); criterionIndex++) {
+            	Criterion currentCriterion = criteriaList.get(criterionIndex);
+        		TableRow thisRow = viewHelper.getNewRow(this, true);
+        		
+            	BigDecimal id = new BigDecimal(criterionIndex).multiply(new BigDecimal(100));
             	Integer viewId = id.intValue();
 
-            	String criterionDesc = competitorsCursor.getString(Criterion.COLUMN_INDEX_DECRIPTION);
-        		thisRow.addView(viewHelper.getTextView(viewId++, criterionDesc, R.style.HomeButton, true, true));
+            	String criterionDesc = currentCriterion.getDescription();
+        		thisRow.addView(viewHelper.getTextView(
+        				viewId++, criterionDesc, R.style.HomeButton, Typeface.SANS_SERIF, true, true));
         		
         		thisRow.addView(viewHelper.getNewButton(viewId++));
         		thisRow.addView(viewHelper.getEditButton(viewId++));
         		thisRow.addView(viewHelper.getDeleteButton(viewId++));
         		
         		mDynamicCriteriaTable.addView(thisRow);
-            	   		
-            	competitorsCursor.moveToNext();
         	}
         }
 

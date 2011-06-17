@@ -11,9 +11,21 @@ public final class Competitor extends DatabaseObject {
 	public static final Integer COLUMN_INDEX_DECISION_ID = 1;
 	public static final Integer COLUMN_INDEX_DESCRIPTION = 2;
 	
-	// This class cannot be instantiated.
-	private Competitor() {
+	private Long decisionId;
+	private String description;
+	public Competitor(Long rowId, Long decisionId, String description) {
+		this.rowId = rowId;
+		this.decisionId = decisionId;
+		this.description = description;
 	};
+
+	public Long getDecisionId() {
+		return decisionId;
+	}
+
+	public String getDescription() {
+		return description;
+	}
 
 	public static final class CompetitorColumns implements BaseColumns {
 		

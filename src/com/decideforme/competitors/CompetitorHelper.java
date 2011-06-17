@@ -1,8 +1,12 @@
 package com.decideforme.competitors;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.database.Cursor;
 
+import com.db.CursorUtils;
+import com.db.decideforme.competitors.Competitor;
 import com.db.decideforme.competitors.CompetitorsDatabaseAdapter;
 
 public class CompetitorHelper {
@@ -38,12 +42,13 @@ public class CompetitorHelper {
 
 	}
     
-    public static Cursor getAllCompetitorsForDecision(Activity thisActivity, long decisionRowId) {
+    public static List<Competitor> getAllCompetitorsForDecision(Activity thisActivity, long decisionRowId) {
     	
-    	CompetitorsDatabaseAdapter mCompetitorsDBAdapter = getDatabaseAdapter(thisActivity);
+    	CompetitorsDatabaseAdapter competitorDatabaseAdapter = getDatabaseAdapter(thisActivity);
     	
-    	Cursor cCompetitors = mCompetitorsDBAdapter.fetchAllCompetitorsForDecision(decisionRowId);
-    	return cCompetitors;
+		Cursor allCompetitorsForDecision = competitorDatabaseAdapter.fetchAllCompetitorsForDecision(decisionRowId);
+		
+		return CursorUtils.getCompetitorForCursor(allCompetitorsForDecision);
     }
     
     public static Cursor getCompetitorByName(Activity thisActivity, long decisionRowId, String competitorName) {
@@ -54,11 +59,13 @@ public class CompetitorHelper {
     	
     }
     
-    public static Cursor getCompetitor(Activity thisActivity, long competitorRowId) {
+    public static List<Competitor> getCompetitor(Activity thisActivity, long competitorRowId) {
     	
     	CompetitorsDatabaseAdapter mCompetitorsDBAdapter = getDatabaseAdapter(thisActivity);
 		Cursor cCompetitors = mCompetitorsDBAdapter.fetchCompetitor(competitorRowId);
-		return cCompetitors;
+		List<Competitor> competitorList = CursorUtils.getCompetitorForCursor(cCompetitors);
+		mCompetitorsDBAdapter.close();
+		return competitorList;
     	
     }
     

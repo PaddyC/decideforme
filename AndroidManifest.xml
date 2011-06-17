@@ -7,7 +7,7 @@
     <application
     	android:theme="@style/Theme.D1"	 
     	android:icon="@drawable/icon" 
-    	android:label="@string/app_name">
+    	android:label="@string/app_name" android:debuggable="true">
         <activity android:name="com.decideforme.splash.SplashScreen"
                   android:label="@string/app_name">
             <intent-filter>
@@ -73,8 +73,11 @@
         			android:name="com.decideforme.ratings.RatingsScreen"
         			android:label="@string/rating_screen"></activity>
         
+                <activity 	android:theme="@style/Theme.D1"
+        			android:name="com.decideforme.report.ReportActivity"
+        			android:label="@string/report_screen"></activity>
         
     </application>
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="7" />
 
 </manifest> 

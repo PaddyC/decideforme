@@ -6,8 +6,6 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TableRow.LayoutParams;
 
-import com.db.decideforme.competitors.CompetitorsDatabaseAdapter;
-import com.db.decideforme.criteria.CriteriaDatabaseAdapter;
 import com.db.decideforme.ratinginstance.RatingInstance.RatingInstanceColumns;
 import com.db.decideforme.ratinginstance.RatingInstanceDatabaseAdapter;
 
@@ -30,16 +28,6 @@ public class RatingsScreenHelperImpl implements RatingsScreenHelper {
 		}
 		return instance;
 	}
-	
-
-	public Cursor fetchAllCompetitorsForDecision(Activity activity, Long decisionRowID) {
-		CompetitorsDatabaseAdapter competitorDatabaseAdapter = new CompetitorsDatabaseAdapter(activity);
-		competitorDatabaseAdapter.open();
-		Cursor allCompetitorsForDecision = competitorDatabaseAdapter.fetchAllCompetitorsForDecision(decisionRowID);
-		
-		return allCompetitorsForDecision;
-	}
-
 
 	public Cursor fetchAllRatingInstancesForSystem(Activity activity, Long ratingSystemID) {
 		RatingInstanceDatabaseAdapter ratingInstanceDatabaseAdapter = new RatingInstanceDatabaseAdapter(activity);
@@ -49,14 +37,6 @@ public class RatingsScreenHelperImpl implements RatingsScreenHelper {
 		return allInstancesForSystemCursor;
 	}
 
-
-	public Cursor fetchAllCriteriaForDecision(Activity activity, Long decisionRowID) {
-		CriteriaDatabaseAdapter criteriaDatabaseAdapter = new CriteriaDatabaseAdapter(activity);
-		criteriaDatabaseAdapter.open();
-		Cursor allCriteriaForDecision = criteriaDatabaseAdapter.fetchAllCriteriaForDecision(decisionRowID);
-		
-		return allCriteriaForDecision;
-	}
 
 
 	public Spinner generateRatingsSpinner(Activity activity, Long ratingSystemID, Integer spinnerID) {

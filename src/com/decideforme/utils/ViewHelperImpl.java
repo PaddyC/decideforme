@@ -9,6 +9,8 @@ import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TableRow;
+import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,7 @@ import com.decideforme.criteria.CriterionEdit;
 import com.decideforme.decision.DecisionHelper;
 import com.decideforme.decision.DecisionHome;
 import com.decideforme.decision.MyDecisions;
+import com.decideforme.report.ReportActivity;
 
 public class ViewHelperImpl implements ViewHelper {
 	
@@ -44,12 +47,13 @@ public class ViewHelperImpl implements ViewHelper {
 		setSubject(subject);
 	}
 	
-	public TextView getTextView(int viewId, String text, int style, boolean setBackground, boolean clickable) {
+	public TextView getTextView(int viewId, String text, int style, Typeface typeFace, boolean setBackground, boolean clickable) {
     	
 		TextView thisTextView = new TextView(getmThisActivity());
 		thisTextView.setText(text);
 		thisTextView.setId(viewId++);
-		thisTextView.setTypeface(Typeface.SANS_SERIF, style);
+		thisTextView.setTypeface(typeFace, style);
+		thisTextView.setGravity(Gravity.CLIP_HORIZONTAL);
 		
 		if (setBackground) {
 			thisTextView.setBackgroundDrawable(getmThisActivity().getResources().getDrawable(R.drawable.textfield));
@@ -146,7 +150,7 @@ public class ViewHelperImpl implements ViewHelper {
 			break;
 		case SubjectConstants.CRITERION:
 			intent = new Intent().setClass(getmThisActivity(), CriterionEdit.class);
-			intent.putExtra(CriterionColumns._ID, thisCursor.getLong(Criterion.COLUMN_INDEX_ROW_ID));
+			intent.putExtra(CriterionColumns._ID, thisCursor.getLong(DatabaseObject.COLUMN_INDEX_ROW_ID));
 			intent.putExtra(CriterionColumns.DECISIONID, getmDecisionRowId());
 			break;
 		}
@@ -255,6 +259,34 @@ public class ViewHelperImpl implements ViewHelper {
 	    
 		alertbox.show();
 	 }
+	
+
+	public Button getReportButton(int viewId) {
+		
+		Button reportButton = new Button(getmThisActivity());
+		reportButton.setBackgroundDrawable(getmThisActivity().getResources().getDrawable(R.drawable.report_button));
+		reportButton.setId(viewId);
+		reportButton.setGravity(Gravity.CLIP_VERTICAL);
+		reportButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View thisView) {
+				Intent intent = new Intent().setClass(getmThisActivity(), ReportActivity.class);
+				intent.putExtra(DecisionColumns._ID, getmDecisionRowId());
+				getmThisActivity().startActivity(intent);
+			}
+		});
+		return reportButton;
+		
+	}
+	
+	public TableRow getNewRow(Activity activity, boolean setBackground) {
+		TableRow tableRow = new TableRow(activity);
+		tableRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
+		tableRow.setPadding(1, 1, 1, 1);
+		if (setBackground) {
+			tableRow.setBackgroundResource(R.drawable.textfield_default);
+		}
+		return tableRow;
+	}
 
 	public void setmDecisionRowId(long mDecisionRowId) {
 		this.mDecisionRowId = mDecisionRowId;
@@ -295,4 +327,5 @@ public class ViewHelperImpl implements ViewHelper {
 	public String getSubjectName() {
 		return subjectName;
 	}
+
 }

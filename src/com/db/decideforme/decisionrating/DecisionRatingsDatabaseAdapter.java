@@ -13,6 +13,14 @@ import com.db.decideforme.ratinginstance.RatingInstanceDatabaseAdapter;
 
 public class DecisionRatingsDatabaseAdapter extends DecisionDatabaseAdapter {
 	public static final String TAG = DecisionRatingsDatabaseAdapter.class.getName();
+	
+    private String[] decisionRatingColumns = new String[] {
+			DecisionRatingsColumns._ID, 
+			DecisionRatingsColumns.DECISIONID, 
+			DecisionRatingsColumns.COMPETITORID, 
+			DecisionRatingsColumns.CRITERIONID, 
+			DecisionRatingsColumns.RATINGSELECTIONID
+		};
 
 	public DecisionRatingsDatabaseAdapter(Context ctx) {
 		super(ctx);
@@ -51,16 +59,21 @@ public class DecisionRatingsDatabaseAdapter extends DecisionDatabaseAdapter {
         whereClause.append(DecisionRatingsColumns.COMPETITORID + " = " + competitorID + " AND ");
         whereClause.append(DecisionRatingsColumns.CRITERIONID + " = " + criterionID);
     	
+		Cursor mCursor = mDb.query(true, DecisionRatings.TABLE_NAME, decisionRatingColumns, whereClause.toString(), 
+            		null, null, null, null, null);
+        
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        
+        return mCursor;
+    }
+    
+    public Cursor fetchAllRatingsForDecision(Long decisionID) throws SQLException {
+    	StringBuilder whereClause = new StringBuilder(DecisionRatingsColumns.DECISIONID + " = " + decisionID);
+        
         Cursor mCursor = mDb.query(
-            		true, DecisionRatings.TABLE_NAME, 
-            		new String[] {
-            			DecisionRatingsColumns._ID, 
-            			DecisionRatingsColumns.DECISIONID, 
-            			DecisionRatingsColumns.COMPETITORID, 
-            			DecisionRatingsColumns.CRITERIONID, 
-            			DecisionRatingsColumns.RATINGSELECTIONID
-            		},
-            		whereClause.toString(), 
+            		true, DecisionRatings.TABLE_NAME, decisionRatingColumns,whereClause.toString(), 
             		null, null, null, null, null);
         
         if (mCursor != null) {
@@ -95,4 +108,32 @@ public class DecisionRatingsDatabaseAdapter extends DecisionDatabaseAdapter {
     	
 		return decisionRatingExists;
     }
+
+	public Cursor fetchAllRatingsForDecisionCompetitor(long decisionRowId, long competitorRowId) {
+    	
+		StringBuilder whereClause = new StringBuilder(DecisionRatingsColumns.DECISIONID + " = " + decisionRowId + " AND ");
+        whereClause.append(DecisionRatingsColumns.COMPETITORID + " = " + competitorRowId);
+    	
+        Cursor mCursor = mDb.query(true, DecisionRatings.TABLE_NAME, decisionRatingColumns, 
+        						   whereClause.toString(), null, null, null, null, null);
+        
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+	}
+	
+	public Cursor fetchAllRatingsForDecisionCriterion(long decisionRowId, long criterionRowId) {
+    	
+		StringBuilder whereClause = new StringBuilder(DecisionRatingsColumns.DECISIONID + " = " + decisionRowId + " AND ");
+        whereClause.append(DecisionRatingsColumns.CRITERIONID + " = " + criterionRowId);
+    	
+        Cursor mCursor = mDb.query(true, DecisionRatings.TABLE_NAME, decisionRatingColumns, 
+        						   whereClause.toString(), null, null, null, null, null);
+        
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+	}
 }

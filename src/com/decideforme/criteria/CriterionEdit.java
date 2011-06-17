@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
+import com.db.decideforme.criteria.Criterion;
 import com.db.decideforme.criteria.Criterion.CriterionColumns;
 import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.db.decideforme.ratingsystems.RatingSystem;
@@ -43,8 +44,8 @@ public class CriterionEdit extends DashboardActivity {
 
 
 		// Competitor must be associated with a decision.
-		Cursor thisCriterionCursor = CriteriaHelper.getCriterion(this, criterionRowID);
-		decisionRowId = thisCriterionCursor.getLong(thisCriterionCursor.getColumnIndexOrThrow(CriterionColumns.DECISIONID));
+		Criterion thisCriterion = CriteriaHelper.getCriterion(this, criterionRowID).get(0);
+		decisionRowId = thisCriterion.getDecisionId();
 		
 		populateFields();
 		
@@ -54,8 +55,8 @@ public class CriterionEdit extends DashboardActivity {
 	protected void populateFields() {
 		
 	    if (criterionRowID != null) {
-	        Cursor criteriaCursor = CriteriaHelper.getCriterion(this, criterionRowID);
-	        mCriterionName.setText(criteriaCursor.getString(criteriaCursor.getColumnIndexOrThrow(CriterionColumns.DESCRIPTION)));
+	    	Criterion thisCriterion = CriteriaHelper.getCriterion(this, criterionRowID).get(0);
+	        mCriterionName.setText(thisCriterion.getDescription());
 	    }
 	    
 	    populateRatingSystemSpinner();

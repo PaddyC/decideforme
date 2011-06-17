@@ -27,6 +27,30 @@
     <string name="delete_competitor">Delete Competitor</string>
     <string name="competitor_name">Competitor Name: </string>
     
+    <string name="report_no_competitors">There were no competitors</string>
+    <string name="report_one_competitor">There was only one competitor:</string>
+    <string name="report_competitors">You were deciding between the options of </string>
+    <string name="report_no_criteria">There were no criteria selected</string>
+    <string name="report_one_criterion">There was only one criterion chosen to evaluate the options:</string>
+    <string name="report_criteria">The criteria used to evaluate the options were </string>
+    <string name="empty_string"></string>
+    
+    <string name="report_preference_preamble">Based on your ratings, </string>
+    <string name="report_no_preference"> there was no preferred option</string>
+    <string name="report_one_preference"> is the preferred option overall</string>
+    <string name="report_preferences"> were considered to be equally preferable options</string>
+    
+    <string name="report_competitor_strength_preamble">scored well against</string>
+    <string name="report_competitor_weakness_preamble">, but was rated lower on</string>
+    <string name="report_no_competitor_ratings"> nothing, as there were no ratings</string>
+    
+    <string name="report_criterion_preamble">The best rating for</string>
+    <string name="report_criterion_strength_preamble">was given to</string>
+    <string name="report_criterion_weakness_preamble">, and the worst was given to</string>
+    <string name="jointly">jointly</string>
+    <string name="both">both</string>
+    <string name="ranking_table">Ranking Table:</string>
+    
     <string name="no_criteria">No criteria right now :</string>
 
     <string name="criterion_name">Criterion Name: </string>
@@ -39,6 +63,7 @@
     <string name="delete_criterion">Delete Criterion</string>
     
     <string name="rating_screen">Rating Screen</string>
+    <string name="report_screen">Decision Report</string>
     
     
     <string name="want_to_delete">Want to delete \'"</string>

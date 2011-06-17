@@ -5,9 +5,8 @@ import java.math.BigDecimal;
 import android.util.Log;
 
 import com.decideforme.utils.StringUtils;
-import com.decideforme.utils.TableLayoutHelperImpl;
 
-public class RatingTableLayoutHelperImpl extends TableLayoutHelperImpl implements RatingTableLayoutHelper {
+public class RatingTableLayoutHelperImpl implements RatingTableLayoutHelper {
 	public static final String TAG = RatingTableLayoutHelper.class.getName();
 
 	private static RatingTableLayoutHelperImpl instance;

@@ -12,14 +12,20 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
+import com.db.decideforme.competitors.Competitor;
 import com.db.decideforme.criteria.Criterion;
 import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.db.decideforme.decisionrating.DecisionRatingsDatabaseAdapter;
 import com.decideforme.R;
+import com.decideforme.competitors.CompetitorHelper;
+import com.decideforme.criteria.CriteriaHelper;
 import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.ratings.grid.RatingTableLayoutHelper;
 import com.decideforme.ratings.grid.RatingTableLayoutHelperImpl;
 import com.decideforme.utils.BundleHelper;
+import com.decideforme.utils.SubjectConstants;
+import com.decideforme.utils.ViewHelper;
+import com.decideforme.utils.ViewHelperImpl;
 /**
  * This class is all about getting a Grid to display, which will present the user with the rating system..<p>
  * Competitors will be listed down Column A, Criteria will display across row 1.<p>
@@ -67,11 +73,10 @@ public class RatingsScreen extends DashboardActivity {
 	
 
 	protected void saveState() {
-		Cursor allCompetitors = getmRatingsScreenHelper().fetchAllCompetitorsForDecision(this, mDecisionRowId);
-		allCompetitors.moveToFirst();
-		while(allCompetitors.isAfterLast() == false) {
+		List<Competitor> competitorList = CompetitorHelper.getAllCompetitorsForDecision(this, mDecisionRowId);
+		for (Competitor thisCompetitor : competitorList) {
+			mThisCompetitorRowId = thisCompetitor.getRowId();
 			
-			mThisCompetitorRowId = allCompetitors.getLong(0);
 			for (int criterionCount = 0; criterionCount < mRatingSystemIDs.size(); criterionCount++) {
 				mThisCriterionRowId = mCriteriaRowIDs.get(criterionCount);
 				
@@ -92,8 +97,6 @@ public class RatingsScreen extends DashboardActivity {
 					decisionRatingDBAdapter.createDecisionRating(mDecisionRowId, mThisCompetitorRowId, mThisCriterionRowId, ratingInstanceID);
 				} 
 			}
-			
-			allCompetitors.moveToNext();
 		}
 	}
 
@@ -103,23 +106,20 @@ public class RatingsScreen extends DashboardActivity {
 		TableRow firstRow = populateCriteriaHeaderRow();
 		mDynamicRatingTable.addView(firstRow, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
 		
-		Cursor allCompetitors = getmRatingsScreenHelper().fetchAllCompetitorsForDecision(this, mDecisionRowId);
-		allCompetitors.moveToFirst();
-		while(allCompetitors.isAfterLast() == false) {
-			mThisCompetitorRowId = allCompetitors.getLong(0);
+		List<Competitor> competitorList = CompetitorHelper.getAllCompetitorsForDecision(this, mDecisionRowId);
+		for (Competitor thisCompetitor : competitorList) {
+			mThisCompetitorRowId = thisCompetitor.getRowId();
 			// Row 2+: Competitor Names with a spinner for each criterion rating system..
-			TableRow nextRow = populateCompetitorRatingRow(allCompetitors.getString(2));
+			TableRow nextRow = populateCompetitorRatingRow(thisCompetitor.getDescription());
 			mDynamicRatingTable.addView(nextRow, new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
-
-			allCompetitors.moveToNext();
 		}
-		allCompetitors.close();
 	}
 	
 	private void repopulateRatingsOnResume() {
-		Cursor allCompetitors = getmRatingsScreenHelper().fetchAllCompetitorsForDecision(this, mDecisionRowId);
-		allCompetitors.moveToFirst();
-		while(allCompetitors.isAfterLast() == false) {
+		
+		List<Competitor> competitorList = CompetitorHelper.getAllCompetitorsForDecision(this, mDecisionRowId);
+		for (Competitor thisCompetitor : competitorList) {
+		
 			for (int criterionCount = 0; criterionCount < mRatingSystemIDs.size(); criterionCount++) {
 				mThisCriterionRowId = mCriteriaRowIDs.get(criterionCount);
 				mThisRatingSystemId = mRatingSystemIDs.get(criterionCount);
@@ -140,13 +140,12 @@ public class RatingsScreen extends DashboardActivity {
 					thisSpinner.setSelection(spinnerPosition);
 				}
 			}
-			allCompetitors.moveToNext();
 		}
-		allCompetitors.close();	
 	}
 	
 	private TableRow populateCompetitorRatingRow(String competitorName) {
-		TableRow nextRow = getmRatingTableLayoutHelper().getNewRow(this, true);
+		ViewHelper viewHelper = new ViewHelperImpl(mDecisionRowId, this, SubjectConstants.DECISION);
+		TableRow nextRow = viewHelper.getNewRow(this, true);
 		
 		// Add the cell with the competitor name.
 		TextView competitorNameView = new TextView(this);
@@ -182,7 +181,8 @@ public class RatingsScreen extends DashboardActivity {
 
 
 	private TableRow populateCriteriaHeaderRow() {
-		TableRow firstRow = getmRatingTableLayoutHelper().getNewRow(this, false);
+		ViewHelper viewHelper = new ViewHelperImpl(mDecisionRowId, this, SubjectConstants.DECISION);
+		TableRow firstRow = viewHelper.getNewRow(this, false);
 		
 		// Cell A1 is blank... this is intentional.
 		TextView blankText = new TextView(this);
@@ -193,26 +193,22 @@ public class RatingsScreen extends DashboardActivity {
 		mCriteriaRowIDs = new ArrayList<Long>();
 		mRatingSystemIDs = new ArrayList<Long>();
 		
-		Cursor allCriteria = getmRatingsScreenHelper().fetchAllCriteriaForDecision(this, mDecisionRowId);
-		
-		allCriteria.moveToFirst();
-        while (allCriteria.isAfterLast() == false) {
+		List<Criterion> allCriteriaForDecision = CriteriaHelper.getAllCriteriaForDecision(this, mDecisionRowId);
+		for (Criterion thisCriterion : allCriteriaForDecision) {
         	// Add a TextView with the Criterion Name
-        	TextView thisCriterion = new TextView(this);
-    		thisCriterion.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
-    		thisCriterion.setText(allCriteria.getString(Criterion.COLUMN_INDEX_DECRIPTION));
-    		thisCriterion.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield_default));
+        	TextView thisCriterionView = new TextView(this);
+       		thisCriterionView.setTypeface(Typeface.SANS_SERIF, R.style.HomeButton);
+       		thisCriterionView.setText(thisCriterion.getDescription());
+       		thisCriterionView.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield_default));
     		
-        	firstRow.addView(thisCriterion);
+        	firstRow.addView(thisCriterionView);
 
         	// Store the Criterion ID for later
-        	mCriteriaRowIDs.add(allCriteria.getLong(Criterion.COLUMN_INDEX_ROW_ID));
+        	mCriteriaRowIDs.add(thisCriterion.getRowId());
         	// Store the Rating System ID for later
-        	mRatingSystemIDs.add(allCriteria.getLong(Criterion.COLUMN_INDEX_RATING_SYSTEM));
-        	
-            allCriteria.moveToNext();
+        	mRatingSystemIDs.add(thisCriterion.getRatingSystemId());
         }
-        allCriteria.close();
+        
 		
 		return firstRow;
 	}

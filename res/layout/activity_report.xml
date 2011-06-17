@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
+    <LinearLayout style="@style/TitleBar">
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="@string/description_home"
+            android:src="@drawable/title_home"
+            android:onClick="onClickHome" />
+
+        <ImageView style="@style/TitleBarSeparator" />
+        <TextView style="@style/TitleBarText" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="@string/description_about"
+            android:src="@drawable/title_about"
+            android:onClick="onClickAbout" />
+        <ImageButton style="@style/TitleBarAction"
+            android:contentDescription="@string/description_search"
+            android:src="@drawable/title_search"
+            android:onClick="onClickSearch" />
+    </LinearLayout>
+    
+   	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent">
+						      	
+		    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:id="@+id/report"
+		      	android:layout_width="fill_parent"
+		    	android:layout_height="fill_parent"
+		    	android:orientation="vertical">
+		    		    <TextView 	android:id="@+id/reportHeader"
+		    		    			android:text="Report Sub-Title" 
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="center" android:textStyle="bold"
+              						android:textSize="22sp"/>
+              			<TextView 	android:text="Report Sub-Title" android:id="@+id/reportSubHeader"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="center" android:textSize="18sp"/>
+              			
+              			<TextView   android:id="@+id/spacer1" android:layout_width="wrap_content" 
+              						android:layout_height="wrap_content" android:padding="3dip" android:visibility="invisible"/>
+              			
+              			<TextView 	android:id="@+id/decisionSummaryWinner"
+              						android:text="Based on your ratings, [Competitor] is the preferred option overall."
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:textStyle="bold"
+              						android:layout_gravity="center" android:textSize="13sp"/>
+					
+						<TextView   android:id="@+id/spacer2" android:layout_width="wrap_content" android:layout_height="wrap_content" 
+									android:padding="1dip" android:visibility="invisible"/>
+
+						<TableLayout android:id="@+id/rankings" 
+									android:layout_width="wrap_content" android:layout_height="wrap_content" 
+									android:layout_gravity="center" android:textSize="12sp"/>
+						
+						<TextView   android:id="@+id/spacer2" android:layout_width="wrap_content" android:layout_height="wrap_content" 
+									android:padding="1dip" android:visibility="invisible"/>
+              			
+              			<TextView   android:id="@+id/spacer3" android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:padding="2dip" android:visibility="invisible"/>
+              			
+              			<TextView 	android:id="@+id/choicesHeader" 
+              						android:text="Choices" 
+              						android:textStyle="bold"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="13sp"/>
+              			<TextView 	android:id="@+id/decisionSummaryCompetitors"
+              						android:text="Your decision was between [Competitors]." 
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="12sp"/>
+              			<TextView 	android:id="@+id/competitorReport"
+              						android:text="[EachCompetitor] scored well on [TopCriteria], but badly when rated for [BottomCriteria]." 
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="12sp"/>
+              						
+              			<TextView   android:id="@+id/spacer4" android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:padding="1dip" android:visibility="invisible"/>
+              						
+              			<TextView 	android:id="@+id/criteriaHeader" 
+              						android:text="Criteria" 
+              						android:textStyle="bold"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="13sp"/> 
+              			<TextView 	android:id="@+id/decisionSummaryCriteria"
+              						android:text="The criteria used to evaluate the options were [Criteria]." 
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="12sp"/>             						
+              			<TextView 	android:id="@+id/criterionReport"
+              						android:text="The best rating for [EachCriterion] was given to [TopCompetitors], and the worst was given to [BottomCompetitors]." 
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="12sp"/>
+              			
+              			<TextView   android:id="@+id/spacer4" android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:padding="1dip" android:visibility="invisible"/>
+              			
+              			<TextView 	android:id="@+id/thanks"
+	              					android:text="Thanks for using DecideForMe!" 
+	              					android:textStyle="bold"
+	              					android:layout_width="wrap_content" android:layout_height="wrap_content" 
+	              					android:layout_gravity="center" android:textSize="12sp"/>
+              						
+              			<Button 	android:id="@+id/emailButton" android:text="Email this report"
+	              						android:textStyle="bold"
+	              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+	              						android:layout_gravity="center" android:textSize="12sp"/>
+	              		              						
+			</LinearLayout>
+		
+	</ScrollView>
+
+</LinearLayout>

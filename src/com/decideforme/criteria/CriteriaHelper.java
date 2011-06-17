@@ -1,9 +1,13 @@
 package com.decideforme.criteria;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.database.Cursor;
 
+import com.db.CursorUtils;
 import com.db.decideforme.criteria.CriteriaDatabaseAdapter;
+import com.db.decideforme.criteria.Criterion;
 
 public class CriteriaHelper {
 
@@ -25,10 +29,14 @@ public class CriteriaHelper {
     	return criteriaDBAdapter.updateCriterion(criterionRowId, description, ratingSystemId);
     }
     
-    public static Cursor getCriterion(Activity thisActivity, long criterionRowId) {
+    public static List<Criterion> getCriterion(Activity thisActivity, long criterionRowId) {
     	CriteriaDatabaseAdapter criteriaDBAdapter = getDatabaseAdapter(thisActivity);
 		Cursor cCriteria = criteriaDBAdapter.fetchCriterion(criterionRowId);
-		return cCriteria;
+		List<Criterion> criteriaList = CursorUtils.getCriteriaForCursor(cCriteria);
+		
+		criteriaDBAdapter.close();
+		
+		return criteriaList;
     }
     
     public static Cursor getCriterionByName(Activity thisActivity, long decisionRowId, String criterionName) {
@@ -37,10 +45,12 @@ public class CriteriaHelper {
 		return cCriteria;
     }
     
-    public static Cursor getAllCriteriaForDecision(Activity thisActivity, long decisionRowId) {
+    public static List<Criterion> getAllCriteriaForDecision(Activity thisActivity, long decisionRowId) {
     	CriteriaDatabaseAdapter criteriaDBAdapter = getDatabaseAdapter(thisActivity);
-    	Cursor competitorsCursor = criteriaDBAdapter.fetchAllCriteriaForDecision(decisionRowId);
-    	return competitorsCursor;
+    	Cursor allCriteriaForDecision = criteriaDBAdapter.fetchAllCriteriaForDecision(decisionRowId);
+    	List<Criterion> criteriaForDecision = CursorUtils.getCriteriaForCursor(allCriteriaForDecision);
+    	criteriaDBAdapter.close();
+    	return criteriaForDecision;
     }
     
     public static boolean deleteCriterion(Activity thisActivity, long criterionRowId) {

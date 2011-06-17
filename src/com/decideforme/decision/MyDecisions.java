@@ -3,6 +3,7 @@ package com.decideforme.decision;
 import java.math.BigDecimal;
 
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -11,7 +12,6 @@ import com.db.decideforme.decision.Decision;
 import com.decideforme.R;
 import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.utils.SubjectConstants;
-import com.decideforme.utils.TableLayoutHelperImpl;
 import com.decideforme.utils.ViewHelper;
 import com.decideforme.utils.ViewHelperImpl;
 
@@ -48,17 +48,16 @@ public class MyDecisions extends DashboardActivity {
 		if(mDynamicDecisionTable.getChildCount() > 0) {
 			mDynamicDecisionTable.removeAllViews();
 		}
-		TableLayoutHelperImpl tableLayoutHelper = new TableLayoutHelperImpl();
-    	
-    	long decisionRowID = 0;
+		long decisionRowID = 0;
     	ViewHelper viewHelper;
     	
 		Cursor cDecisions = DecisionHelper.fetchAllDecisions(this);
     	cDecisions.moveToFirst();
     	if (cDecisions.getCount() == 0) {
     		viewHelper = new ViewHelperImpl(decisionRowID, this, SubjectConstants.DECISION);
-    		TableRow thisRow = tableLayoutHelper.getNewRow(this, true);
-    		thisRow.addView(viewHelper.getTextView(0, getResources().getString(R.string.no_decisions), R.style.HomeButton, true, true));
+    		TableRow thisRow = viewHelper.getNewRow(this, true);
+    		thisRow.addView(viewHelper.getTextView(
+    				0, getResources().getString(R.string.no_decisions), R.style.HomeButton, Typeface.SANS_SERIF, true, true));
     		
     		thisRow.addView(viewHelper.getNewButton(1));
     		
@@ -68,17 +67,20 @@ public class MyDecisions extends DashboardActivity {
         	viewHelper = new ViewHelperImpl(decisionRowID, this, SubjectConstants.DECISION);
         	
         	while(cDecisions.isAfterLast() == false) {
-        		TableRow thisRow = tableLayoutHelper.getNewRow(this, true);
+        		TableRow thisRow = viewHelper.getNewRow(this, true);
         		
             	BigDecimal id = new BigDecimal(cDecisions.getPosition()).multiply(new BigDecimal(100));
             	Integer viewId = id.intValue();
             	
             	String decisionNameText = cDecisions.getString(Decision.COLUMN_INDEX_NAME);
-            	thisRow.addView(viewHelper.getTextView(viewId++, decisionNameText, R.style.HomeButton, true, true));
+            	thisRow.addView(viewHelper.getTextView(
+            			viewId++, decisionNameText, R.style.HomeButton, Typeface.SANS_SERIF, true, true));
         		
         		thisRow.addView(viewHelper.getNewButton(viewId++));
         		thisRow.addView(viewHelper.getEditButton(viewId++));
         		thisRow.addView(viewHelper.getDeleteButton(viewId++));
+        		
+        		thisRow.addView(viewHelper.getReportButton(viewId++));
         		
             	mDynamicDecisionTable.addView(thisRow);
             	   		
