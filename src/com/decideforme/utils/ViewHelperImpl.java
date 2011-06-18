@@ -79,7 +79,7 @@ public class ViewHelperImpl implements ViewHelper {
 		
 		Button newButton = new Button(thisActivity);
 		newButton.setId(viewId);
-		newButton.setBackgroundDrawable(thisActivity.getResources().getDrawable(R.drawable.add_button));
+		newButton.setBackgroundDrawable(thisActivity.getResources().getDrawable(R.drawable.green_add_button));
 		newButton.setGravity(Gravity.CLIP_VERTICAL);
 		newButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View thisView) {
@@ -121,7 +121,7 @@ public class ViewHelperImpl implements ViewHelper {
 		
 		Activity thisActivity = getmThisActivity();
 		Button editButton = new Button(thisActivity);
-		editButton.setBackgroundDrawable(thisActivity.getResources().getDrawable(R.drawable.edit_button));
+		editButton.setBackgroundDrawable(thisActivity.getResources().getDrawable(R.drawable.blue_edit_button));
 		editButton.setId(viewId);
 		editButton.setGravity(Gravity.CLIP_VERTICAL);
 		editButton.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +160,7 @@ public class ViewHelperImpl implements ViewHelper {
 	public Button getDeleteButton(int viewId) {
 		
 		Button deleteButton = new Button(getmThisActivity());
-		deleteButton.setBackgroundDrawable(getmThisActivity().getResources().getDrawable(R.drawable.delete_button));
+		deleteButton.setBackgroundDrawable(getmThisActivity().getResources().getDrawable(R.drawable.red_delete_button));
 		deleteButton.setId(viewId);
 		deleteButton.setGravity(Gravity.CLIP_VERTICAL);
 		deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -264,7 +264,7 @@ public class ViewHelperImpl implements ViewHelper {
 	public Button getReportButton(int viewId) {
 		
 		Button reportButton = new Button(getmThisActivity());
-		reportButton.setBackgroundDrawable(getmThisActivity().getResources().getDrawable(R.drawable.report_button));
+		reportButton.setBackgroundDrawable(getmThisActivity().getResources().getDrawable(R.drawable.dk_report_button));
 		reportButton.setId(viewId);
 		reportButton.setGravity(Gravity.CLIP_VERTICAL);
 		reportButton.setOnClickListener(new View.OnClickListener() {
