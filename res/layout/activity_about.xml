@@ -21,9 +21,93 @@
             android:src="@drawable/title_search"
             android:onClick="onClickSearch" />
     </LinearLayout>
-<TextView  
-    android:layout_width="wrap_content" 
-    android:layout_height="wrap_content" 
-    android:text="@string/about_intro"
-    />
+	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent">
+						      	
+		    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				android:id="@+id/report"
+		      	android:layout_width="fill_parent"
+		    	android:layout_height="fill_parent"
+		    	android:orientation="vertical">
+              			
+              			<TextView 	android:id="@+id/instructionsHeader"
+              						android:text="The Instructions"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:textStyle="bold" android:padding="2dip"
+              						android:layout_gravity="center" android:textSize="13sp"/>
+              						
+              			<TextView 	android:id="@+id/instructionsIntro"
+              						android:text="@string/instructions_intro" android:padding="5dip"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="center" android:textSize="12sp"/>
+              			
+              			<ImageView	android:id="@+id/newDecision" android:layout_gravity="center"
+              						android:src="@drawable/decision_infopage"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+              						
+              			<TextView 	android:id="@+id/instructionsIntro"
+              						android:text="@string/instructions_new"  android:padding="5dip"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="12sp"/>
+
+              			<ImageView	android:id="@+id/infoTab" android:layout_gravity="center"
+              						android:src="@drawable/infotab_infopage"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+              						
+              			<TextView 	android:id="@+id/instructionsInfo"
+              						android:text="@string/instructions_info"  android:padding="5dip"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="12sp"/>
+
+              			<ImageView	android:id="@+id/choicesTab" android:layout_gravity="center"
+              						android:src="@drawable/choicestab_infopage"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+              						              						
+              			<TextView 	android:id="@+id/instructionsChoices"
+              						android:text="@string/instructions_choices"  android:padding="5dip"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="12sp"/>
+
+              			<ImageView	android:id="@+id/criteriaTab" android:layout_gravity="center"
+              						android:src="@drawable/criteriatab_infopage"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+              						                    						
+              			<TextView 	android:id="@+id/instructionsCriteria"
+              						android:text="@string/instructions_criteria"  android:padding="5dip"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="12sp"/>
+              						
+              			<ImageView	android:id="@+id/rateTab" android:layout_gravity="center"
+              						android:src="@drawable/ratetab_infopage"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+              						                    		
+              			<TextView 	android:id="@+id/instructionsRate"
+              						android:text="@string/instructions_rate"  android:padding="5dip"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="12sp"/>
+              						
+              			<ImageView	android:id="@+id/report" android:layout_gravity="center"
+              						android:src="@drawable/report_button_normal"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+              						                    		              						
+              			<TextView 	android:id="@+id/instructionsReport"
+              						android:text="@string/instructions_report"  android:padding="5dip"
+              						android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:layout_gravity="left" android:textSize="12sp"/>
+              						              			              						              						              						              						              						              											
+              			
+              			<TextView   android:id="@+id/spacer4" android:layout_width="wrap_content" android:layout_height="wrap_content" 
+              						android:padding="1dip" android:visibility="invisible"/>
+              			
+              			<TextView 	android:id="@+id/thanks"
+	              					android:text="Thanks for using DecideForMe!" 
+	              					android:textStyle="bold"
+	              					android:layout_width="wrap_content" android:layout_height="wrap_content" 
+	              					android:layout_gravity="center" android:textSize="12sp"/>
+
+	              		              						
+			</LinearLayout>
+		
+	</ScrollView>
 </LinearLayout>

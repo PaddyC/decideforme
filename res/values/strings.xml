@@ -108,6 +108,16 @@
     <string name="title_feature5">Feature 5</string>
     <string name="title_feature6">Feature 6</string>
     
-    <string name="about_intro">DecideForMe is a decision support tool. Create a decision from the home page, add competitors and criteria, and then rate! Once you have rated your decision, you can email your report to any email address.</string>
+    <string name="about_header">The Skinny</string>
+    <string name="about_intro">DecideForMe supports a rational decision-making process. When deciding between options, DecideForMe\'s decision wizard will help you make a decision grid to rate your choices against each other. Once you have finished rating your choices, you can grab the automatically generated report and email it using any email application installed on your phone.</string>
+    <string name="instructions_header">The Instructions (a 6-step plan)</string>
+    <string name="instructions_intro">Follow these steps to be decisive!</string>
+    <string name="instructions_new">1. Add a new Decision with the \'Add Decision\' button on the homepage. This opens the Decision Home page, with a bunch of tabs.</string>
+    <string name="instructions_info">2. On the info tab, give your decision a name and a description.</string>
+    <string name="instructions_choices">3. On the choices tab, add the things you\'re deciding between.</string>
+    <string name="instructions_criteria">4. The criteria tab provides a way of deciding between your choices. Criteria are traits or characteristics like speed, cost, and desirability. Your criteria will be given a rating system, for example \'How Good?\', or \'Traffic Lights\'</string>
+    <string name="instructions_rate">5. The rating tab gives you the rating grid, where you can rate each of your choices against your selected criteria.</string>
+    <string name="instructions_report">6. Done rating? Head back to the main page, and go to \'My Decisions\'. The report button will give you a summary of your decision, which you can then forward in an email.</string>
     <string name="search_intro">Content for the Search page goes here.</string>
 </resources>
+
