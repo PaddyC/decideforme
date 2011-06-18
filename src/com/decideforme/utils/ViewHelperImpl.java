@@ -62,7 +62,7 @@ public class ViewHelperImpl implements ViewHelper {
 		if (clickable) {
 			thisTextView.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View thisView) {
-					Intent intent = getDestinationIntentForEdit(thisView);
+					Intent intent = getDestinationIntentForEdit(thisView, 0);
 					getmThisActivity().startActivity(intent);
 				}
 			});
@@ -126,7 +126,7 @@ public class ViewHelperImpl implements ViewHelper {
 		editButton.setGravity(Gravity.CLIP_VERTICAL);
 		editButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View thisView) {
-				Intent intent = getDestinationIntentForEdit(thisView);
+				Intent intent = getDestinationIntentForEdit(thisView, 2);
 				getmThisActivity().startActivity(intent);
 			}
 		});
@@ -134,9 +134,9 @@ public class ViewHelperImpl implements ViewHelper {
 		return editButton;
 	}
 	
-	private Intent getDestinationIntentForEdit(View thisView) {
+	private Intent getDestinationIntentForEdit(View thisView, Integer offSet) {
 		
-		Cursor thisCursor = getObject(getmThisActivity(), thisView, 2);
+		Cursor thisCursor = getObject(getmThisActivity(), thisView, offSet);
 		Intent intent = null;
 		switch (getSubject()) {
 		case SubjectConstants.DECISION:
@@ -180,12 +180,14 @@ public class ViewHelperImpl implements ViewHelper {
 		switch (getSubject()) {
 		case SubjectConstants.DECISION:
 			setNameColumnIndex(Decision.COLUMN_INDEX_NAME);
-			cursorForSubject = DecisionHelper.getDecision(getmThisActivity(), getmDecisionRowId());
+			TextView decisionName = (TextView) activity.findViewById(thisButton.getId() - offset);
+			String thisDecisionName = (String) decisionName.getText();
+			cursorForSubject = DecisionHelper.getDecision(activity, thisDecisionName);
 			break;
 		case SubjectConstants.COMPETITOR:
 			setNameColumnIndex(Competitor.COLUMN_INDEX_DESCRIPTION);
-			TextView name = (TextView) activity.findViewById(thisButton.getId() - offset);
-			String thisSubjectName = (String) name.getText();
+			TextView competitorName = (TextView) activity.findViewById(thisButton.getId() - offset);
+			String thisSubjectName = (String) competitorName.getText();
 			cursorForSubject = CompetitorHelper.getCompetitorByName(activity, getmDecisionRowId(), thisSubjectName);
 			break;
 		case SubjectConstants.CRITERION:

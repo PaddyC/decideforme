@@ -43,6 +43,17 @@ public class ReportActivity extends DashboardActivity {
 	private String emailSubject;
 	private String emailBody;
 	
+	private String validationMessage;
+	
+	private String decisionName;
+	private String decisionDesc;
+	private String allCriteria;
+	private StringBuilder criteriaEvaluation;
+	private String allCompetitors;
+	private StringBuilder competitorEvaluation;
+	private String preferredOption;
+	private StringBuilder emailRanking;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,68 +78,108 @@ public class ReportActivity extends DashboardActivity {
 				}
 			}
 		});
-
+				
 		fillReport();
+	}
+	
+	private boolean isValid() {
+		
+		boolean isValid = false;
+		
+		// Check for Ratings
+		List<DecisionRatings> allRatingsForDecision = DecisionRatingsHelper.getAllRatingsForDecision(this, mDecisionRowId);
+		if (allRatingsForDecision.size() == 0) {
+			validationMessage = "Not ready for a report yet, you need to rate your decision first";
+		} else {
+			isValid = true;
+		}
+		
+		return isValid;
+		
 	}
 	
 	private void fillReport() {
 		
-		mReportLayout = (LinearLayout) findViewById(R.id.report);
-		mReportLayout.setBackgroundDrawable(
-				getResources().getDrawable(R.drawable.textfield_default));
-		
-		Typeface envyCode = Typeface.createFromAsset(getAssets(), "fonts/Envy Code R.ttf");
-		
-		
-		
-		// get decision name : header row
-		Cursor thisDecision = DecisionHelper.getDecision(this, mDecisionRowId);
-		
-		String decisionName = thisDecision.getString(Decision.COLUMN_INDEX_NAME);
-		TextView reportHeader = (TextView) findViewById(R.id.reportHeader);
-		reportHeader.setTypeface(envyCode);
-		reportHeader.setText(decisionName);
-		
-		// decision description : sub-heading
-		String decisionDesc = thisDecision.getString(Decision.COLUMN_INDEX_DESC);
-		TextView reportSubHeader = (TextView) findViewById(R.id.reportSubHeader);
-		reportSubHeader.setTypeface(envyCode);
-		reportSubHeader.setText(decisionDesc);
-		
-		setTheEmailSubject(decisionName, decisionDesc);
-		
-		// criteria
-		List<Criterion> allCriteriaForDecision = CriteriaHelper.getAllCriteriaForDecision(this, mDecisionRowId);
-		
-		String allCriteria = ReportHelper.getCriteriaListAsString(this, allCriteriaForDecision);
-		TextView summaryCriteria = (TextView) findViewById(R.id.decisionSummaryCriteria);
-		summaryCriteria.setText(allCriteria);
-		
-		// for each criterion
-		StringBuilder criteriaEvaluation = new StringBuilder();
-		for (Criterion currentCriterion : allCriteriaForDecision) {
-			String criterionName = currentCriterion.getDescription();
+		if (isValid()) {
+			// produce report
+			mReportLayout = (LinearLayout) findViewById(R.id.report);
+			mReportLayout.setBackgroundDrawable(
+					getResources().getDrawable(R.drawable.textfield_default));
 			
-			List<DecisionRatings> ratingsForCriterion = DecisionRatingsHelper.getAllRatingsForDecisionCriterion(
-					this, mDecisionRowId, currentCriterion.getRowId());
+			Typeface envyCode = Typeface.createFromAsset(getAssets(), "fonts/Envy Code R.ttf");
 			
-			criteriaEvaluation.append(ReportHelper.evaluateCriterion(this, criterionName, ratingsForCriterion));
-			criteriaEvaluation.append(". ");
-		}
-		TextView criteriaReport = (TextView) findViewById(R.id.criterionReport);
-		criteriaReport.setText(criteriaEvaluation);
+			// get decision name : header row
+			Cursor thisDecision = DecisionHelper.getDecision(this, mDecisionRowId);
+			
+			decisionName = thisDecision.getString(Decision.COLUMN_INDEX_NAME);
+			TextView reportHeader = (TextView) findViewById(R.id.reportHeader);
+			reportHeader.setTypeface(envyCode);
+			reportHeader.setText(decisionName);
+			
+			// decision description : sub-heading
+			decisionDesc = thisDecision.getString(Decision.COLUMN_INDEX_DESC);
+			TextView reportSubHeader = (TextView) findViewById(R.id.reportSubHeader);
+			reportSubHeader.setTypeface(envyCode);
+			reportSubHeader.setText(decisionDesc);
+			
+			setTheEmailSubject(decisionName, decisionDesc);
+			
+			// criteria
+			List<Criterion> allCriteriaForDecision = CriteriaHelper.getAllCriteriaForDecision(this, mDecisionRowId);
+			allCriteria = ReportHelper.getCriteriaListAsString(this, allCriteriaForDecision);
+			TextView summaryCriteria = (TextView) findViewById(R.id.decisionSummaryCriteria);
+			summaryCriteria.setText(allCriteria);
+			
+			// for each criterion
+			populateCriteriaEvaluation(allCriteriaForDecision);
 
+			// competitors
+			List<Competitor> allCompetitorsForDecision = CompetitorHelper.getAllCompetitorsForDecision(this, mDecisionRowId);
+			allCompetitors = ReportHelper.getCompetitorListAsString(this, allCompetitorsForDecision);
+			TextView summaryCompetitors = (TextView) findViewById(R.id.decisionSummaryCompetitors);
+			summaryCompetitors.setText(allCompetitors);
+			
+			// for each competitor
+			List<CompetitorOverallRating> overallRatings = new ArrayList<CompetitorOverallRating>();
+			
+			populateCompetitorEvaluation(allCompetitorsForDecision, overallRatings);
+			TextView competitorReport = (TextView) findViewById(R.id.competitorReport);
+			competitorReport.setText(competitorEvaluation);
+			
+			// winning competitor
+			Collections.sort(overallRatings, new CompetitorSort());
+			preferredOption = ReportHelper.getPreferredOption(this, overallRatings);
+			TextView preference = (TextView) findViewById(R.id.decisionSummaryWinner);
+			preference.setText(preferredOption);
+			
+			// Ranking table
+			populateRankingTable(envyCode, overallRatings);
+			
+			populateEmailBody();
+		} else {
+			Toast.makeText(ReportActivity.this, validationMessage, Toast.LENGTH_SHORT).show();
+			finish();
+		}
+	}
+
+	private void populateEmailBody() {
+		StringBuilder emailBodyBuilder = new StringBuilder(getResources().getString(R.string.report_ident));
+		emailBodyBuilder.append("\n\n" + getResources().getString(R.string.decision_name) + " " + decisionName);
+		emailBodyBuilder.append("\n" + getResources().getString(R.string.decision_description) + " " + decisionDesc);
+		emailBodyBuilder.append("\n\n" + getResources().getString(R.string.competitors));
+		emailBodyBuilder.append("\n" + allCompetitors);
+		emailBodyBuilder.append(preferredOption);
+		emailBodyBuilder.append("\n\n" + emailRanking);
+		emailBodyBuilder.append("\n\n" + competitorEvaluation);
+		emailBodyBuilder.append("\n\n" + getResources().getString(R.string.criteria));
+		emailBodyBuilder.append("\n" + allCriteria);
+		emailBodyBuilder.append(criteriaEvaluation);
+		setEmailBody(emailBodyBuilder.toString());
+	}
+
+	private void populateCompetitorEvaluation(List<Competitor> allCompetitorsForDecision, List<CompetitorOverallRating> overallRatings) {
 		
-		// competitors
-		List<Competitor> allCompetitorsForDecision = CompetitorHelper.getAllCompetitorsForDecision(this, mDecisionRowId);
-		String allCompetitors = ReportHelper.getCompetitorListAsString(this, allCompetitorsForDecision);
-		TextView summaryCompetitors = (TextView) findViewById(R.id.decisionSummaryCompetitors);
-		summaryCompetitors.setText(allCompetitors);
-		
-		// for each competitor
-		List<CompetitorOverallRating> overallRatings = new ArrayList<CompetitorOverallRating>();
-		
-		StringBuilder competitorEvaluation = new StringBuilder();
+		competitorEvaluation = new StringBuilder();
 			
 		for (Competitor currentCompetitor : allCompetitorsForDecision) {
 			
@@ -144,16 +195,26 @@ public class ReportActivity extends DashboardActivity {
 			CompetitorOverallRating thisCompetitorRating = new CompetitorOverallRating(competitorName, competitorOverallScore);
 			overallRatings.add(thisCompetitorRating);
 		}
+	}
+
+	private void populateCriteriaEvaluation(List<Criterion> allCriteriaForDecision) {
 		
-		TextView competitorReport = (TextView) findViewById(R.id.competitorReport);
-		competitorReport.setText(competitorEvaluation);
-		
-		// winning competitor
-		Collections.sort(overallRatings, new CompetitorSort());
-		String preferredOption = ReportHelper.getPreferredOption(this, overallRatings);
-		TextView preference = (TextView) findViewById(R.id.decisionSummaryWinner);
-		preference.setText(preferredOption);
-		
+		criteriaEvaluation = new StringBuilder();
+		for (Criterion currentCriterion : allCriteriaForDecision) {
+			String criterionName = currentCriterion.getDescription();
+			
+			List<DecisionRatings> ratingsForCriterion = DecisionRatingsHelper.getAllRatingsForDecisionCriterion(
+					this, mDecisionRowId, currentCriterion.getRowId());
+			
+			criteriaEvaluation.append(ReportHelper.evaluateCriterion(this, criterionName, ratingsForCriterion));
+			criteriaEvaluation.append(". ");
+		}
+		TextView criteriaReport = (TextView) findViewById(R.id.criterionReport);
+		criteriaReport.setText(criteriaEvaluation);
+	}
+
+	
+	private void populateRankingTable(Typeface envyCode, List<CompetitorOverallRating> overallRatings) {
 		
 		TableLayout rankingTable = (TableLayout) findViewById(R.id.rankings);
 		if (rankingTable.getChildCount() > 0) {
@@ -169,7 +230,7 @@ public class ReportActivity extends DashboardActivity {
 		rankingTable.addView(header);
 		
 		Integer i = 1;
-		StringBuilder emailRanking = new StringBuilder(getResources().getString(R.string.ranking_table));
+		emailRanking = new StringBuilder(getResources().getString(R.string.ranking_table));
 		for (CompetitorOverallRating rating : overallRatings) {
 			TableRow rankingRow = new TableRow(this);
 			rankingRow.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,LayoutParams.WRAP_CONTENT));
@@ -184,25 +245,12 @@ public class ReportActivity extends DashboardActivity {
 			competitor.setText(rating.getCompetitorName());
 			rankingRow.addView(competitor);
 			
-			rankingTable.addView(rankingRow);
-			
 			emailRanking.append("\n" + i.toString() + ". ");
 			emailRanking.append(rating.getCompetitorName());
+			
+			rankingTable.addView(rankingRow);
 			i++;
 		}
-		
-		StringBuilder emailBodyBuilder = new StringBuilder(getResources().getString(R.string.report_ident));
-		emailBodyBuilder.append("\n\n" + getResources().getString(R.string.decision_name) + " " + decisionName);
-		emailBodyBuilder.append("\n" + getResources().getString(R.string.decision_description) + " " + decisionDesc);
-		emailBodyBuilder.append("\n\n" + getResources().getString(R.string.competitors));
-		emailBodyBuilder.append("\n" + allCompetitors);
-		emailBodyBuilder.append(preferredOption);
-		emailBodyBuilder.append("\n\n" + emailRanking);
-		emailBodyBuilder.append("\n\n" + competitorEvaluation);
-		emailBodyBuilder.append("\n\n" + getResources().getString(R.string.criteria));
-		emailBodyBuilder.append("\n" + allCriteria);
-		emailBodyBuilder.append(criteriaEvaluation);
-		setEmailBody(emailBodyBuilder.toString());
 	}
 
 	private void setTheEmailSubject(String decisionName, String decisionDesc) {

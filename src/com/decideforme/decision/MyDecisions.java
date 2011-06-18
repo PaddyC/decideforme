@@ -5,8 +5,10 @@ import java.math.BigDecimal;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.db.decideforme.decision.Decision;
 import com.decideforme.R;
@@ -44,6 +46,8 @@ public class MyDecisions extends DashboardActivity {
     public void fillData() {
 
 		mDynamicDecisionTable = (TableLayout) findViewById(R.id.myDecisionsLayout);
+		mDynamicDecisionTable.setBackgroundDrawable(getResources().getDrawable(R.drawable.textfield));
+		
     	// Table Start! Initialise the table layout:
 		if(mDynamicDecisionTable.getChildCount() > 0) {
 			mDynamicDecisionTable.removeAllViews();
@@ -65,6 +69,21 @@ public class MyDecisions extends DashboardActivity {
     	} else {
     		decisionRowID = cDecisions.getLong(Decision.COLUMN_INDEX_ROW_ID);
         	viewHelper = new ViewHelperImpl(decisionRowID, this, SubjectConstants.DECISION);
+        	
+        	TableRow headerRow = viewHelper.getNewRow(this, false);
+        	headerRow.setBackgroundDrawable(getResources().getDrawable(R.drawable.tableheader));
+        	
+        	TextView decisionName = getTableHeaderTextView("Decision Name ");
+        	headerRow.addView(decisionName);
+        	TextView add = getTableHeaderTextView("Add");
+        	headerRow.addView(add);
+        	TextView edit = getTableHeaderTextView("Edit");
+        	headerRow.addView(edit);
+        	TextView delete = getTableHeaderTextView("Del");
+        	headerRow.addView(delete);
+        	TextView report = getTableHeaderTextView("Rpt");
+        	headerRow.addView(report);
+        	mDynamicDecisionTable.addView(headerRow);
         	
         	while(cDecisions.isAfterLast() == false) {
         		TableRow thisRow = viewHelper.getNewRow(this, true);
@@ -88,4 +107,19 @@ public class MyDecisions extends DashboardActivity {
         	}
     	}
     }
+
+
+	private TextView getTableHeaderTextView(String text) {
+		
+		TextView thisTextView = new TextView(this);
+		
+		Typeface envyCode = Typeface.createFromAsset(getAssets(), "fonts/Envy Code R.ttf");
+		
+		thisTextView.setText(text);
+		thisTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.tableheader));
+		thisTextView.setTypeface(envyCode, R.style.TableHeaderText);
+		thisTextView.setGravity(Gravity.CENTER);
+		
+		return thisTextView;
+	}
 }
