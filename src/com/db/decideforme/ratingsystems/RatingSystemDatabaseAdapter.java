@@ -26,4 +26,32 @@ public class RatingSystemDatabaseAdapter extends DecisionDatabaseAdapter {
 		return resultOfFetchQuery;
     }
 
+	public Cursor getRatingSystem(String ratingSystemName) {
+		Log.d(TAG, " >> getRatingSystem(ratingSystemName'" + StringUtils.objectAsString(ratingSystemName) + "')");
+        
+		Cursor resultOfFetchQuery = mDb.query(RatingSystem.TABLE_NAME, 
+        		new String[] {
+        			RatingSystemColumns._ID, 
+        			RatingSystemColumns.NAME
+        		}, 
+        		RatingSystemColumns.NAME + "='" + ratingSystemName + "'", null, null, null, null);
+        
+        Log.d(TAG, " << getRatingSystem(), returned " + StringUtils.objectAsString(resultOfFetchQuery));
+		return resultOfFetchQuery;
+	}
+	
+	public Cursor getRatingSystem(long ratingSystemId) {
+		Log.d(TAG, " >> getRatingSystem(ratingSystemId'" + StringUtils.objectAsString(ratingSystemId) + "')");
+        
+		Cursor resultOfFetchQuery = mDb.query(RatingSystem.TABLE_NAME, 
+        		new String[] {
+        			RatingSystemColumns._ID, 
+        			RatingSystemColumns.NAME
+        		}, 
+        		RatingSystemColumns._ID+ "=" + ratingSystemId, null, null, null, null);
+        
+        Log.d(TAG, " << getRatingSystem(), returned " + StringUtils.objectAsString(resultOfFetchQuery));
+		return resultOfFetchQuery;
+	}
+
 }

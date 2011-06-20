@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.db.decideforme.decision.DecisionDatabaseAdapter;
-import com.decideforme.utils.StringUtils;
 import com.decideforme.utils.SubjectConstants;
 
 
@@ -21,7 +20,6 @@ public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
 	}
 	
     public Integer getNextCompetitorSequenceID() {
-    	Log.d(TAG, " >> getNextCompetitorSequenceID()");
     	Integer nextRowId = 0;
     	
     	Cursor resultOfFetchQuery = mDb.query(Competitor.TABLE_NAME, 
@@ -36,14 +34,10 @@ public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
     	}
     	nextRowId++;
   
-    	Log.d(TAG, " << getNextCompetitorSequenceID(), returned '" + StringUtils.objectAsString(nextRowId) + "'");
     	return nextRowId;
     }
     
     public Cursor fetchAllCompetitorsForDecision(Long decisionRowId) {
-    	Log.d(TAG, " >> fetchAllCompetitorsForDecision(" +
-    			"decisionRowId '" + StringUtils.objectAsString(decisionRowId) + "')");
-    	
     	String decisionRowIdStr = decisionRowId.toString();
 
     	Cursor resultOfFetchQuery = mDb.query(Competitor.TABLE_NAME, 
@@ -52,45 +46,30 @@ public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
         		CompetitorColumns.DESCRIPTION}, 
         		CompetitorColumns.DECISIONID + " = " + decisionRowIdStr, null, null, null, null);
     	
-    	Log.d(TAG, "There are " + resultOfFetchQuery.getCount() + " competitors associated with this decision.");
-        
-        Log.d(TAG, " << fetchAllCompetitorsForDecision(), returned " + StringUtils.objectAsString(resultOfFetchQuery));
-		return resultOfFetchQuery;
+    	return resultOfFetchQuery;
     }
     
     public long createCompetitor(String competitorName, Long decisionRowid) {
-    	Log.d(TAG, " >> createCompetitor(" +
-    			"competitorName " + StringUtils.objectAsString(competitorName) + "', " +
-    			"decisionRowid " + StringUtils.objectAsString(decisionRowid) + "')");
-
     	ContentValues initialValues = new ContentValues();
         initialValues.put(CompetitorColumns.DESCRIPTION, competitorName);
         initialValues.put(CompetitorColumns.DECISIONID, decisionRowid);
 
         long insertResult = mDb.insert(Competitor.TABLE_NAME, null, initialValues);
         
-        Log.d(TAG, " << createCompetitor(), returned " + StringUtils.objectAsString(insertResult));
-		return insertResult;
+        return insertResult;
     }
     
     
     public boolean deleteCompetitor(long rowId) {
-    	Log.d(TAG, " >> deleteCompetitor(" +
-    			"rowId '" + StringUtils.objectAsString(rowId) + "')");
-    	
-        boolean deleteResult = mDb.delete(
+    	boolean deleteResult = mDb.delete(
         		Competitor.TABLE_NAME, 
         		CompetitorColumns._ID + "=" + rowId, null) > 0;
         
-        Log.d(TAG, " << deleteCompetitor(), returned '" + StringUtils.objectAsString(deleteResult) + "'");
-		return deleteResult;
+        return deleteResult;
     }
     
     public Cursor fetchCompetitor(long rowId) throws SQLException {
-    	Log.d(TAG, " >> fetchCompetitor(" +
-    			"rowId '" + StringUtils.objectAsString(rowId) + "')");
-    	
-        Cursor mCursor = mDb.query(
+    	Cursor mCursor = mDb.query(
             		true, 
             		Competitor.TABLE_NAME, 
             		new String[] {CompetitorColumns._ID, 
@@ -103,7 +82,6 @@ public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
             mCursor.moveToFirst();
         }
         
-        Log.d(TAG, "<< fetchCompetitor(), returned '" + StringUtils.objectAsString(mCursor) + "'");
         return mCursor;
     }
     
@@ -131,16 +109,11 @@ public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
             mCursor.moveToFirst();
         }
         
-        Log.d(TAG, "<< fetchCompetitor(), returned '" + StringUtils.objectAsString(mCursor) + "'");
         return mCursor;
     }
     
     public boolean updateCompetitor(long rowId, String competitorName) {
-    	Log.d(TAG, " >> updateCompetitor(" +
-    			"rowId '" + StringUtils.objectAsString(rowId) + "', " +
-    			"competitorName '" + StringUtils.objectAsString(competitorName) + "')");
-    	
-        ContentValues args = new ContentValues();
+    	ContentValues args = new ContentValues();
         args.put(CompetitorColumns.DESCRIPTION, competitorName);
         
         boolean resultOfUpdate = mDb.update(
@@ -148,8 +121,7 @@ public class CompetitorsDatabaseAdapter extends DecisionDatabaseAdapter {
         		args, 
         		CompetitorColumns._ID + "=" + rowId, null) > 0;
 
-        Log.d(TAG, "<< updateCompetitor(), returned '" + StringUtils.objectAsString(resultOfUpdate) + "'");
-		return resultOfUpdate;
+        return resultOfUpdate;
     }
-	
+
 }

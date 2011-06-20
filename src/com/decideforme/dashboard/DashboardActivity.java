@@ -60,6 +60,10 @@ public abstract class DashboardActivity extends Activity {
 	public void onClickAbout (View v) {
 	    startActivity (new Intent(getApplicationContext(), AboutActivity.class));
 	}
+	
+	public void onClickSave (View v) {
+	    finish();
+	}
 
 	public void onClickFeature (View v) {
 	    int id = v.getId ();

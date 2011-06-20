@@ -1,6 +1,10 @@
 package com.decideforme.dashboard;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.db.decideforme.DatabaseScripts;
+import com.db.decideforme.decision.DecisionDatabaseAdapter;
 import com.decideforme.R;
 
 public class HomeActivity extends DashboardActivity	{
@@ -13,19 +17,19 @@ public class HomeActivity extends DashboardActivity	{
 //	    recreateDatabaseFromScratch();
 	}
 	   
-//	/**
-//	 * For when the database needs re-creatin'
-//	 * @author PaddyC
-//	 */
-//	private void recreateDatabaseFromScratch() {
-//		Log.d(TAG, " >> recreateDatabaseFromScratch()");
-//        DecisionDatabaseAdapter decisionDBAdapter = new DecisionDatabaseAdapter(this);
-//        decisionDBAdapter.open();
-//		SQLiteDatabase db = decisionDBAdapter.getmDbHelper().getWritableDatabase();
-//        DatabaseScripts.dropAllTables(db);
-//        DatabaseScripts.createAllTables(db);
-//        Log.d(TAG, " << recreateDatabaseFromScratch()");
-//	}
+	/**
+	 * For when the database needs re-creatin'
+	 * @author PaddyC
+	 */
+	private void recreateDatabaseFromScratch() {
+		Log.d(TAG, " >> recreateDatabaseFromScratch()");
+        DecisionDatabaseAdapter decisionDBAdapter = new DecisionDatabaseAdapter(this);
+        decisionDBAdapter.open();
+		SQLiteDatabase db = decisionDBAdapter.getmDbHelper().getWritableDatabase();
+        DatabaseScripts.dropAllTables(db);
+        DatabaseScripts.createAllTables(db);
+        Log.d(TAG, " << recreateDatabaseFromScratch()");
+	}
 	
 	
 	protected void onDestroy () {

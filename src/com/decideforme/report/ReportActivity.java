@@ -6,18 +6,17 @@ import java.util.Collections;
 import java.util.List;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.db.decideforme.competitors.Competitor;
@@ -33,11 +32,12 @@ import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.decision.DecisionHelper;
 import com.decideforme.ratings.CompetitorSort;
 import com.decideforme.utils.BundleHelper;
+import com.decideforme.utils.StringUtils;
 
 public class ReportActivity extends DashboardActivity {
 	public static final String TAG = ReportActivity.class.getName();
 	
-	private LinearLayout mReportLayout;
+	private RelativeLayout mReportLayout;
 	private long mDecisionRowId;
 	
 	private String emailSubject;
@@ -63,7 +63,16 @@ public class ReportActivity extends DashboardActivity {
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		mDecisionRowId = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
 		
+	    Button saveButton = (Button) findViewById(R.id.saveButton);
+	    saveButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.save_button));
+	    saveButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				finish();
+			}
+		});
+		
 		Button emailButton = (Button) findViewById(R.id.emailButton);
+		emailButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.email_button));
 		emailButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View thisView) {
 				Intent i = new Intent(Intent.ACTION_SEND);
@@ -102,22 +111,22 @@ public class ReportActivity extends DashboardActivity {
 		
 		if (isValid()) {
 			// produce report
-			mReportLayout = (LinearLayout) findViewById(R.id.report);
+			mReportLayout = (RelativeLayout) findViewById(R.id.report);
 			mReportLayout.setBackgroundDrawable(
 					getResources().getDrawable(R.drawable.textfield_default));
 			
 			Typeface envyCode = Typeface.createFromAsset(getAssets(), "fonts/Envy Code R.ttf");
 			
 			// get decision name : header row
-			Cursor thisDecision = DecisionHelper.getDecision(this, mDecisionRowId);
+			Decision thisDecision = DecisionHelper.getDecision(this, mDecisionRowId).get(0);
 			
-			decisionName = thisDecision.getString(Decision.COLUMN_INDEX_NAME);
+			decisionName = thisDecision.getName();
 			TextView reportHeader = (TextView) findViewById(R.id.reportHeader);
 			reportHeader.setTypeface(envyCode);
 			reportHeader.setText(decisionName);
 			
 			// decision description : sub-heading
-			decisionDesc = thisDecision.getString(Decision.COLUMN_INDEX_DESC);
+			decisionDesc = thisDecision.getDescription();
 			TextView reportSubHeader = (TextView) findViewById(R.id.reportSubHeader);
 			reportSubHeader.setTypeface(envyCode);
 			reportSubHeader.setText(decisionDesc);
@@ -136,6 +145,7 @@ public class ReportActivity extends DashboardActivity {
 			// competitors
 			List<Competitor> allCompetitorsForDecision = CompetitorHelper.getAllCompetitorsForDecision(this, mDecisionRowId);
 			allCompetitors = ReportHelper.getCompetitorListAsString(this, allCompetitorsForDecision);
+			Log.d(TAG, "All Competitors: " + StringUtils.objectAsString(allCompetitors));
 			TextView summaryCompetitors = (TextView) findViewById(R.id.decisionSummaryCompetitors);
 			summaryCompetitors.setText(allCompetitors);
 			
@@ -184,9 +194,12 @@ public class ReportActivity extends DashboardActivity {
 		for (Competitor currentCompetitor : allCompetitorsForDecision) {
 			
 			String competitorName = currentCompetitor.getDescription();
+			Log.d(TAG, "Evaluating " + competitorName);
 			
 			List<DecisionRatings> ratingsForCompetitor = DecisionRatingsHelper.getAllRatingsForDecisionCompetitor(
 					this, mDecisionRowId, currentCompetitor.getRowId());
+			
+			Log.d(TAG, "Number of Ratings " + ratingsForCompetitor.size());
 			
 			competitorEvaluation.append(ReportHelper.evaluateCompetitor(this, competitorName, ratingsForCompetitor));
 			competitorEvaluation.append(". ");

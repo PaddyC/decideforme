@@ -91,9 +91,6 @@ public class CriteriaScreen extends DashboardActivity {
         		mDynamicCriteriaTable.addView(thisRow);
         	}
         }
-
 		Log.d(TAG, " << fillData()");
-		
 	}
-
 }

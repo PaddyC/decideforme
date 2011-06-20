@@ -1,16 +1,18 @@
 package com.decideforme.criteria;
 
-import android.database.Cursor;
+import java.util.List;
+
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
 import com.db.decideforme.criteria.Criterion;
 import com.db.decideforme.criteria.Criterion.CriterionColumns;
 import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.db.decideforme.ratingsystems.RatingSystem;
-import com.db.decideforme.ratingsystems.RatingSystem.RatingSystemColumns;
 import com.decideforme.R;
 import com.decideforme.dashboard.DashboardActivity;
 import com.decideforme.ratings.RatingSystemHelper;
@@ -25,6 +27,7 @@ public class CriterionEdit extends DashboardActivity {
 	
 	protected Long decisionRowId;
 	protected Long criterionRowID;
+	protected String criterionRatingSystem = "";
 
 	
 	@Override
@@ -42,11 +45,23 @@ public class CriterionEdit extends DashboardActivity {
 		BundleHelper bundleHelper = new BundleHelper(this, savedInstanceState);
 		criterionRowID = bundleHelper.getBundledFieldLongValue(CriterionColumns._ID);
 
-
 		// Competitor must be associated with a decision.
 		Criterion thisCriterion = CriteriaHelper.getCriterion(this, criterionRowID).get(0);
 		decisionRowId = thisCriterion.getDecisionId();
 		
+		Long ratingSystemId = thisCriterion.getRatingSystemId();
+		if (ratingSystemId.intValue() > 0) {
+			RatingSystem thisRatingSystem = RatingSystemHelper.getRatingSystem(this, ratingSystemId);
+			criterionRatingSystem = thisRatingSystem.getName();
+		}
+		
+	    Button saveButton = (Button) findViewById(R.id.saveButton);
+	    saveButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.save_button));
+	    saveButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				finish();
+			}
+		});
 		populateFields();
 		
 	}
@@ -65,17 +80,21 @@ public class CriterionEdit extends DashboardActivity {
 
 	private void populateRatingSystemSpinner() {
 		
-		Cursor allRatingSystemsCursor = RatingSystemHelper.fetchAllRatingSystems(this);
+		List<RatingSystem> ratingSystemList = RatingSystemHelper.fetchAllRatingSystems(this);
 		
-		String[] from = new String[]{RatingSystemColumns.NAME};
-		int[] to = new int[]{android.R.id.text1};
+		int selection = 0;
 		
-		SimpleCursorAdapter adapter =
-		  new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, allRatingSystemsCursor, from, to );
-		adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
-		
+		ArrayAdapter <CharSequence> adapter = new ArrayAdapter <CharSequence> (this, android.R.layout.simple_spinner_item );
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		for (int i = 0; i < ratingSystemList.size(); i++) {
+			RatingSystem system = ratingSystemList.get(i);
+			adapter.add(system.getName());
+			if (criterionRatingSystem.equalsIgnoreCase(system.getName())) {
+				selection = i;
+			}
+		}
 		mRatingSystemSpinner.setAdapter(adapter);
-		
+		mRatingSystemSpinner.setSelection(selection);
 	}
 
 
@@ -101,8 +120,9 @@ public class CriterionEdit extends DashboardActivity {
 		
 		String criterionDescription = mCriterionName.getText().toString();
 		
-		Cursor ratingSystemCursor = (Cursor) mRatingSystemSpinner.getSelectedItem();
-		Long ratingSystemID = ratingSystemCursor.getLong(RatingSystem.COLUMN_INDEX_ROW_ID);
+		String ratingSystemName= (String) mRatingSystemSpinner.getSelectedItem();
+		RatingSystem ratingSystem = RatingSystemHelper.getRatingSystemIdForName(this, ratingSystemName);
+		Long ratingSystemID = ratingSystem.getRowId();
 		
 	    if (criterionRowID == null) {
 	        long id = CriteriaHelper.createCriterion(this, criterionDescription, decisionRowId, ratingSystemID);

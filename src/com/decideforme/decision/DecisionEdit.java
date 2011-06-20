@@ -1,9 +1,11 @@
 package com.decideforme.decision;
 
-import android.database.Cursor;
+import java.util.List;
+
 import android.os.Bundle;
 import android.widget.EditText;
 
+import com.db.decideforme.decision.Decision;
 import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.decideforme.R;
 import com.decideforme.dashboard.DashboardActivity;
@@ -39,11 +41,11 @@ public class DecisionEdit extends DashboardActivity {
 	protected void populateFields() {
 		
 	    if (mDecisionRowId != null) {
-	        Cursor decisionCursor = DecisionHelper.getDecision(this, mDecisionRowId);
-	        mDecisionName.setText(decisionCursor.getString(decisionCursor.getColumnIndexOrThrow(DecisionColumns.NAME)));
-	        mDecisionDescription.setText(decisionCursor.getString(decisionCursor.getColumnIndexOrThrow(DecisionColumns.DESCRIPTION)));
+	        List<Decision> decisionList = DecisionHelper.getDecision(this, mDecisionRowId);
+	        Decision thisDecision = decisionList.get(0);
+	        mDecisionName.setText(thisDecision.getName());
+	        mDecisionDescription.setText(thisDecision.getDescription());
 	    }
-
 	}
 
 

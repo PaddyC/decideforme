@@ -39,5 +39,16 @@ public class RatingInstanceDatabaseAdapter extends DecisionDatabaseAdapter {
         
         return cRatingInstance;
     }
-
+    
+    public Cursor fetchRatingInstance(String ratingInstanceName) throws SQLException {
+    	Cursor cRatingInstance = mDb.query(true, RatingInstance.TABLE_NAME, ratingInstanceColumns,
+                	RatingInstanceColumns.NAME + "='" + escapeString(ratingInstanceName) + "'", null, null, null, null, null);
+        
+        if (cRatingInstance != null) {
+            cRatingInstance.moveToFirst();
+        }
+        
+        return cRatingInstance;
+    }
+   
 }

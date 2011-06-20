@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.db.decideforme.DatabaseObject;
+import com.db.decideforme.DatabaseObjectHelper;
 import com.db.decideforme.competitors.Competitor;
 import com.db.decideforme.competitors.Competitor.CompetitorColumns;
 import com.db.decideforme.criteria.Criterion;
@@ -136,21 +136,21 @@ public class ViewHelperImpl implements ViewHelper {
 	
 	private Intent getDestinationIntentForEdit(View thisView, Integer offSet) {
 		
-		Cursor thisCursor = getObject(getmThisActivity(), thisView, offSet);
+		DatabaseObject databaseObject = getObject(getmThisActivity(), thisView, offSet);
 		Intent intent = null;
 		switch (getSubject()) {
 		case SubjectConstants.DECISION:
 			intent = new Intent().setClass(getmThisActivity(), DecisionHome.class);
-			intent.putExtra(DecisionColumns._ID, thisCursor.getLong(Decision.COLUMN_INDEX_ROW_ID));
+			intent.putExtra(DecisionColumns._ID, databaseObject.getRowId());
 			break;
 		case SubjectConstants.COMPETITOR:
 			intent = new Intent().setClass(getmThisActivity(), CompetitorEdit.class);
-			intent.putExtra(CompetitorColumns._ID, thisCursor.getLong(Competitor.COLUMN_INDEX_ROW_ID));
+			intent.putExtra(CompetitorColumns._ID, databaseObject.getRowId());
 			intent.putExtra(CompetitorColumns.DECISIONID, getmDecisionRowId());
 			break;
 		case SubjectConstants.CRITERION:
 			intent = new Intent().setClass(getmThisActivity(), CriterionEdit.class);
-			intent.putExtra(CriterionColumns._ID, thisCursor.getLong(DatabaseObject.COLUMN_INDEX_ROW_ID));
+			intent.putExtra(CriterionColumns._ID, databaseObject.getRowId());
 			intent.putExtra(CriterionColumns.DECISIONID, getmDecisionRowId());
 			break;
 		}
@@ -165,54 +165,54 @@ public class ViewHelperImpl implements ViewHelper {
 		deleteButton.setGravity(Gravity.CLIP_VERTICAL);
 		deleteButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View thisView) {
-				Cursor thisCursor = getObject(getmThisActivity(), thisView, 3);
-				displayAreYouSure(thisCursor);
+				DatabaseObject thisObject = getObject(getmThisActivity(), thisView, 3);
+				displayAreYouSure(thisObject);
 			}
 		});
 		return deleteButton;
 	}
 
 	
-	private Cursor getObject(Activity activity, View thisButton, Integer offset) {
+	private DatabaseObject getObject(Activity activity, View thisButton, Integer offset) {
 		
-		Cursor cursorForSubject = null;
+		DatabaseObject objectForReturn = null;
 		
 		switch (getSubject()) {
 		case SubjectConstants.DECISION:
 			setNameColumnIndex(Decision.COLUMN_INDEX_NAME);
 			TextView decisionName = (TextView) activity.findViewById(thisButton.getId() - offset);
 			String thisDecisionName = (String) decisionName.getText();
-			cursorForSubject = DecisionHelper.getDecision(activity, thisDecisionName);
+			objectForReturn = DecisionHelper.getDecision(activity, thisDecisionName).get(0);
 			break;
 		case SubjectConstants.COMPETITOR:
 			setNameColumnIndex(Competitor.COLUMN_INDEX_DESCRIPTION);
 			TextView competitorName = (TextView) activity.findViewById(thisButton.getId() - offset);
 			String thisSubjectName = (String) competitorName.getText();
-			cursorForSubject = CompetitorHelper.getCompetitorByName(activity, getmDecisionRowId(), thisSubjectName);
+			objectForReturn = CompetitorHelper.getCompetitorByName(activity, getmDecisionRowId(), thisSubjectName).get(0);
 			break;
 		case SubjectConstants.CRITERION:
 			setNameColumnIndex(Criterion.COLUMN_INDEX_DECRIPTION);
 			TextView thisCriterion = (TextView) activity.findViewById(thisButton.getId() - offset);
 			String thisCriterionName = (String) thisCriterion.getText();
-			cursorForSubject = CriteriaHelper.getCriterionByName(getmThisActivity(), getmDecisionRowId(), thisCriterionName);
+			objectForReturn = CriteriaHelper.getCriterionByName(getmThisActivity(), getmDecisionRowId(), thisCriterionName).get(0);
 			break;
 		}
-		return cursorForSubject;
+		return objectForReturn;
 	}
 	
 	
-	private void displayAreYouSure(final Cursor thisCursor) {
+	private void displayAreYouSure(final DatabaseObject thisObject) {
 		
     	AlertDialog.Builder alertbox = new AlertDialog.Builder(getmThisActivity());
     	
-    	setSubjectName(thisCursor.getString(getNameColumnIndex()));
+    	setSubjectName(DatabaseObjectHelper.getName(thisObject));
     	String wantToDelete = getmThisActivity().getString(R.string.want_to_delete) + getSubjectName() + "'?";
 		alertbox.setMessage(wantToDelete);
 
     	alertbox.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 	         public void onClick(DialogInterface dialog, int whichButton) {
 
-	 	    	Integer rowID = thisCursor.getInt(DatabaseObject.COLUMN_INDEX_ROW_ID);
+	 	    	Long rowID = thisObject.getRowId();
 	 	    	deleteRow(rowID);
 		    	
 		    	Toast.makeText(getmThisActivity().getApplicationContext(), 
@@ -224,7 +224,7 @@ public class ViewHelperImpl implements ViewHelper {
 
 	         }
 
-			private void deleteRow(Integer rowID) {
+			private void deleteRow(Long rowID) {
 				switch (subject) {
 	 	    	case SubjectConstants.DECISION:
 	 	    		DecisionHelper.deleteDecision(getmThisActivity(), rowID);
@@ -272,8 +272,10 @@ public class ViewHelperImpl implements ViewHelper {
 		reportButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View thisView) {
 				Intent intent = new Intent().setClass(getmThisActivity(), ReportActivity.class);
-				intent.putExtra(DecisionColumns._ID, getmDecisionRowId());
+				DatabaseObject databaseObject = getObject(getmThisActivity(), thisView, 4);
+				intent.putExtra(DecisionColumns._ID, databaseObject.getRowId());
 				getmThisActivity().startActivity(intent);
+				
 			}
 		});
 		return reportButton;

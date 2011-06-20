@@ -1,13 +1,13 @@
 package com.decideforme.ratings;
 
+import java.util.List;
+
 import android.app.Activity;
-import android.database.Cursor;
-import android.widget.SimpleCursorAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TableRow.LayoutParams;
 
-import com.db.decideforme.ratinginstance.RatingInstance.RatingInstanceColumns;
-import com.db.decideforme.ratinginstance.RatingInstanceDatabaseAdapter;
+import com.db.decideforme.ratinginstance.RatingInstance;
 
 /**
  * 
@@ -29,26 +29,18 @@ public class RatingsScreenHelperImpl implements RatingsScreenHelper {
 		return instance;
 	}
 
-	public Cursor fetchAllRatingInstancesForSystem(Activity activity, Long ratingSystemID) {
-		RatingInstanceDatabaseAdapter ratingInstanceDatabaseAdapter = new RatingInstanceDatabaseAdapter(activity);
-		ratingInstanceDatabaseAdapter.open();
-		Cursor allInstancesForSystemCursor = ratingInstanceDatabaseAdapter.fetchAllInstancesForRatingSystem(ratingSystemID);
-		
-		return allInstancesForSystemCursor;
-	}
-
-
 
 	public Spinner generateRatingsSpinner(Activity activity, Long ratingSystemID, Integer spinnerID) {
-		String[] from = new String[]{RatingInstanceColumns.NAME};
-		int[] to = new int[]{android.R.id.text1};
-		
+
 		// For each rating system ID populate a spinner with the rating instances, and add cell to the row:
-		Cursor allRatingInstances = fetchAllRatingInstancesForSystem(activity, ratingSystemID);
+		List<RatingInstance> ratingInstanceList = RatingInstanceHelper.fetchAllRatingInstancesForSystem(activity, ratingSystemID);
 		
-		SimpleCursorAdapter adapter =
-		  new SimpleCursorAdapter(activity, android.R.layout.simple_spinner_item, allRatingInstances, from, to );
-		adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+		ArrayAdapter <CharSequence> adapter = new ArrayAdapter <CharSequence> (activity, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		for (RatingInstance rating : ratingInstanceList) {
+			adapter.add(rating.getName());
+		}
+		
 		// get reference to our spinner
 		Spinner gridSpinner = new Spinner(activity);
 		gridSpinner.setAdapter(adapter);

@@ -105,7 +105,7 @@ public class DecisionRatingsDatabaseAdapter extends DecisionDatabaseAdapter {
     	if (thisDecisionRating.getCount() > 0) {
     		decisionRatingExists = true;
     	}
-    	
+    	thisDecisionRating.close();
 		return decisionRatingExists;
     }
 
@@ -135,5 +135,21 @@ public class DecisionRatingsDatabaseAdapter extends DecisionDatabaseAdapter {
             mCursor.moveToFirst();
         }
         return mCursor;
+	}
+
+	public boolean deleteRatingsForCompetitor(long competitorRowId) {
+		boolean deleteResult = mDb.delete(
+        		DecisionRatings.TABLE_NAME, 
+        		DecisionRatingsColumns.COMPETITORID + "=" + competitorRowId, null) > 0;
+        
+		return deleteResult;
+	}
+
+	public boolean deleteRatingsForCriterion(long criterionRowId) {
+		boolean deleteResult = mDb.delete(
+        		DecisionRatings.TABLE_NAME, 
+        		DecisionRatingsColumns.CRITERIONID + "=" + criterionRowId, null) > 0;
+        
+		return deleteResult;
 	}
 }

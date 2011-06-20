@@ -8,10 +8,18 @@ public class RatingSystem extends DatabaseObject {
 	
 	public static final String TABLE_NAME = "ratingsystem";
 	
-	// This class cannot be instantiated.
-	private RatingSystem() {
+	private String name;
+	public RatingSystem(Long rowId, String name) {
+		this.rowId = rowId;
+		this.name = name;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public static final Integer COLUMN_INDEX_NAME = 1;
+	
 	public static final class RatingSystemColumns implements BaseColumns {
 		
 		public static final String NAME = "name";

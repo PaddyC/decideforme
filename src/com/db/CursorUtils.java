@@ -6,12 +6,33 @@ import java.util.List;
 import com.db.decideforme.DatabaseObject;
 import com.db.decideforme.competitors.Competitor;
 import com.db.decideforme.criteria.Criterion;
+import com.db.decideforme.decision.Decision;
 import com.db.decideforme.decisionrating.DecisionRatings;
 import com.db.decideforme.ratinginstance.RatingInstance;
+import com.db.decideforme.ratingsystems.RatingSystem;
 
 import android.database.Cursor;
 
 public class CursorUtils {
+
+	public static List<RatingSystem> getRatingSystemsForCursor(Cursor ratingSystemCursor) {
+		List<RatingSystem> ratingSystemList = new ArrayList<RatingSystem>();
+		
+		ratingSystemCursor.moveToFirst();
+		while (ratingSystemCursor.isAfterLast() == false) {
+			Long rowId = ratingSystemCursor.getLong(DatabaseObject.COLUMN_INDEX_ROW_ID);
+			String name = ratingSystemCursor.getString(RatingSystem.COLUMN_INDEX_NAME);
+			
+			RatingSystem ratingSystem = new RatingSystem(rowId, name);
+			ratingSystemList.add(ratingSystem);
+			
+			ratingSystemCursor.moveToNext();
+		}
+		ratingSystemCursor.close();
+		
+		return ratingSystemList;
+	}
+	
 	
 	public static List<RatingInstance> getRatingInstancesForCursor(Cursor ratingInstanceCursor) {
 		List<RatingInstance> ratingInstanceList = new ArrayList<RatingInstance>();
@@ -99,6 +120,28 @@ public class CursorUtils {
 		competitorCursor.close();
 		
 		return competitorList;
+
+	}
+	
+	public static List<Decision> getDecisionsForCursor(Cursor decisionCursor) {
+		
+		List<Decision> decisionList = new ArrayList<Decision>();
+		
+		decisionCursor.moveToFirst();
+		while (decisionCursor.isAfterLast() == false) {
+			
+			Long rowId = decisionCursor.getLong(Decision.COLUMN_INDEX_ROW_ID);
+			String name = decisionCursor.getString(Decision.COLUMN_INDEX_NAME);
+			String description = decisionCursor.getString(Decision.COLUMN_INDEX_DESC);
+
+			Decision thisDecision = new Decision(rowId, name, description);
+			decisionList.add(thisDecision);
+			
+			decisionCursor.moveToNext();
+		}
+		decisionCursor.close();
+		
+		return decisionList;
 
 	}
 

@@ -2,10 +2,6 @@ package com.decideforme.ratings.grid;
 
 import java.math.BigDecimal;
 
-import android.util.Log;
-
-import com.decideforme.utils.StringUtils;
-
 public class RatingTableLayoutHelperImpl implements RatingTableLayoutHelper {
 	public static final String TAG = RatingTableLayoutHelper.class.getName();
 
@@ -29,9 +25,6 @@ public class RatingTableLayoutHelperImpl implements RatingTableLayoutHelper {
 		BigDecimal id = (competitor.multiply(new BigDecimal(100))).add(criterion);
 		
 		spinnerID = id.intValue();
-		
-		Log.d(TAG, " << getGridReference(), " +
-				"returned '" + StringUtils.objectAsString(spinnerID) + "'");
 		
 		return spinnerID;
 	}

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.db.decideforme.competitors.Competitor;
 import com.db.decideforme.criteria.Criterion;
@@ -21,6 +22,8 @@ public class ReportHelper {
 	public static final String AND_WITH_SPACES = " and ";
 	public static final String COMMA = ",";
 	public static final String SINGLE_SPACE = " ";
+	private static final String TAG = ReportHelper.class.getName();
+	
 
 	public static String getCompetitorListAsString(Activity thisActivity, List<Competitor> competitorList) {
 
@@ -87,7 +90,7 @@ public class ReportHelper {
 		BigDecimal score = new BigDecimal(0);
 		for (DecisionRatings rating : ratingsForCompetitor) {
 			Long ratingSelectionRowId = rating.getRatingSelectionId();
-			Long rorder = RatingInstanceHelper.getRorderForRating(thisActivity, ratingSelectionRowId);
+			Long rorder = RatingInstanceHelper.getScore(thisActivity, ratingSelectionRowId);
 			score = score.add(new BigDecimal(rorder));
 		}
 		return score;
@@ -152,11 +155,15 @@ public class ReportHelper {
 			String competitorName = competitor.getDescription();
 			
 			Long criterionId = thisRating.getCriterionId();
+			Log.d(TAG, "Criterion ID: " + criterionId);
 			Criterion criterion = CriteriaHelper.getCriterion(reportActivity, criterionId).get(0);
 			String criterionName = criterion.getDescription();
+			Log.d(TAG, "Criterion Name: " + criterionName);
 			
 			Long ratingId = thisRating.getRatingSelectionId();
-			Long rating = RatingInstanceHelper.getRorderForRating(reportActivity, ratingId);
+			Log.d(TAG, "Rating ID: " + ratingId);
+			Long rating = RatingInstanceHelper.getScore(reportActivity, ratingId);
+			Log.d(TAG, "Rating: " + rating);
 			
 			RatingEntity competitorScore = new RatingEntity(
 					competitorName, criterionName, rating);

@@ -1,8 +1,8 @@
 package com.decideforme.decision;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -55,9 +55,8 @@ public class MyDecisions extends DashboardActivity {
 		long decisionRowID = 0;
     	ViewHelper viewHelper;
     	
-		Cursor cDecisions = DecisionHelper.fetchAllDecisions(this);
-    	cDecisions.moveToFirst();
-    	if (cDecisions.getCount() == 0) {
+    	List<Decision> decisionList = DecisionHelper.fetchAllDecisions(this);
+    	if (decisionList.size() == 0) {
     		viewHelper = new ViewHelperImpl(decisionRowID, this, SubjectConstants.DECISION);
     		TableRow thisRow = viewHelper.getNewRow(this, true);
     		thisRow.addView(viewHelper.getTextView(
@@ -67,31 +66,20 @@ public class MyDecisions extends DashboardActivity {
     		
     		mDynamicDecisionTable.addView(thisRow);
     	} else {
-    		decisionRowID = cDecisions.getLong(Decision.COLUMN_INDEX_ROW_ID);
-        	viewHelper = new ViewHelperImpl(decisionRowID, this, SubjectConstants.DECISION);
+    		viewHelper = new ViewHelperImpl(decisionRowID, this, SubjectConstants.DECISION);
+        	populateHeaderRow(viewHelper);
         	
-        	TableRow headerRow = viewHelper.getNewRow(this, false);
-        	headerRow.setBackgroundDrawable(getResources().getDrawable(R.drawable.tableheader));
-        	
-        	TextView decisionName = getTableHeaderTextView("Decision Name ");
-        	headerRow.addView(decisionName);
-        	TextView add = getTableHeaderTextView("Add");
-        	headerRow.addView(add);
-        	TextView edit = getTableHeaderTextView("Edit");
-        	headerRow.addView(edit);
-        	TextView delete = getTableHeaderTextView("Del");
-        	headerRow.addView(delete);
-        	TextView report = getTableHeaderTextView("Rpt");
-        	headerRow.addView(report);
-        	mDynamicDecisionTable.addView(headerRow);
-        	
-        	while(cDecisions.isAfterLast() == false) {
+    		for (int i = 0; i < decisionList.size(); i++) {
+    			Decision thisDecision = decisionList.get(i);
+        		decisionRowID = thisDecision.getRowId();
+            	viewHelper = new ViewHelperImpl(decisionRowID, this, SubjectConstants.DECISION);
+        		
         		TableRow thisRow = viewHelper.getNewRow(this, true);
         		
-            	BigDecimal id = new BigDecimal(cDecisions.getPosition()).multiply(new BigDecimal(100));
+            	BigDecimal id = new BigDecimal(i).multiply(new BigDecimal(100));
             	Integer viewId = id.intValue();
             	
-            	String decisionNameText = cDecisions.getString(Decision.COLUMN_INDEX_NAME);
+            	String decisionNameText = thisDecision.getName();
             	thisRow.addView(viewHelper.getTextView(
             			viewId++, decisionNameText, R.style.HomeButton, Typeface.SANS_SERIF, true, true));
         		
@@ -102,11 +90,27 @@ public class MyDecisions extends DashboardActivity {
         		thisRow.addView(viewHelper.getReportButton(viewId++));
         		
             	mDynamicDecisionTable.addView(thisRow);
-            	   		
-            	cDecisions.moveToNext();
-        	}
+    		}
     	}
     }
+
+
+	private void populateHeaderRow(ViewHelper viewHelper) {
+		TableRow headerRow = viewHelper.getNewRow(this, false);
+		headerRow.setBackgroundDrawable(getResources().getDrawable(R.drawable.tableheader));
+		
+		TextView decisionName = getTableHeaderTextView("Decision Name ");
+		headerRow.addView(decisionName);
+		TextView add = getTableHeaderTextView("Add");
+		headerRow.addView(add);
+		TextView edit = getTableHeaderTextView("Edit");
+		headerRow.addView(edit);
+		TextView delete = getTableHeaderTextView("Del");
+		headerRow.addView(delete);
+		TextView report = getTableHeaderTextView("Rpt");
+		headerRow.addView(report);
+		mDynamicDecisionTable.addView(headerRow);
+	}
 
 
 	private TextView getTableHeaderTextView(String text) {

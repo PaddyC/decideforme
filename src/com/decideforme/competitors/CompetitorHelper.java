@@ -8,13 +8,14 @@ import android.database.Cursor;
 import com.db.CursorUtils;
 import com.db.decideforme.competitors.Competitor;
 import com.db.decideforme.competitors.CompetitorsDatabaseAdapter;
+import com.db.decideforme.decisionrating.DecisionRatingsHelper;
 
 public class CompetitorHelper {
 	
 	private static CompetitorsDatabaseAdapter getDatabaseAdapter(Activity thisActivity) {
-		CompetitorsDatabaseAdapter mCompetitorsDBAdapter = new CompetitorsDatabaseAdapter(thisActivity);
-		mCompetitorsDBAdapter.open();
-		return mCompetitorsDBAdapter;
+		CompetitorsDatabaseAdapter competitorsDBAdapter = new CompetitorsDatabaseAdapter(thisActivity);
+		competitorsDBAdapter.open();
+		return competitorsDBAdapter;
 	}
 
     public static long createCompetitor(Activity thisActivity, long decisionRowId) {
@@ -23,7 +24,7 @@ public class CompetitorHelper {
     	long nextCompetitorRowID = competitorsDBAdapter.getNextCompetitorSequenceID();
 		String competitorName = "CO" + nextCompetitorRowID;
 		long competitorRowId = competitorsDBAdapter.createCompetitor(competitorName, decisionRowId);
-		
+		competitorsDBAdapter.close();
 		return competitorRowId;
 	}
     
@@ -31,50 +32,62 @@ public class CompetitorHelper {
 		
     	CompetitorsDatabaseAdapter competitorsDBAdapter = getDatabaseAdapter(thisActivity);
 		long competitorRowId = competitorsDBAdapter.createCompetitor(competitorName, decisionRowId);
-		
+		competitorsDBAdapter.close();
 		return competitorRowId;
 	}
     
     public static boolean updateCompetitor(Activity thisActivity, long competitorRowId, String competitorName) {
-		
     	CompetitorsDatabaseAdapter competitorsDBAdapter = getDatabaseAdapter(thisActivity);
-		return competitorsDBAdapter.updateCompetitor(competitorRowId, competitorName);
-
+    	boolean result = competitorsDBAdapter.updateCompetitor(competitorRowId, competitorName);
+    	competitorsDBAdapter.close();
+    	return result;
 	}
     
     public static List<Competitor> getAllCompetitorsForDecision(Activity thisActivity, long decisionRowId) {
-    	
     	CompetitorsDatabaseAdapter competitorDatabaseAdapter = getDatabaseAdapter(thisActivity);
-    	
 		Cursor allCompetitorsForDecision = competitorDatabaseAdapter.fetchAllCompetitorsForDecision(decisionRowId);
-		
-		return CursorUtils.getCompetitorForCursor(allCompetitorsForDecision);
+		List<Competitor> competitorList = CursorUtils.getCompetitorForCursor(allCompetitorsForDecision);
+		competitorDatabaseAdapter.close();
+		return competitorList;
     }
     
-    public static Cursor getCompetitorByName(Activity thisActivity, long decisionRowId, String competitorName) {
+    public static List<Competitor> getCompetitorByName(Activity thisActivity, long decisionRowId, String competitorName) {
     	
-    	CompetitorsDatabaseAdapter mCompetitorsDBAdapter = getDatabaseAdapter(thisActivity);
-		Cursor cCompetitors = mCompetitorsDBAdapter.fetchCompetitor(decisionRowId, competitorName);
-		return cCompetitors;
+    	CompetitorsDatabaseAdapter competitorsDBAdapter = getDatabaseAdapter(thisActivity);
+		Cursor cCompetitors = competitorsDBAdapter.fetchCompetitor(decisionRowId, competitorName);
+		List<Competitor> competitorList = CursorUtils.getCompetitorForCursor(cCompetitors);
+		competitorsDBAdapter.close();
+		return competitorList;
     	
     }
     
     public static List<Competitor> getCompetitor(Activity thisActivity, long competitorRowId) {
     	
-    	CompetitorsDatabaseAdapter mCompetitorsDBAdapter = getDatabaseAdapter(thisActivity);
-		Cursor cCompetitors = mCompetitorsDBAdapter.fetchCompetitor(competitorRowId);
+    	CompetitorsDatabaseAdapter competitorsDBAdapter = getDatabaseAdapter(thisActivity);
+		Cursor cCompetitors = competitorsDBAdapter.fetchCompetitor(competitorRowId);
 		List<Competitor> competitorList = CursorUtils.getCompetitorForCursor(cCompetitors);
-		mCompetitorsDBAdapter.close();
+		competitorsDBAdapter.close();
 		return competitorList;
     	
     }
     
+    /**
+     * Delete all DecisionRatings associated with the competitor as well.
+     * @param thisActivity
+     * @param competitorRowId
+     * @return
+     */
     public static boolean deleteCompetitor(Activity thisActivity, long competitorRowId) {
     	
-    	CompetitorsDatabaseAdapter mCompetitorsDBAdapter = getDatabaseAdapter(thisActivity);
+    	CompetitorsDatabaseAdapter competitorsDBAdapter = getDatabaseAdapter(thisActivity);
     	
-    	return mCompetitorsDBAdapter.deleteCompetitor(competitorRowId);
+    	boolean ratingsDeleted = DecisionRatingsHelper.deleteRatingsForCompetitor(thisActivity, competitorRowId);
     	
+    	boolean competitorDeleted = competitorsDBAdapter.deleteCompetitor(competitorRowId);
+    	
+    	competitorsDBAdapter.close();
+    	
+    	return ratingsDeleted && competitorDeleted;
     }
 	
 }

@@ -1,6 +1,8 @@
 package com.decideforme.competitors;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.db.decideforme.competitors.Competitor;
@@ -32,6 +34,14 @@ public class CompetitorEdit extends DashboardActivity {
 		Competitor thisCompetitor = CompetitorHelper.getCompetitor(this, competitorRowID).get(0);
 		decisionRowID = thisCompetitor.getDecisionId();
 		
+	    Button saveButton = (Button) findViewById(R.id.saveButton);
+	    saveButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.save_button));
+	    saveButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				finish();
+			}
+		});
+		
 		populateFields();
 		
 	}
@@ -42,7 +52,7 @@ public class CompetitorEdit extends DashboardActivity {
 	    	Competitor thisCompetitor = CompetitorHelper.getCompetitor(this, competitorRowID).get(0);
 	        competitorName.setText(thisCompetitor.getDescription());
 	    }
-
+	    
 	}
 
     @Override
