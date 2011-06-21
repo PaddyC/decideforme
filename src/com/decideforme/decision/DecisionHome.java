@@ -1,9 +1,14 @@
 package com.decideforme.decision;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
 
 import com.db.decideforme.decision.Decision.DecisionColumns;
 import com.decideforme.R;
@@ -16,6 +21,8 @@ import com.decideforme.utils.BundleHelper;
 public class DecisionHome extends DashboardTabActivity {
 	
 	private Long mDecisionRowId;
+	
+	private TabHost mTabHost;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,46 +33,43 @@ public class DecisionHome extends DashboardTabActivity {
         BundleHelper bundleHelper = new BundleHelper(this,  savedInstanceState);
 		mDecisionRowId = bundleHelper.getBundledFieldLongValue(DecisionColumns._ID);
         
-        
-        Resources res = getResources(); // Resource object to get Drawables
-        TabHost tabHost = getTabHost();  // The activity TabHost
-        TabHost.TabSpec spec;  // Resusable TabSpec for each tab
-        Intent intent;  // Reusable Intent for each tab
-        
+		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+		mTabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
+		
         // Create an Intent to launch an Activity for the tab (to be reused)
-        intent = new Intent().setClass(this, DecisionEdit.class);
-        intent.putExtra(DecisionColumns._ID, mDecisionRowId);
-
-        // Initialize a TabSpec for each tab and add it to the TabHost
-        spec = tabHost.newTabSpec("info").setIndicator("Info",
-                          res.getDrawable(R.drawable.ic_tab_info))
-                      .setContent(intent);
-        tabHost.addTab(spec);
-
-        // Do the same for the other tabs
-        intent = new Intent().setClass(this, CompetitorsScreen.class);
-        intent.putExtra(DecisionColumns._ID, mDecisionRowId);
-        spec = tabHost.newTabSpec("choices").setIndicator("Choices",
-                          res.getDrawable(R.drawable.ic_tab_competitors))
-                      .setContent(intent);
-        tabHost.addTab(spec);
-
-        intent = new Intent().setClass(this, CriteriaScreen.class);
-        intent.putExtra(DecisionColumns._ID, mDecisionRowId);
-        spec = tabHost.newTabSpec("criteria").setIndicator("Criteria",
-                          res.getDrawable(R.drawable.ic_tab_criteria))
-                      .setContent(intent);
-        tabHost.addTab(spec);
+        Intent decisionEdit = new Intent().setClass(this, DecisionEdit.class);
+        decisionEdit.putExtra(DecisionColumns._ID, mDecisionRowId);
+        setUpTab("Info", decisionEdit);
         
-        intent = new Intent().setClass(this, RatingsScreen.class);
-        intent.putExtra(DecisionColumns._ID, mDecisionRowId);
-        spec = tabHost.newTabSpec("rate").setIndicator("Rate",
-                          res.getDrawable(R.drawable.ic_tab_rate))
-                      .setContent(intent);
-        tabHost.addTab(spec);
-        
+        Intent competitors = new Intent().setClass(this, CompetitorsScreen.class);
+        competitors.putExtra(DecisionColumns._ID, mDecisionRowId);
+        setUpTab("Choices", competitors);
 
-        tabHost.setCurrentTab(0);
+        Intent criteria = new Intent().setClass(this, CriteriaScreen.class);
+        criteria.putExtra(DecisionColumns._ID, mDecisionRowId);
+        setUpTab("Criteria", criteria);
+        
+        Intent rating = new Intent().setClass(this, RatingsScreen.class);
+        rating.putExtra(DecisionColumns._ID, mDecisionRowId);
+        setUpTab("Rate", rating);
+
+        mTabHost.setCurrentTab(0);
     }
+	
+	private void setUpTab(final String tag, Intent intent) { 
+		
+		View tabView = createTabView(mTabHost.getContext(), tag);
+		TabSpec tabSpec = mTabHost.newTabSpec(tag).setIndicator(tabView).setContent(intent);
+		mTabHost.addTab(tabSpec);
+	}
+	
+	private static View createTabView(final Context context, final String text) {
+		
+		View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
+		TextView tabTv = (TextView) view.findViewById(R.id.tabsText);
+		tabTv.setText(text);
+		return view;
+		
+	}
 	
 }
