@@ -28,6 +28,7 @@ public class HomeActivity extends DashboardActivity	{
 		SQLiteDatabase db = decisionDBAdapter.getmDbHelper().getWritableDatabase();
         DatabaseScripts.dropAllTables(db);
         DatabaseScripts.createAllTables(db);
+        DatabaseScripts.createSampleDecision(db);
         Log.d(TAG, " << recreateDatabaseFromScratch()");
 	}
 	

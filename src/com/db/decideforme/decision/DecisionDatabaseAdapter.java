@@ -42,6 +42,7 @@ public class DecisionDatabaseAdapter {
         @Override
         public void onCreate(SQLiteDatabase db) {
         	DatabaseScripts.createAllTables(db);
+        	DatabaseScripts.createSampleDecision(db);
         }
 
         @Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.decideforme"
-      android:versionCode="2" android:versionName="Includes Report button fix">
+      android:versionName="III" android:versionCode="3">
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <application
     	android:theme="@style/Theme.D1"	 

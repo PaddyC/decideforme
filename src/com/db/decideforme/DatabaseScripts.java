@@ -113,4 +113,49 @@ public class DatabaseScripts {
         
         db.execSQL(TABLE_RECIPIENT_CREATE);	
     }
+
+	public static void createSampleDecision(SQLiteDatabase db) {
+		
+		db.execSQL("insert into decision values(1, 'Sample: Which is the best movie?', '(Just a sample decision, but a tough one!)')");
+		
+		db.execSQL("insert into competitor values(1, 1, 'Chinatown')");
+		db.execSQL("insert into competitor values(2, 1, 'Airplane')");
+		db.execSQL("insert into competitor values(3, 1, 'Fight Club')");
+		db.execSQL("insert into competitor values(4, 1, 'The Princess Bride')");
+		
+		db.execSQL("insert into criterion values(1, 1, 'Acting', 2)");
+		db.execSQL("insert into criterion values(2, 1, 'Romance', 3)");
+		db.execSQL("insert into criterion values(3, 1, 'Script', 4)");
+		db.execSQL("insert into criterion values(4, 1, 'Comedy', 4)");
+		db.execSQL("insert into criterion values(5, 1, 'Drama', 4)");
+		
+		// Chinatown
+		db.execSQL("insert into decisionratings values(1, 1, 1, 1, 4)");
+		db.execSQL("insert into decisionratings values(2, 1, 1, 2, 10)");
+		db.execSQL("insert into decisionratings values(3, 1, 1, 3, 16)");
+		db.execSQL("insert into decisionratings values(4, 1, 1, 4, 19)");
+		db.execSQL("insert into decisionratings values(5, 1, 1, 5, 17)");
+
+		// Airplane
+		db.execSQL("insert into decisionratings values(6, 1, 2, 1, 7)");
+		db.execSQL("insert into decisionratings values(7, 1, 2, 2, 12)");
+		db.execSQL("insert into decisionratings values(8, 1, 2, 3, 16)");
+		db.execSQL("insert into decisionratings values(9, 1, 2, 4, 17)");
+		db.execSQL("insert into decisionratings values(10, 1, 2, 5, 18)");
+		
+		// Fight Club
+		db.execSQL("insert into decisionratings values(11, 1, 3, 1, 5)");
+		db.execSQL("insert into decisionratings values(12, 1, 3, 2, 11)");
+		db.execSQL("insert into decisionratings values(13, 1, 3, 3, 17)");
+		db.execSQL("insert into decisionratings values(14, 1, 3, 4, 18)");
+		db.execSQL("insert into decisionratings values(15, 1, 3, 5, 17)");
+		
+		// Princess Bride
+		db.execSQL("insert into decisionratings values(16, 1, 4, 1, 6)");
+		db.execSQL("insert into decisionratings values(17, 1, 4, 2, 11)");
+		db.execSQL("insert into decisionratings values(18, 1, 4, 3, 17)");
+		db.execSQL("insert into decisionratings values(19, 1, 4, 4, 17)");
+		db.execSQL("insert into decisionratings values(20, 1, 4, 5, 18)");
+
+	}
 }
