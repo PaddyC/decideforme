@@ -117,11 +117,11 @@ public class MyDecisions extends DashboardActivity {
 		
 		TextView thisTextView = new TextView(this);
 		
-		Typeface envyCode = Typeface.createFromAsset(getAssets(), "fonts/Envy Code R.ttf");
+		Typeface tahoma = Typeface.createFromAsset(getAssets(), "fonts/tahoma.ttf");
 		
 		thisTextView.setText(text);
 		thisTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.tableheader));
-		thisTextView.setTypeface(envyCode, R.style.TableHeaderText);
+		thisTextView.setTypeface(tahoma, R.style.TableHeaderText);
 		thisTextView.setGravity(Gravity.CENTER);
 		
 		return thisTextView;

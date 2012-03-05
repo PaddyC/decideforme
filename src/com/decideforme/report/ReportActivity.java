@@ -115,20 +115,20 @@ public class ReportActivity extends DashboardActivity {
 			mReportLayout.setBackgroundDrawable(
 					getResources().getDrawable(R.drawable.textfield_default));
 			
-			Typeface envyCode = Typeface.createFromAsset(getAssets(), "fonts/Envy Code R.ttf");
+			Typeface tahoma = Typeface.createFromAsset(getAssets(), "fonts/tahoma.ttf");
 			
 			// get decision name : header row
 			Decision thisDecision = DecisionHelper.getDecision(this, mDecisionRowId).get(0);
 			
 			decisionName = thisDecision.getName();
 			TextView reportHeader = (TextView) findViewById(R.id.reportHeader);
-			reportHeader.setTypeface(envyCode);
+			reportHeader.setTypeface(tahoma);
 			reportHeader.setText(decisionName);
 			
 			// decision description : sub-heading
 			decisionDesc = thisDecision.getDescription();
 			TextView reportSubHeader = (TextView) findViewById(R.id.reportSubHeader);
-			reportSubHeader.setTypeface(envyCode);
+			reportSubHeader.setTypeface(tahoma);
 			reportSubHeader.setText(decisionDesc);
 			
 			setTheEmailSubject(decisionName, decisionDesc);
@@ -163,7 +163,7 @@ public class ReportActivity extends DashboardActivity {
 			preference.setText(preferredOption);
 			
 			// Ranking table
-			populateRankingTable(envyCode, overallRatings);
+			populateRankingTable(tahoma, overallRatings);
 			
 			populateEmailBody();
 		} else {
